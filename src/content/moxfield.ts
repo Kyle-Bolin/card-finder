@@ -53,10 +53,7 @@ function el<K extends keyof HTMLElementTagNameMap>(
 
 async function fetchFromPage(url: string): Promise<Attempt> {
   try {
-    const res = await fetch(url, {
-      headers: { Accept: "application/json" },
-      credentials: "include",
-    });
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
     return { method: "content script fetch", status: res.status, body: await res.text() };
   } catch (err) {
     return { method: "content script fetch", status: 0, error: String(err) };
