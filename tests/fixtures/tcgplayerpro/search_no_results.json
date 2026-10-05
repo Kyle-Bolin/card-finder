@@ -1,0 +1,20 @@
+{
+    "filters": {
+        "cardType": [],
+        "color": [],
+        "rarityName": [],
+        "setName": [],
+        "productTypeName": [],
+        "productLineName": [],
+        "availableItems": [
+            {
+                "value": "Include Out of Stock",
+                "count": 0
+            }
+        ]
+    },
+    "products": {
+        "totalItems": 0,
+        "items": []
+    }
+}
