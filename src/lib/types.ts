@@ -37,6 +37,9 @@ export interface WpnStore {
   distance: number;
   phoneNumber: string | null;
   website: string | null;
+  emailAddress?: string | null;
+  /** Whether the store chose to show its email publicly in the locator. */
+  showEmailInSEL?: boolean | null;
 }
 
 export interface GeoPoint {

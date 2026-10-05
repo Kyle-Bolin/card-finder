@@ -189,6 +189,16 @@ function renderFound(): void {
         el("a", { href: match.site.url, target: "_blank" }, new URL(match.site.url).hostname),
       ),
     );
+    if (match.confidence === "possible") {
+      const siteAddress = formatAddress(match.site);
+      info.append(
+        el(
+          "div",
+          { className: "meta" },
+          siteAddress ? `Web store lists: ${siteAddress}` : "Web store lists no address",
+        ),
+      );
+    }
     let button = foundButtons.get(match.site.url);
     const li = el("li", {}, info);
     if (!button) {

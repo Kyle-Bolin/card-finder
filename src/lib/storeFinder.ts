@@ -8,7 +8,7 @@ const MAX_WPN_PAGES = 20;
 
 const STORES_BY_LOCATION = `query getStoresByLocation($latitude: Float!, $longitude: Float!, $maxMeters: Int!, $pageSize: Int, $page: Int) {
   storesByLocation(input: {latitude: $latitude, longitude: $longitude, maxMeters: $maxMeters, pageSize: $pageSize, page: $page}) {
-    stores { id name postalAddress latitude longitude distance phoneNumber website }
+    stores { id name postalAddress latitude longitude distance phoneNumber website emailAddress showEmailInSEL }
     pageInfo { page pageSize totalResults }
   }
 }`;
@@ -106,29 +106,81 @@ export function baseStoreName(name: string): string {
   return name.replace(/\s+-\s+.*$/, "").trim();
 }
 
+const FREE_MAIL =
+  /^(gmail|googlemail|yahoo|ymail|aol|outlook|hotmail|live|msn|icloud|me|mac|comcast|verizon|att|sbcglobal|charter|cox|protonmail|proton)\./;
+const GENERIC_MAILBOXES =
+  /^(info|contact|store|shop|sales|admin|hello|support|orders|owner|manager|events|games?|mail|office)$/;
+/** Trailing words that are often dropped from a storefront subdomain. */
+const COMPANY_SUFFIX = /\s+(llc|inc|co|ltd)\.?$/i;
+const MAX_GUESSES = 8;
+
+/** First host label of a store's website, unless it's a generic host (Facebook, Discord, …). */
+function websiteLabel(website: string | null | undefined): string | undefined {
+  const value = website?.trim();
+  if (!value) return undefined;
+  try {
+    const host = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`).hostname
+      .toLowerCase()
+      .replace(/^www\./, "");
+    if (GENERIC_HOSTS.test(host) || host.split(".").length < 2) return undefined;
+    return host.split(".")[0];
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Name hint from a public store email: the domain for custom domains
+ * (info@relentlessdragon.com → "relentlessdragon"), or the mailbox for free mail
+ * (bazaargametrading@gmail.com → "bazaargametrading").
+ */
+function emailLabel(email: string | null | undefined): string | undefined {
+  const match = email
+    ?.trim()
+    .toLowerCase()
+    .match(/^([^@\s]+)@([^@\s]+\.[a-z]{2,})$/);
+  if (!match) return undefined;
+  const [, mailbox = "", domain = ""] = match;
+  if (FREE_MAIL.test(domain)) {
+    const local = mailbox.replace(/\+.*$/, "").replace(/[._-]/g, "");
+    return local.length >= 4 && !GENERIC_MAILBOXES.test(local) ? local : undefined;
+  }
+  return websiteLabel(domain);
+}
+
+/**
+ * The store name minus a trailing location that also appears in its address:
+ * "The Relentless Dragon Nashua" (483 Amherst St, Nashua, NH) → "The Relentless Dragon".
+ */
+export function stripTrailingLocation(name: string, postalAddress: string | undefined): string {
+  if (!postalAddress) return name;
+  const addressWords = new Set(postalAddress.toLowerCase().match(/[a-z]+/g) ?? []);
+  const words = name.split(/\s+/);
+  while (words.length > 1 && addressWords.has((words.at(-1) ?? "").toLowerCase())) words.pop();
+  return words.join(" ");
+}
+
+type GuessInput = Pick<WpnStore, "name"> &
+  Partial<Pick<WpnStore, "website" | "postalAddress" | "emailAddress" | "showEmailInSEL">>;
+
 /**
  * Candidate `{sub}.tcgplayerpro.com` subdomains for a WPN store, most likely first:
- * the store website's first host label, then slugs of the store name.
+ * the website's host, the store's public email, then variations of the store name.
+ * Emails are only used when the store has chosen to show them publicly.
  */
-export function subdomainGuesses(store: Pick<WpnStore, "name" | "website">): string[] {
+export function subdomainGuesses(store: GuessInput): string[] {
   if (SKIP_NAMES.test(store.name)) return [];
-  const guesses: string[] = [];
-  const website = store.website?.trim();
-  if (website) {
-    try {
-      const host = new URL(/^https?:\/\//i.test(website) ? website : `https://${website}`).hostname
-        .toLowerCase()
-        .replace(/^www\./, "");
-      const label = host.split(".")[0];
-      if (label && !GENERIC_HOSTS.test(host) && host.split(".").length >= 2) guesses.push(label);
-    } catch {
-      // Unparseable website; fall back to name-based guesses.
-    }
+  const guesses: (string | undefined)[] = [websiteLabel(store.website)];
+  if (store.showEmailInSEL) guesses.push(emailLabel(store.emailAddress));
+
+  const base = baseStoreName(store.name).replace(COMPANY_SUFFIX, "");
+  const core = stripTrailingLocation(base, store.postalAddress);
+  for (const name of [base, core]) {
+    guesses.push(slug(name));
+    if (/^the\s/i.test(name)) guesses.push(slug(name.replace(/^the\s+/i, "")));
   }
-  const name = baseStoreName(store.name);
-  guesses.push(slug(name));
-  if (/^the\s/i.test(name)) guesses.push(slug(name.replace(/^the\s+/i, "")));
-  return [...new Set(guesses.filter((g) => /^[a-z0-9-]{2,63}$/.test(g)))];
+  const valid = guesses.filter((g): g is string => !!g && /^[a-z0-9-]{2,63}$/.test(g));
+  return [...new Set(valid)].slice(0, MAX_GUESSES);
 }
 
 function digits(value: string | null | undefined): string {

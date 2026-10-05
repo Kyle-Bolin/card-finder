@@ -6,6 +6,7 @@ import {
   matchConfidence,
   nearbyWpnStores,
   phoneKey,
+  stripTrailingLocation,
   subdomainGuesses,
   zipFromAddress,
   zipToLocation,
@@ -73,6 +74,62 @@ describe("subdomainGuesses", () => {
     ).toEqual(["cardshack"]);
   });
 
+  it("strips a trailing city that appears in the address (The Relentless Dragon Nashua)", () => {
+    expect(
+      subdomainGuesses({
+        name: "The Relentless Dragon Nashua",
+        website: "https://discord.gg/cDCZvS2",
+        postalAddress: "483 Amherst St\nNashua, NH 03063\nUnited States",
+        emailAddress: "info@relentlessdragon.com",
+        showEmailInSEL: false,
+      }),
+    ).toEqual([
+      "therelentlessdragonnashua",
+      "relentlessdragonnashua",
+      "therelentlessdragon",
+      "relentlessdragon",
+    ]);
+  });
+
+  it("uses a public email's domain, or its mailbox for free mail", () => {
+    expect(
+      subdomainGuesses({
+        name: "Dragon Store",
+        emailAddress: "info@relentlessdragon.com",
+        showEmailInSEL: true,
+      })[0],
+    ).toBe("relentlessdragon");
+    expect(
+      subdomainGuesses({
+        name: "Bazaar Game Trading",
+        emailAddress: "bazaargametrading@gmail.com",
+        showEmailInSEL: true,
+      }),
+    ).toEqual(["bazaargametrading"]);
+    // Generic free-mail mailboxes say nothing about the store.
+    expect(
+      subdomainGuesses({
+        name: "Card Shack",
+        emailAddress: "info@gmail.com",
+        showEmailInSEL: true,
+      }),
+    ).toEqual(["cardshack"]);
+  });
+
+  it("never uses an email the store hasn't made public", () => {
+    expect(
+      subdomainGuesses({
+        name: "Card Shack",
+        emailAddress: "info@cardshackgames.com",
+        showEmailInSEL: false,
+      }),
+    ).toEqual(["cardshack"]);
+  });
+
+  it("drops company suffixes", () => {
+    expect(subdomainGuesses({ name: "Gamers Haven LLC" })).toEqual(["gamershaven"]);
+  });
+
   it("skips big chains", () => {
     expect(
       subdomainGuesses({
@@ -84,6 +141,13 @@ describe("subdomainGuesses", () => {
 });
 
 describe("helpers", () => {
+  it("stripTrailingLocation keeps at least one word", () => {
+    expect(stripTrailingLocation("Nashua", "Nashua, NH")).toBe("Nashua");
+    expect(stripTrailingLocation("Game Underground", "349 Moody Street, Waltham, MA")).toBe(
+      "Game Underground",
+    );
+  });
+
   it("baseStoreName strips branch suffixes", () => {
     expect(baseStoreName("Double Midnight Comics - Concord")).toBe("Double Midnight Comics");
     expect(baseStoreName("8-Bit Gaming")).toBe("8-Bit Gaming");
