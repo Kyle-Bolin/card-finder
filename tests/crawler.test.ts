@@ -328,6 +328,28 @@ describe("crawl", () => {
     expect((run3.state as CrawlState).wpn["10"]?.storefront).toBeUndefined();
   });
 
+  it("checkpoints progress so an interrupted run can resume", async () => {
+    const checkpoints: CrawlState[] = [];
+    const first = await crawl(null, EMPTY_STATE, [], {
+      fetchFn: web().fetchFn,
+      region,
+      now: new Date("2026-10-05T00:00:00Z"),
+      checkpoint: (s) => checkpoints.push(structuredClone(s)),
+    });
+    expect(checkpoints.length).toBeGreaterThan(0);
+    expect(Object.keys(checkpoints.at(-1)?.wpn ?? {}).sort()).toEqual(["10", "11", "12"]);
+
+    // Resuming from the checkpoint doesn't re-check any WPN store.
+    const resumed = web();
+    await crawl(null, checkpoints.at(-1) ?? EMPTY_STATE, [], {
+      fetchFn: resumed.fetchFn,
+      region,
+      now: new Date("2026-10-05T01:00:00Z"),
+    });
+    expect(resumed.calls.some((u) => u.includes("mobrostc.com"))).toBe(false);
+    expect(first.directory.storefronts).toHaveLength(2);
+  });
+
   it("verifies marketplace sellers by seller key", async () => {
     const listings = {
       results: [
@@ -366,5 +388,28 @@ describe("crawl", () => {
     expect(directory.storefronts.find((s) => s.url.includes("dicecity"))?.sources).toEqual([
       "marketplace",
     ]);
+  });
+
+  it("reuses the collected seller list for a few days", async () => {
+    const state: CrawlState = {
+      ...EMPTY_STATE,
+      proSellerCache: {
+        collectedAt: "2026-10-04T00:00:00.000Z",
+        sellers: [{ sellerKey: "ddd", name: "Dice City Games", city: "Milford", state: "NH" }],
+      },
+    };
+    const { fetchFn, calls } = web({
+      "https://dicecitygames.tcgplayerpro.com/api/site": site("Dice City Games", "03055", "ddd"),
+    });
+    const { directory } = await crawl(null, state, [], {
+      fetchFn,
+      region,
+      now: new Date("2026-10-05T00:00:00Z"),
+      marketplace: { productLines: ["magic"], productsPerLine: 1 },
+    });
+    expect(calls.some((u) => u.includes("mp-search-api"))).toBe(false);
+    expect(directory.storefronts.map((s) => s.url)).toContain(
+      "https://dicecitygames.tcgplayerpro.com",
+    );
   });
 });

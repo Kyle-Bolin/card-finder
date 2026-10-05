@@ -24,6 +24,8 @@ export interface CrawlState {
   >;
   /** Per TCGplayer Pro marketplace seller (by seller key): when we last looked, and what we found. */
   sellers?: Record<string, { checkedAt: string; storefront?: string }>;
+  /** Pro sellers from the last marketplace collection, reused for a few days (resumed runs). */
+  proSellerCache?: { collectedAt: string; sellers: ProSeller[] };
   /** Consecutive runs a known storefront returned 404. */
   misses: Record<string, number>;
 }
@@ -56,7 +58,12 @@ export interface CrawlOptions {
   marketplace?: { productLines: string[]; productsPerLine: number };
   concurrency?: number;
   log?: (message: string) => void;
+  /** Called with the in-progress state every 100 checks and after each phase, so an
+   *  interrupted run can resume where it left off. */
+  checkpoint?: (state: CrawlState) => void;
 }
+
+const SELLER_CACHE_DAYS = 3;
 
 export interface CrawlStats {
   wpnStores: number;
@@ -165,7 +172,15 @@ export async function crawl(
   seeds: SeedStorefront[],
   options: CrawlOptions,
 ): Promise<{ directory: Directory; state: CrawlState; stats: CrawlStats }> {
-  const { fetchFn, region, recheckDays = 30, limit, concurrency = 4, log = () => {} } = options;
+  const {
+    fetchFn,
+    region,
+    recheckDays = 30,
+    limit,
+    concurrency = 4,
+    log = () => {},
+    checkpoint = () => {},
+  } = options;
   const now = options.now ?? new Date();
   const nowIso = now.toISOString();
   const state: CrawlState = structuredClone(previousState);
@@ -204,8 +219,12 @@ export async function crawl(
           source: found.source,
         }
       : { checkedAt: nowIso };
-    if (++done % 100 === 0) log(`  ${done}/${toCheck.length}`);
+    if (++done % 100 === 0) {
+      log(`  ${done}/${toCheck.length}`);
+      checkpoint(state);
+    }
   });
+  checkpoint(state);
 
   // 2b. Discover storefronts for TCGplayer Pro marketplace sellers (not limited to WPN stores).
   state.sellers ??= {};
@@ -217,7 +236,15 @@ export async function crawl(
     log(
       `Collecting Pro sellers from ${productsPerLine} best sellers of ${productLines.join(", ")}…`,
     );
-    proSellers = await collectProSellers(productLines, productsPerLine, fetchFn, log);
+    const cache = state.proSellerCache;
+    if (cache && daysBetween(new Date(cache.collectedAt), now) < SELLER_CACHE_DAYS) {
+      log(`  reusing ${cache.sellers.length} sellers collected ${cache.collectedAt}`);
+      proSellers = new Map(cache.sellers.map((seller) => [seller.sellerKey, seller]));
+    } else {
+      proSellers = await collectProSellers(productLines, productsPerLine, fetchFn, log);
+      state.proSellerCache = { collectedAt: nowIso, sellers: [...proSellers.values()] };
+      checkpoint(state);
+    }
     const knownKeys = new Set(
       (previous?.storefronts ?? []).flatMap((s) => (s.sellerKey ? [s.sellerKey] : [])),
     );
@@ -236,8 +263,12 @@ export async function crawl(
       sellerState[seller.sellerKey] = site
         ? { checkedAt: nowIso, storefront: site.url }
         : { checkedAt: nowIso };
-      if (++sellersDone % 200 === 0) log(`  ${sellersDone}/${sellersToCheck.length}`);
+      if (++sellersDone % 100 === 0) {
+        log(`  ${sellersDone}/${sellersToCheck.length}`);
+        checkpoint(state);
+      }
     });
+    checkpoint(state);
   }
   for (const [key, entry] of Object.entries(sellerState)) {
     const seller = proSellers.get(key);

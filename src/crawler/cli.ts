@@ -86,6 +86,7 @@ const {
         }
       : undefined,
   log: (message) => console.log(message),
+  checkpoint: (inProgress) => writeJson(statePath, inProgress),
 });
 
 writeJson(directoryPath, directory);
