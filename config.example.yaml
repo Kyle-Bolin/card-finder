@@ -1,0 +1,18 @@
+# Copy to config.yaml and fill in your decks and stores.
+
+moxfield:
+  tag: unowned                 # cards with this tag are treated as wanted (case-insensitive)
+  decks:                       # deck URLs or public IDs
+    - https://moxfield.com/decks/your-deck-id
+
+stores:
+  - name: My LGS
+    url: https://mylgs.tcgplayerpro.com
+
+filters:
+  max_price: null              # e.g. 25.00
+  conditions: [NM, LP, MP]     # allowed conditions
+  include_foil: true
+
+notify:
+  discord_webhook_env: DISCORD_WEBHOOK_URL   # name of the env var holding the webhook URL
