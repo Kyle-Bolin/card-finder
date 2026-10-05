@@ -1,0 +1,58 @@
+name: Update store directory
+
+on:
+  schedule:
+    - cron: "17 7 * * 1" # Mondays 07:17 UTC
+  workflow_dispatch:
+    inputs:
+      recheck_days:
+        description: Re-check stores without a storefront after this many days
+        default: "30"
+      marketplace_products:
+        description: Best sellers per product line to collect Pro sellers from
+        default: "200"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: crawl
+  cancel-in-progress: false
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Crawl
+        run: >-
+          npm run -s crawl --
+          --recheck-days "${{ inputs.recheck_days || '30' }}"
+          --marketplace-products "${{ inputs.marketplace_products || '200' }}"
+          --concurrency 8
+          | tee crawl.log
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo '```'
+            sed -n '/^Done in/,$p' crawl.log | head -60
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit updated directory
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/storefronts.json data/crawl-state.json
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Update store directory ($(jq '.storefronts | length' data/storefronts.json) storefronts)"
+            git push
+          fi

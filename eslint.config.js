@@ -12,7 +12,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["scripts/**"],
+    files: ["scripts/**", "src/crawler/**"],
     languageOptions: { globals: { ...globals.node } },
   },
 );

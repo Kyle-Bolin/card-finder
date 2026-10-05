@@ -52,9 +52,13 @@ export async function nearbyWpnStores(
   point: GeoPoint,
   miles: number,
   fetchFn: FetchFn = fetch,
+  {
+    pageSize = WPN_PAGE_SIZE,
+    maxPages = MAX_WPN_PAGES,
+  }: { pageSize?: number; maxPages?: number } = {},
 ): Promise<WpnStore[]> {
   const stores = new Map<string, WpnStore>();
-  for (let page = 0; page < MAX_WPN_PAGES; page++) {
+  for (let page = 0; page < maxPages; page++) {
     const res = await fetchFn(WPN_GRAPHQL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -65,7 +69,7 @@ export async function nearbyWpnStores(
           latitude: point.latitude,
           longitude: point.longitude,
           maxMeters: Math.round(miles * METERS_PER_MILE),
-          pageSize: WPN_PAGE_SIZE,
+          pageSize,
           page,
         },
       }),
@@ -113,6 +117,11 @@ const GENERIC_MAILBOXES =
 /** Trailing words that are often dropped from a storefront subdomain. */
 const COMPANY_SUFFIX = /\s+(llc|inc|co|ltd)\.?$/i;
 const MAX_GUESSES = 8;
+
+/** True for social/link hosts and chains that never host a store's own site. */
+export function isGenericHost(host: string): boolean {
+  return GENERIC_HOSTS.test(host.toLowerCase().replace(/^www\./, ""));
+}
 
 /** First host label of a store's website, unless it's a generic host (Facebook, Discord, …). */
 function websiteLabel(website: string | null | undefined): string | undefined {

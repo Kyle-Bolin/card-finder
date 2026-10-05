@@ -32,7 +32,8 @@
     "https://api.moxfield.com/*",
     "https://*.tcgplayerpro.com/*",
     "https://api.tabletop.wizards.com/*",
-    "https://api.zippopotam.us/*"
+    "https://api.zippopotam.us/*",
+    "https://raw.githubusercontent.com/*"
   ],
   "content_scripts": [
     {

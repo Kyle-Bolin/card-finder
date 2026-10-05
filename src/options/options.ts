@@ -1,3 +1,4 @@
+import { fetchDirectory, nearbyFromDirectory } from "../lib/directory";
 import {
   findStorefronts,
   metersToMiles,
@@ -13,7 +14,7 @@ import {
   type Settings,
 } from "../lib/settings";
 import { getSite, normalizeStoreUrl } from "../lib/tcgplayerpro";
-import type { GeoPoint, Store, StoreSite } from "../lib/types";
+import type { GeoPoint, Store, StoreSite, WpnStore } from "../lib/types";
 
 function $<T extends HTMLElement>(id: string): T {
   const node = document.getElementById(id);
@@ -54,6 +55,8 @@ function siteToStore(site: StoreSite): Store {
 function mapsUrl(address: string): string {
   return `https://maps.apple.com/?q=${encodeURIComponent(address)}`;
 }
+
+const METERS_PER_MILE = 1609.344;
 
 let settings: Settings;
 
@@ -223,24 +226,38 @@ async function search(point: GeoPoint): Promise<void> {
   found = [];
   renderFound();
   try {
-    setStatus(status, `Finding game stores within ${miles} mi of ${point.label ?? "you"}…`);
-    const stores = await nearbyWpnStores(point, miles);
-    setStatus(status, `Checking ${stores.length} stores for TCGplayer Pro web stores…`);
-    found = await findStorefronts(stores, {
-      onProgress(done, total, match) {
-        if (match) {
-          found = [...found, match].sort((a, b) => a.store.distance - b.store.distance);
-          renderFound();
-        }
-        setStatus(status, `Checked ${done} of ${total} stores… ${found.length} found`);
-      },
-    });
+    setStatus(status, `Finding stores within ${miles} mi of ${point.label ?? "you"}…`);
+    // The published directory (built weekly by the crawler) answers instantly; then we
+    // only live-check WPN stores the crawler hasn't seen yet.
+    const [directory, stores] = await Promise.all([
+      fetchDirectory(),
+      nearbyWpnStores(point, miles).catch(() => [] as WpnStore[]),
+    ]);
+    if (directory) {
+      found = nearbyFromDirectory(directory, point, miles * METERS_PER_MILE);
+      renderFound();
+    }
+    const checked = new Set(directory?.checkedWpnStoreIds ?? []);
+    const unchecked = stores.filter((s) => !checked.has(s.id));
+    if (unchecked.length) {
+      const fromDirectory = found.length;
+      setStatus(status, `${fromDirectory} found so far. Checking ${unchecked.length} more stores…`);
+      await findStorefronts(unchecked, {
+        onProgress(done, total, match) {
+          if (match) {
+            found = [...found, match].sort((a, b) => a.store.distance - b.store.distance);
+            renderFound();
+          }
+          setStatus(status, `Checked ${done} of ${total} stores… ${found.length} found`);
+        },
+      });
+    }
     renderFound();
     setStatus(
       status,
       found.length
-        ? `Found ${found.length} stores with TCGplayer Pro web stores (of ${stores.length} game stores nearby).`
-        : `None of the ${stores.length} game stores nearby have a TCGplayer Pro web store we could find.`,
+        ? `Found ${found.length} stores with TCGplayer Pro web stores within ${miles} mi.`
+        : `No TCGplayer Pro web stores found within ${miles} mi.`,
     );
   } catch (err) {
     setStatus(status, String(err), true);
