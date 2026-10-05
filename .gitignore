@@ -1,17 +1,11 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-.venv/
+node_modules/
 dist/
-build/
-.pytest_cache/
-.ruff_cache/
+coverage/
 
-# Local config, state and caches
-config.yaml
-state.json
-.cache/
+# Xcode
+xcode/**/xcuserdata/
+xcode/**/DerivedData/
+*.xcuserstate
 
 # Editors / OS
 .vscode/

@@ -1,0 +1,133 @@
+{
+  "data": {
+    "storesByLocation": {
+      "stores": [
+        {
+          "id": "19041",
+          "name": "Collectible Tags",
+          "postalAddress": "1045 Elm St, Manchester, NH, 03101, United States",
+          "latitude": 42.9929675,
+          "longitude": -71.46272739999999,
+          "distance": 709.54096577,
+          "phoneNumber": "1603-836-3994",
+          "website": "https://collectibletagsshop.com/"
+        },
+        {
+          "id": "8657",
+          "name": "Double Midnight Comics - Manchester",
+          "postalAddress": "252 Willow St, Manchester, NH, 03103, United States",
+          "latitude": 42.9776015,
+          "longitude": -71.4615747,
+          "distance": 2074.43667194,
+          "phoneNumber": "1603-669-9636",
+          "website": "http://www.dmcomics.com/"
+        },
+        {
+          "id": "18892",
+          "name": "The Shop By Mobros",
+          "postalAddress": "880 Second St, Manchester, NH, 03102, United States",
+          "latitude": 42.96888515082433,
+          "longitude": -71.47915378857805,
+          "distance": 3571.23677382,
+          "phoneNumber": "16035122923",
+          "website": "https://mobrostc.com/"
+        },
+        {
+          "id": "23237",
+          "name": "GameStop - 0774 - T.J. Maxx Plaza",
+          "postalAddress": "114 March Ave, Manchester, NH, 03103-4013, USA",
+          "latitude": 42.96161,
+          "longitude": -71.44353,
+          "distance": 3886.31865509,
+          "phoneNumber": "1(603) 647-7707",
+          "website": "https://www.gamestop.com/"
+        },
+        {
+          "id": "14084",
+          "name": "Let's Play Collectibles and Things - Hooksett",
+          "postalAddress": "1134 Hooksett Rd,  Hooksett, NH, 03106, United States",
+          "latitude": 43.03216,
+          "longitude": -71.43624,
+          "distance": 4334.23828435,
+          "phoneNumber": "1603-232-2134",
+          "website": "http://wpn.wizards.com"
+        },
+        {
+          "id": "12953",
+          "name": "Diversity Gaming",
+          "postalAddress": "1328 Hooksett Rd\nUnit 5\nHooksett, NH 03106\nUnited States",
+          "latitude": 43.05533,
+          "longitude": -71.44377,
+          "distance": 6696.22411237,
+          "phoneNumber": "1 (603) 6061176",
+          "website": null
+        },
+        {
+          "id": "6103",
+          "name": "Merrymac Games and Comics",
+          "postalAddress": "550 Daniel Webster Hwy\nMerrimack, NH 03054\nUnited States",
+          "latitude": 42.87812,
+          "longitude": -71.48523,
+          "distance": 13285.28492634,
+          "phoneNumber": "603-420-8161",
+          "website": "www.merrymacgamesandcomics.com"
+        },
+        {
+          "id": "7016",
+          "name": "Midgard Comics and Games",
+          "postalAddress": "55 Crystal Avenue\nUnit 21\nDerry, NH 03038-1702\nUnited States",
+          "latitude": 42.89246,
+          "longitude": -71.32682,
+          "distance": 15504.35937283,
+          "phoneNumber": "603-260-6180",
+          "website": "www.midgardcomicsandgames.com"
+        },
+        {
+          "id": "17514",
+          "name": "8-Bit Gaming",
+          "postalAddress": "11 E Broadway, Derry, NH, 03038, United States",
+          "latitude": 42.88091879999999,
+          "longitude": -71.3256505,
+          "distance": 16535.83250284,
+          "phoneNumber": "1603-824-2206",
+          "website": "http://magic.wizards.com"
+        },
+        {
+          "id": "13542",
+          "name": "Awesome Cards Collectibles and Games - Londonderry",
+          "postalAddress": "123 Nashua Road, Londonderry, NH, 03053, United States",
+          "latitude": 42.84641,
+          "longitude": -71.36246,
+          "distance": 18207.84920823,
+          "phoneNumber": "1603-404-6996",
+          "website": "http://magic.wizards.com"
+        },
+        {
+          "id": "17846",
+          "name": "Bazaar Game Trading",
+          "postalAddress": "650 Amherst St, Nashua, NH, 03063, United States",
+          "latitude": 42.8028492,
+          "longitude": -71.5426284,
+          "distance": 22582.41913629,
+          "phoneNumber": "1603-288-1899",
+          "website": "http://www.bazaargametrading.com"
+        },
+        {
+          "id": "23179",
+          "name": "GameStop - 6177 - Meadowbrook Crossing",
+          "postalAddress": "124 State Route 101A, Amherst, NH, 03031-2285, USA",
+          "latitude": 42.80696,
+          "longitude": -71.56593,
+          "distance": 22837.18821686,
+          "phoneNumber": "1(603) 882-3744",
+          "website": "https://www.gamestop.com/"
+        }
+      ],
+      "pageInfo": {
+        "page": 0,
+        "pageSize": 12,
+        "totalResults": 12
+      }
+    }
+  }
+}

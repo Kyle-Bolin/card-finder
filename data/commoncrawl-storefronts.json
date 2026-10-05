@@ -1,0 +1,818 @@
+[
+  {
+    "url": "https://aaambaaam.tcgplayerpro.com",
+    "name": "AaamBaaam",
+    "city": "Fredericksburg",
+    "state": "Virginia",
+    "zip": "22407",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://adventureson.tcgplayerpro.com",
+    "name": "adventuresON",
+    "city": "Carmichael",
+    "state": "California",
+    "zip": "95608",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://aegisgamesllc.tcgplayerpro.com",
+    "name": "Aegis Games & Taphouse",
+    "city": "Bellingham",
+    "state": "Washington",
+    "zip": "98225",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://alltimategaming.tcgplayerpro.com",
+    "name": "Alltimate Gaming",
+    "city": "DeLand",
+    "state": "Florida",
+    "zip": "32720",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://angrycomics.tcgplayerpro.com",
+    "name": "Angry Comics",
+    "city": "Fayetteville",
+    "state": "North Carolina",
+    "zip": "28301",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://awenscardshop.tcgplayerpro.com",
+    "name": "Awen's Card Shop",
+    "city": "Cleburne",
+    "state": "Texas",
+    "zip": "76033",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://battlegroundsct.tcgplayerpro.com",
+    "name": "Battlegrounds Gaming",
+    "city": "Norwalk",
+    "state": "Connecticut",
+    "zip": "06851",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://bazookagamesnc.tcgplayerpro.com",
+    "name": "Bazooka Games NC",
+    "city": "Southern Pines",
+    "state": "North Carolina",
+    "zip": "28387",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://bluehighwaygames.tcgplayerpro.com",
+    "name": "Blue Highway Games",
+    "city": "Seattle",
+    "state": "Washington",
+    "zip": "98109",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://boardgamingwedu.tcgplayerpro.com",
+    "name": "BGE's Tabletop",
+    "city": "West Hills",
+    "state": "California",
+    "zip": "91307",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://btbgames.tcgplayerpro.com",
+    "name": "By The Board Games & Entertainment",
+    "city": "Lowell",
+    "state": "Indiana",
+    "zip": "46356",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://buzzcitygames.tcgplayerpro.com",
+    "name": "Buzz City Games",
+    "city": "Concord",
+    "state": "North Carolina",
+    "zip": "28025",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://candyscardshop.tcgplayerpro.com",
+    "name": "CandysCardShop",
+    "city": "Modesto",
+    "state": "California",
+    "zip": "95358",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://cantripcg.tcgplayerpro.com",
+    "name": "Cantrip Cards & Games",
+    "city": "Ithaca",
+    "state": "New York",
+    "zip": "14850",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://cardboardvault.tcgplayerpro.com",
+    "name": "Cardboard Vault",
+    "city": "Faribault",
+    "state": "Minnesota",
+    "zip": "55021",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://cardcollecting.tcgplayerpro.com",
+    "name": "Card-Collecting",
+    "city": "Rohnert Park",
+    "state": "California",
+    "zip": "94928",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://cardshopmissouri.tcgplayerpro.com",
+    "name": "5C Gaming",
+    "city": "Springfield",
+    "state": "Missouri",
+    "zip": "65806",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://cardthrone.tcgplayerpro.com",
+    "name": "Card Throne",
+    "city": "Indianapolis",
+    "state": "Indiana",
+    "zip": "46236",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://cardtrickgamesny.tcgplayerpro.com",
+    "name": "CardTrickGames NY",
+    "city": "Baldwinsville",
+    "state": "New York",
+    "zip": "13027",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://ccgprime.tcgplayerpro.com",
+    "name": "CCGPrime",
+    "city": "Ionia",
+    "state": "Michigan",
+    "zip": "48846",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://colossicuscards.tcgplayerpro.com",
+    "name": "Colossicus Cards",
+    "city": "Toms River",
+    "state": "New Jersey",
+    "zip": "08757",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://comicbookstore.tcgplayerpro.com",
+    "name": "The Comic Book Store",
+    "city": "Glassboro",
+    "state": "New Jersey",
+    "zip": "08028",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://creamcollectibles.tcgplayerpro.com",
+    "name": "CreamCollectibles",
+    "city": "Scottsdale",
+    "state": "Arizona",
+    "zip": "85260",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://crossroadgames.tcgplayerpro.com",
+    "name": "Crossroad Games",
+    "city": "Standish",
+    "state": "Maine",
+    "zip": "04084",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://daviscardsandgames.tcgplayerpro.com",
+    "name": "Davis Cards and Games",
+    "city": "Davis",
+    "state": "California",
+    "zip": "95616",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://deadlysevensgames.tcgplayerpro.com",
+    "name": "Deadly Seven Games",
+    "city": "Boise",
+    "state": "Idaho",
+    "zip": "83706",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://diceaddictionpro.tcgplayerpro.com",
+    "name": "Dice Addiction Games & More",
+    "city": "Tulsa",
+    "state": "Oklahoma",
+    "zip": "74112",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://dicecitygames.tcgplayerpro.com",
+    "name": "Dice City Games",
+    "city": "Silver Spring",
+    "state": "Maryland",
+    "zip": "20902",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://dicenduels.tcgplayerpro.com",
+    "name": "Dice N Duels",
+    "city": "Fernley",
+    "state": "Nevada",
+    "zip": "89408",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://dkonline.tcgplayerpro.com",
+    "name": "DK Online",
+    "city": "Provo",
+    "state": "Utah",
+    "zip": "84601",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://dpadonline.tcgplayerpro.com",
+    "name": "D Pad",
+    "city": "New Braunfels",
+    "state": "Texas",
+    "zip": "78130",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://dragonslairnw.tcgplayerpro.com",
+    "name": "Dragons Lair",
+    "city": "Forest Grove",
+    "state": "Oregon",
+    "zip": "97116",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://dragonslayergames.tcgplayerpro.com",
+    "name": "Dragonslayer Games",
+    "city": "Tulsa",
+    "state": "Oklahoma",
+    "zip": "74135",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://dreamdazecfg.tcgplayerpro.com",
+    "name": "DreamDaze Comics Fun & Games",
+    "city": "Wilson",
+    "state": "North Carolina",
+    "zip": "27893",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://ecruteakcards.tcgplayerpro.com",
+    "name": "Ecruteak Cards",
+    "city": "Gahanna",
+    "state": "Ohio",
+    "zip": "43230",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://enchantedgrounds.tcgplayerpro.com",
+    "name": "Enchanted Grounds",
+    "city": "Littleton",
+    "state": "Colorado",
+    "zip": "80123",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://fantasticrealmz.tcgplayerpro.com",
+    "name": "Fantastic Realmz",
+    "city": "Fairbanks",
+    "state": "Alaska",
+    "zip": "99709",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://fourhorsemen.tcgplayerpro.com",
+    "name": "Four Horsemen Comics and Gaming",
+    "city": "Morgantown",
+    "state": "West Virginia",
+    "zip": "26501",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://frgcollectibles.tcgplayerpro.com",
+    "name": "Rescue Gaming Collectibles",
+    "city": "North Providence",
+    "state": "Rhode Island",
+    "zip": "02911",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://gamecitadel.tcgplayerpro.com",
+    "name": "Game Citadel",
+    "city": "Bangor",
+    "state": "Maine",
+    "zip": "04401",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://gamenook.tcgplayerpro.com",
+    "name": "Game Nook",
+    "city": "Rocky Mount",
+    "state": "North Carolina",
+    "zip": "27804",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://gamenut.tcgplayerpro.com",
+    "name": "Game Nut Entertainment",
+    "city": "Lawrence",
+    "state": "Kansas",
+    "zip": "66046",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://gamescape.tcgplayerpro.com",
+    "name": "Gamescape",
+    "city": "Tallahassee",
+    "state": "Florida",
+    "zip": "32303",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://geekery.tcgplayerpro.com",
+    "name": "The Geekery",
+    "city": "Shawnee",
+    "state": "Kansas",
+    "zip": "66216",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://goingaming.tcgplayerpro.com",
+    "name": "Goin' Gaming",
+    "city": "Troutdale",
+    "state": "Oregon",
+    "zip": "97060",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://goodgamesna.tcgplayerpro.com",
+    "name": "Good Games NA",
+    "city": "INDIANAPOLIS",
+    "state": "Indiana",
+    "zip": "46225",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://gothamcity.tcgplayerpro.com",
+    "name": "Gotham City Hobbies / BattleCityGym",
+    "city": "West Babylon",
+    "state": "New York",
+    "zip": "11704",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://grabngogames.tcgplayerpro.com",
+    "name": "Grab and Go Games",
+    "city": "GDPR_City",
+    "state": "XX",
+    "zip": "00000",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://grandiosegames.tcgplayerpro.com",
+    "name": "Grandiose Games",
+    "city": "DAVENPORT",
+    "state": "Iowa",
+    "zip": "52803",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://grandmastertcg.tcgplayerpro.com",
+    "name": "Grandmaster Games",
+    "city": "Indianapolis",
+    "state": "Indiana",
+    "zip": "46227",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://hauntedgamecafe.tcgplayerpro.com",
+    "name": "The Haunted Game Cafe",
+    "city": "Fort Collins",
+    "state": "Colorado",
+    "zip": "80525",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://heroesvillainswr.tcgplayerpro.com",
+    "name": "Heroes & Villains Comics",
+    "city": "Warner Robins",
+    "state": "Georgia",
+    "zip": "31088",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://hidehogaming.tcgplayerpro.com",
+    "name": "Hi De Ho Comics",
+    "city": "Santa Monica",
+    "state": "California",
+    "zip": "90404",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://hobbyspirit.tcgplayerpro.com",
+    "name": "Hobby Spirit",
+    "city": "Williamsville",
+    "state": "New York",
+    "zip": "14221",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://inthezone.tcgplayerpro.com",
+    "name": "In The Zone Cards and Games",
+    "city": "Ashtabula",
+    "state": "Ohio",
+    "zip": "44004",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://jayfromtztoys.tcgplayerpro.com",
+    "name": "TzToys & Games",
+    "city": "Hollywood",
+    "state": "Florida",
+    "zip": "33024",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://kaboomvb.tcgplayerpro.com",
+    "name": "Kaboom",
+    "city": "Virginia Beach",
+    "state": "Virginia",
+    "zip": "23452",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://kayfabecards.tcgplayerpro.com",
+    "name": "Kayfabe Cards",
+    "city": "Riverton",
+    "state": "Utah",
+    "zip": "84065",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://kingslayergames.tcgplayerpro.com",
+    "name": "Kingslayer Games",
+    "city": "Fountain Valley",
+    "state": "California",
+    "zip": "92708",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://kitchentablegames.tcgplayerpro.com",
+    "name": "Kitchen Table Games",
+    "city": "West Jefferson",
+    "state": "North Carolina",
+    "zip": "28694",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://kloudspacegamesllc.tcgplayerpro.com",
+    "name": "KloudspaceGamesLLC",
+    "city": "Exeter",
+    "state": "California",
+    "zip": "93221",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://leveloneonline.tcgplayerpro.com",
+    "name": "Level One Game Shop",
+    "city": "Kansas City",
+    "state": "Missouri",
+    "zip": "64106",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://lhcollectibles.tcgplayerpro.com",
+    "name": "Lake Hartwell Collectibles",
+    "city": "Hartwell",
+    "state": "Georgia",
+    "zip": "30643",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://loungingdragon.tcgplayerpro.com",
+    "name": "Lounging dragon",
+    "city": "San Diego",
+    "state": "California",
+    "zip": "92101-3554",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://manapoolshop.tcgplayerpro.com",
+    "name": "The Mana Pool Shop",
+    "city": "COEUR D ALENE",
+    "state": "Idaho",
+    "zip": "83815-9217",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://midwestjedi.tcgplayerpro.com",
+    "name": "Midwest Jedi",
+    "city": "River Falls",
+    "state": "Wisconsin",
+    "zip": "54022",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://morefundenton.tcgplayerpro.com",
+    "name": "More Fun Comics and Games",
+    "city": "Denton",
+    "state": "Texas",
+    "zip": "76201",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://moxvalleygames.tcgplayerpro.com",
+    "name": "Mox Valley Games",
+    "city": "Springfield",
+    "state": "Oregon",
+    "zip": "97477",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://mrmagicllc.tcgplayerpro.com",
+    "name": "Mr Magic",
+    "city": "Sheffield",
+    "state": "Ohio",
+    "zip": "44035",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://nolandbeyond.tcgplayerpro.com",
+    "name": "No Land Beyond",
+    "city": "Baltimore",
+    "state": "Maryland",
+    "zip": "21201",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://odysseygamesllc.tcgplayerpro.com",
+    "name": "Odyssey Games, LLC",
+    "city": "Kalamazoo",
+    "state": "Michigan",
+    "zip": "49009",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://pairadicegames.tcgplayerpro.com",
+    "name": "Pair a Dice Games",
+    "city": "Vista",
+    "state": "California",
+    "zip": "92081",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://perfectstormmtg.tcgplayerpro.com",
+    "name": "Perfect Storm Comics and Games",
+    "city": "Battle Creek",
+    "state": "Michigan",
+    "zip": "49015",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://plainswalkercards.tcgplayerpro.com",
+    "name": "Plainswalker Cards",
+    "city": "Lebanon",
+    "state": "Indiana",
+    "zip": "46052",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://planetcomics.tcgplayerpro.com",
+    "name": "Planet Comics",
+    "city": "Anderson",
+    "state": "South Carolina",
+    "zip": "29621",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://playordraw.tcgplayerpro.com",
+    "name": "PlayorDraw",
+    "city": "Avondale",
+    "state": "Arizona",
+    "zip": "85323",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://plundergaming.tcgplayerpro.com",
+    "name": "Plunder Gaming",
+    "city": "Amsterdam",
+    "state": "New York",
+    "zip": "12010",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://prodigygames.tcgplayerpro.com",
+    "name": "Prodigy Games",
+    "city": "Lake Worth",
+    "state": "Florida",
+    "zip": "33462",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://puddletowngames.tcgplayerpro.com",
+    "name": "Puddletown Games & Puzzles",
+    "city": "Portland",
+    "state": "Oregon",
+    "zip": "97212",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://redcastle.tcgplayerpro.com",
+    "name": "Red Castle Games",
+    "city": "Portland",
+    "state": "Oregon",
+    "zip": "97206",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://ronscomicworld.tcgplayerpro.com",
+    "name": "Ron's Comic World",
+    "city": "Mount Holly",
+    "state": "New Jersey",
+    "zip": "08060",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://shopofmagic.tcgplayerpro.com",
+    "name": "Little Shop of Magic",
+    "city": "Las Vegas",
+    "state": "Nevada",
+    "zip": "89113",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://sideboardgames.tcgplayerpro.com",
+    "name": "Sideboard Games",
+    "city": "Powell",
+    "state": "Tennessee",
+    "zip": "37849",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://slickmimics.tcgplayerpro.com",
+    "name": "Slick Mimic's",
+    "city": "Appleton",
+    "state": "Wisconsin",
+    "zip": "54914",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://sngcda.tcgplayerpro.com",
+    "name": "Strategy & Games",
+    "city": "Coeur dAlene",
+    "state": "Idaho",
+    "zip": "83815",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://steamship.tcgplayerpro.com",
+    "name": "Steamship Games",
+    "city": "Minneapolis",
+    "state": "Minnesota",
+    "zip": "55408",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://tectoniccomics.tcgplayerpro.com",
+    "name": "Tectonic Comics and Books",
+    "city": "Aberdeen",
+    "state": "Washington",
+    "zip": "98520",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://theclockworkgaming.tcgplayerpro.com",
+    "name": "Clockwork Gaming",
+    "city": "Dahlonega",
+    "state": "Georgia",
+    "zip": "30533",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://thegamingcantina.tcgplayerpro.com",
+    "name": "The Gaming Cantina",
+    "city": "EAST LANSING",
+    "state": "Michigan",
+    "zip": "48823-5377",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://theotherside.tcgplayerpro.com",
+    "name": "The Other Side",
+    "city": "Lockport",
+    "state": "New York",
+    "zip": "14094",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://theroguegames.tcgplayerpro.com",
+    "name": "The Rogue Games",
+    "city": "Baton Rouge",
+    "state": "Louisiana",
+    "zip": "70816",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://tierzerogaming.tcgplayerpro.com",
+    "name": "Tier Zer0 Gaming",
+    "city": "Goldsboro",
+    "state": "North Carolina",
+    "zip": "27534",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://unclesgamesredmond.tcgplayerpro.com",
+    "name": "Uncle's Games (Redmond)",
+    "city": "Redmond",
+    "state": "Washington",
+    "zip": "98052",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://victorypoint.tcgplayerpro.com",
+    "name": "Victory Point Games",
+    "city": "Gastonia",
+    "state": "North Carolina",
+    "zip": "28054",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://videogametrader.tcgplayerpro.com",
+    "name": "Video Game Trader",
+    "city": "Buford",
+    "state": "Georgia",
+    "zip": "30518",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://voltronicgames.tcgplayerpro.com",
+    "name": "Voltronic Games",
+    "city": "Camillus",
+    "state": "New York",
+    "zip": "13031",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://wargamesnorth.tcgplayerpro.com",
+    "name": "Wargames North",
+    "city": "Cadillac",
+    "state": "Michigan",
+    "zip": "49601",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://winconditiongames.tcgplayerpro.com",
+    "name": "Win Condition Games",
+    "city": "Kennesaw",
+    "state": "Georgia",
+    "zip": "30144",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://wizardskeepgames.tcgplayerpro.com",
+    "name": "Wizard's Keep Games",
+    "city": "Kent",
+    "state": "Washington",
+    "zip": "98031",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://yetigaming.tcgplayerpro.com",
+    "name": "Yeti Gaming",
+    "city": "Affton",
+    "state": "Missouri",
+    "zip": "63123",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://ygomtgca.tcgplayerpro.com",
+    "name": "Area 51 Trading Cards & Games",
+    "city": "Ceres",
+    "state": "California",
+    "zip": "95307",
+    "source": "commoncrawl"
+  },
+  {
+    "url": "https://yourgamingadventures.tcgplayerpro.com",
+    "name": "Your Gaming Adventures",
+    "city": "Forest Hill",
+    "state": "Maryland",
+    "zip": "21050",
+    "source": "commoncrawl"
+  }
+]

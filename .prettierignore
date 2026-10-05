@@ -1,0 +1,4 @@
+dist/
+xcode/
+package-lock.json
+tests/fixtures/

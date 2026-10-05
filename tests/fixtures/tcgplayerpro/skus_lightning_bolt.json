@@ -1,0 +1,292 @@
+[
+    {
+        "productId": 1174,
+        "skus": [
+            {
+                "skuId": 348510,
+                "conditionName": "Heavily Played",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 3000.0,
+                "quantity": 1,
+                "isFoil": false,
+                "isFeatured": true,
+                "storePriceCustomId": 3350414,
+                "title": "Artist Signed Lightning Bolt (Alpha)",
+                "description": null,
+                "isCustomListing": true,
+                "customImages": "84EC0BB1-83F0-4DCE-A135-287726E4C329,00DC1767-AF31-4234-A440-0D30C6C36F0A",
+                "productId": 1174
+            }
+        ],
+        "total": 1
+    },
+    {
+        "productId": 8819,
+        "skus": [
+            {
+                "skuId": 355162,
+                "conditionName": "Heavily Played",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 1200.0,
+                "quantity": 1,
+                "isFoil": false,
+                "isFeatured": true,
+                "storePriceCustomId": 3350409,
+                "title": "Artist Signed Lightning Bolt (Beta)",
+                "description": null,
+                "isCustomListing": true,
+                "customImages": "D3FED3AE-C906-482C-AE52-F93AA85886F3,7727E7CA-0269-49A6-857E-9B7EE5F4B522",
+                "productId": 8819
+            }
+        ],
+        "total": 1
+    },
+    {
+        "productId": 214901,
+        "skus": [
+            {
+                "skuId": 4433465,
+                "conditionName": "Lightly Played Foil",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 4.93,
+                "quantity": 1,
+                "isFoil": true,
+                "isFeatured": true,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 214901
+            }
+        ],
+        "total": 1
+    },
+    {
+        "productId": 214900,
+        "skus": [
+            {
+                "skuId": 4433460,
+                "conditionName": "Lightly Played Foil",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 4.74,
+                "quantity": 1,
+                "isFoil": true,
+                "isFeatured": true,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 214900
+            }
+        ],
+        "total": 1
+    },
+    {
+        "productId": 214899,
+        "skus": [
+            {
+                "skuId": 4433455,
+                "conditionName": "Lightly Played Foil",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 4.35,
+                "quantity": 1,
+                "isFoil": true,
+                "isFeatured": true,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 214899
+            }
+        ],
+        "total": 1
+    },
+    {
+        "productId": 1825,
+        "skus": [
+            {
+                "skuId": 364898,
+                "conditionName": "Lightly Played",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 80.0,
+                "quantity": 1,
+                "isFoil": false,
+                "isFeatured": true,
+                "storePriceCustomId": 2298155,
+                "title": "Artist signed",
+                "description": null,
+                "isCustomListing": true,
+                "customImages": "68D5BAE0-D511-4779-AD71-B0B48506F360",
+                "productId": 1825
+            },
+            {
+                "skuId": 349140,
+                "conditionName": "Heavily Played",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 2.63,
+                "quantity": 4,
+                "isFoil": false,
+                "isFeatured": false,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 1825
+            }
+        ],
+        "total": 2
+    },
+    {
+        "productId": 276485,
+        "skus": [
+            {
+                "skuId": 5696694,
+                "conditionName": "Lightly Played Foil",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 2.11,
+                "quantity": 1,
+                "isFoil": true,
+                "isFeatured": true,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 276485
+            }
+        ],
+        "total": 1
+    },
+    {
+        "productId": 1479,
+        "skus": [
+            {
+                "skuId": 364562,
+                "conditionName": "Lightly Played",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 1.61,
+                "quantity": 1,
+                "isFoil": false,
+                "isFeatured": true,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 1479
+            },
+            {
+                "skuId": 333046,
+                "conditionName": "Moderately Played",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 3.11,
+                "quantity": 1,
+                "isFoil": false,
+                "isFeatured": false,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 1479
+            },
+            {
+                "skuId": 348804,
+                "conditionName": "Heavily Played",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 3.17,
+                "quantity": 2,
+                "isFoil": false,
+                "isFeatured": false,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 1479
+            }
+        ],
+        "total": 3
+    },
+    {
+        "productId": 267051,
+        "skus": [
+            {
+                "skuId": 5476670,
+                "conditionName": "Lightly Played Foil",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 1.22,
+                "quantity": 1,
+                "isFoil": true,
+                "isFeatured": true,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 267051
+            }
+        ],
+        "total": 1
+    },
+    {
+        "productId": 240810,
+        "skus": [
+            {
+                "skuId": 5022155,
+                "conditionName": "Moderately Played",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 1.11,
+                "quantity": 1,
+                "isFoil": false,
+                "isFeatured": true,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 240810
+            }
+        ],
+        "total": 1
+    },
+    {
+        "productId": 632180,
+        "skus": [
+            {
+                "skuId": 8720640,
+                "conditionName": "Lightly Played",
+                "languageId": 1,
+                "languageName": "English",
+                "price": 0.5,
+                "quantity": 1,
+                "isFoil": false,
+                "isFeatured": true,
+                "storePriceCustomId": 0,
+                "title": null,
+                "description": null,
+                "isCustomListing": false,
+                "customImages": null,
+                "productId": 632180
+            }
+        ],
+        "total": 1
+    }
+]

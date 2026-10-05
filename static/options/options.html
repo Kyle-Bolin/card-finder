@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Card Finder Settings</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Card Finder</h1>
+
+      <section>
+        <h2>Moxfield tag</h2>
+        <p class="hint">
+          Cards with this tag, in any section of a deck, are the ones Card Finder looks for.
+        </p>
+        <form id="tag-form" class="row">
+          <input id="tag" type="text" autocomplete="off" required />
+          <button type="submit">Save</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>Your stores</h2>
+        <ul id="stores" class="cards"></ul>
+        <p id="no-stores" class="hint">
+          No stores yet. Find stores near you below, or add one by URL.
+        </p>
+        <form id="add-store-form" class="row">
+          <input
+            id="store-url"
+            type="text"
+            placeholder="dmcomics.tcgplayerpro.com"
+            autocomplete="off"
+            required
+          />
+          <button type="submit">Add store</button>
+        </form>
+        <p id="add-store-status" class="status" role="status"></p>
+      </section>
+
+      <section>
+        <h2>Find stores near me</h2>
+        <p class="hint">
+          Searches the Wizards store locator for game stores near you, then checks which ones have a
+          TCGplayer Pro web store.
+        </p>
+        <form id="find-form" class="row wrap">
+          <input id="zip" type="text" inputmode="numeric" placeholder="ZIP code" maxlength="10" />
+          <button type="button" id="use-location">Use my location</button>
+          <select id="radius" aria-label="Search radius">
+            <option value="10">10 mi</option>
+            <option value="25" selected>25 mi</option>
+            <option value="50">50 mi</option>
+            <option value="100">100 mi</option>
+          </select>
+          <button type="submit">Search</button>
+        </form>
+        <p id="find-status" class="status" role="status"></p>
+        <ul id="found" class="cards"></ul>
+      </section>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>

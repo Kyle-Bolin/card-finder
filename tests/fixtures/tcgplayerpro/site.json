@@ -1,0 +1,86 @@
+{
+    "settings": {
+        "theme": "dark",
+        "accentColor": "#DB7D30",
+        "fontFamily": "Roboto",
+        "siteName": "Double Midnight Comics",
+        "faviconUrl": "https://storefronts-assets.tcgplayer.com/media/59b3717b-3e95-4a70-9897-f242bad1e57f/31e0c842-afd8-4fbf-be2a-8e4908725881/DMC%20vector%20clocks.png",
+        "logoUrl": "https://storefronts-assets.tcgplayer.com/media/59b3717b-3e95-4a70-9897-f242bad1e57f/39ada052-e3a5-4208-a644-460cb26786fb/DM-logo-candy-copy-copy-2-3%20-%20Copy%20(1).png"
+    },
+    "user": {
+        "isAuthenticated": false,
+        "email": null,
+        "externalUserId": null
+    },
+    "menus": [
+        {
+            "name": "Magic Singles: MANCHESTER",
+            "highlight": false,
+            "href": "https://dmcomics.tcgplayerpro.com/search/products?productLineName=Magic:+The+Gathering",
+            "includeInSitemap": true,
+            "subMenus": []
+        },
+        {
+            "name": "Yugioh Singles",
+            "highlight": false,
+            "href": "https://dmcomics.tcgplayerpro.com/search/products?productLineName=YuGiOh",
+            "includeInSitemap": true,
+            "subMenus": []
+        },
+        {
+            "name": "Events Calendar",
+            "highlight": false,
+            "href": "https://www.dmcomics.com/events/",
+            "includeInSitemap": true,
+            "subMenus": []
+        },
+        {
+            "name": "In store Pickup",
+            "highlight": false,
+            "href": "/in-store-pickup",
+            "includeInSitemap": true,
+            "subMenus": []
+        }
+    ],
+    "socials": [
+        {
+            "platform": "Twitter",
+            "href": "https://twitter.com/dmcomics"
+        },
+        {
+            "platform": "Facebook",
+            "href": "https://facebook.com/dmcomics"
+        },
+        {
+            "platform": "YouTube",
+            "href": "https://youtube.com/dmcomics1"
+        },
+        {
+            "platform": "Instagram",
+            "href": "https://www.instagram.com/dmcomics/"
+        }
+    ],
+    "footerMessage": null,
+    "routes": [
+        {
+            "path": "/in-store-pickup",
+            "action": null,
+            "url": "https://storefronts-assets.tcgplayer.com/content/2978e157-5014-4c67-a1e4-1d428b214991.json"
+        }
+    ],
+    "contactInfo": {
+        "storeName": "Double Midnight Comics",
+        "storeAddress": {
+            "street": "252 Willow St 149",
+            "city": "Manchester",
+            "state": "New Hampshire",
+            "zip": "03103"
+        },
+        "storeHours": "Sun 11am - 6pm\nMon 10am - 7pm\nTues 10am - 10pm\nWeds 10am - 10pm\nThurs 10am - 10pm\nFri 10am - 11pm\nSat 10am - 8pm",
+        "email": "info@dmcomics.com",
+        "phone": "(603) 669-9636"
+    },
+    "seller": {
+        "sellerKey": "91271f92"
+    }
+}

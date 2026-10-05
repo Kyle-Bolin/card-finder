@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Card Finder",
+  "version": "0.1.0",
+  "description": "Checks your local game stores' TCGplayer Pro inventories for the unowned cards in your Moxfield decks.",
+  "icons": {
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png",
+    "256": "icons/icon-256.png",
+    "512": "icons/icon-512.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/toolbar-16.png",
+      "32": "icons/toolbar-32.png"
+    }
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://moxfield.com/*",
+    "https://www.moxfield.com/*",
+    "https://api2.moxfield.com/*",
+    "https://api.moxfield.com/*",
+    "https://*.tcgplayerpro.com/*",
+    "https://api.tabletop.wizards.com/*",
+    "https://api.zippopotam.us/*",
+    "https://raw.githubusercontent.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://moxfield.com/*", "https://www.moxfield.com/*"],
+      "js": ["content/moxfield.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
