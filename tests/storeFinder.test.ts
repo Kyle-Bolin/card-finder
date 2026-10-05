@@ -6,6 +6,7 @@ import {
   matchConfidence,
   nearbyWpnStores,
   phoneKey,
+  stateCode,
   stripTrailingLocation,
   subdomainGuesses,
   zipFromAddress,
@@ -141,6 +142,12 @@ describe("subdomainGuesses", () => {
 });
 
 describe("helpers", () => {
+  it("stateCode handles names and codes", () => {
+    expect(stateCode("New Hampshire")).toBe("NH");
+    expect(stateCode("nh")).toBe("NH");
+    expect(stateCode("Atlantis")).toBeUndefined();
+  });
+
   it("stripTrailingLocation keeps at least one word", () => {
     expect(stripTrailingLocation("Nashua", "Nashua, NH")).toBe("Nashua");
     expect(stripTrailingLocation("Game Underground", "349 Moody Street, Waltham, MA")).toBe(
@@ -187,6 +194,42 @@ describe("matchConfidence", () => {
       phoneNumber: "1603-555-0100",
     });
     expect(matchConfidence(store, dmcSite)).toBe("possible");
+  });
+
+  it("rejects a same-name store in another state", () => {
+    const store = wpnStore({
+      name: "The Dragon's Lair",
+      postalAddress: "1 Main St, Norway, ME, 04268, United States",
+    });
+    const florida: StoreSite = {
+      url: "https://thedragonslair.tcgplayerpro.com",
+      name: "The Dragon's Lair",
+      address: {
+        street: "10676 Colonial Blvd",
+        city: "Fort Myers",
+        state: "Florida",
+        zip: "33913",
+      },
+    };
+    expect(matchConfidence(store, florida)).toBeNull();
+  });
+
+  it("accepts a same-name branch in the same state", () => {
+    const store = wpnStore({
+      name: "Most Excellent Gaming - Enfield",
+      postalAddress: "90 Elm St\nEnfield, CT 06082\nUnited States",
+    });
+    const site: StoreSite = {
+      url: "https://mostexcellentgaming.tcgplayerpro.com",
+      name: "Most Excellent Gaming",
+      address: {
+        street: "29 Pavilions Drive",
+        city: "Manchester",
+        state: "Connecticut",
+        zip: "06042",
+      },
+    };
+    expect(matchConfidence(store, site)).toBe("possible");
   });
 
   it("rejects an unrelated store that happens to share a subdomain", () => {

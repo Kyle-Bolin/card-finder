@@ -213,10 +213,86 @@ export function matchConfidence(store: WpnStore, site: StoreSite): MatchConfiden
   if (wpnZip && siteZip && wpnZip === siteZip) return "confirmed";
   const wpnPhone = phoneKey(store.phoneNumber);
   if (wpnPhone.length === 10 && wpnPhone === phoneKey(site.phone)) return "confirmed";
+  // A name-only match must at least be in the same state: common names like
+  // "The Dragon's Lair" exist in many states.
+  if (!sameState(store.postalAddress, site.address?.state)) return null;
   const a = slug(baseStoreName(store.name));
   const b = slug(baseStoreName(site.name));
   if (a && b && (a === b || a.includes(b) || b.includes(a))) return "possible";
   return null;
+}
+
+const US_STATES: Record<string, string> = {
+  alabama: "AL",
+  alaska: "AK",
+  arizona: "AZ",
+  arkansas: "AR",
+  california: "CA",
+  colorado: "CO",
+  connecticut: "CT",
+  delaware: "DE",
+  "district of columbia": "DC",
+  florida: "FL",
+  georgia: "GA",
+  hawaii: "HI",
+  idaho: "ID",
+  illinois: "IL",
+  indiana: "IN",
+  iowa: "IA",
+  kansas: "KS",
+  kentucky: "KY",
+  louisiana: "LA",
+  maine: "ME",
+  maryland: "MD",
+  massachusetts: "MA",
+  michigan: "MI",
+  minnesota: "MN",
+  mississippi: "MS",
+  missouri: "MO",
+  montana: "MT",
+  nebraska: "NE",
+  nevada: "NV",
+  "new hampshire": "NH",
+  "new jersey": "NJ",
+  "new mexico": "NM",
+  "new york": "NY",
+  "north carolina": "NC",
+  "north dakota": "ND",
+  ohio: "OH",
+  oklahoma: "OK",
+  oregon: "OR",
+  pennsylvania: "PA",
+  "rhode island": "RI",
+  "south carolina": "SC",
+  "south dakota": "SD",
+  tennessee: "TN",
+  texas: "TX",
+  utah: "UT",
+  vermont: "VT",
+  virginia: "VA",
+  washington: "WA",
+  "west virginia": "WV",
+  wisconsin: "WI",
+  wyoming: "WY",
+};
+
+/** Two-letter code for a US state given as a name or code ("New Hampshire" / "NH" → "NH"). */
+export function stateCode(state: string | null | undefined): string | undefined {
+  const value = state?.trim();
+  if (!value) return undefined;
+  if (/^[A-Za-z]{2}$/.test(value)) return value.toUpperCase();
+  return US_STATES[value.toLowerCase()];
+}
+
+/** True if the address is in the given state, or if either side is unknown. */
+function sameState(postalAddress: string, siteState: string | undefined): boolean {
+  const code = stateCode(siteState);
+  if (!code) return true;
+  const address = postalAddress.replace(/\n/g, ", ");
+  const name = Object.keys(US_STATES).find((n) => US_STATES[n] === code) ?? "";
+  return (
+    new RegExp(`\\b${code}\\b`).test(address) || (!!name && address.toLowerCase().includes(name))
+  );
 }
 
 export interface StorefrontMatch {
