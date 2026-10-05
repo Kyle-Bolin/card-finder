@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+
+# Local config, state and caches
+config.yaml
+state.json
+.cache/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
