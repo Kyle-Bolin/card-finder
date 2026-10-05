@@ -1,0 +1,453 @@
+{
+    "filters": {
+        "cardType": [
+            {
+                "value": "Instant",
+                "count": 11
+            }
+        ],
+        "color": [
+            {
+                "value": "Red",
+                "count": 11
+            }
+        ],
+        "rarityName": [
+            {
+                "value": "Common",
+                "count": 5
+            },
+            {
+                "value": "Promo",
+                "count": 3
+            },
+            {
+                "value": "Uncommon",
+                "count": 3
+            }
+        ],
+        "setName": [
+            {
+                "value": "Secret Lair Drop Series",
+                "count": 3
+            },
+            {
+                "value": "Alpha Edition",
+                "count": 1
+            },
+            {
+                "value": "Commander Legends: Battle for Baldur's Gate",
+                "count": 1
+            },
+            {
+                "value": "FINAL FANTASY: Through the Ages",
+                "count": 1
+            },
+            {
+                "value": "Revised Edition",
+                "count": 1
+            },
+            {
+                "value": "Double Masters 2022",
+                "count": 1
+            },
+            {
+                "value": "Fourth Edition",
+                "count": 1
+            },
+            {
+                "value": "Beta Edition",
+                "count": 1
+            },
+            {
+                "value": "The List Reprints",
+                "count": 1
+            }
+        ],
+        "productTypeName": [
+            {
+                "value": "Cards",
+                "count": 11
+            }
+        ],
+        "productLineName": [
+            {
+                "value": "Magic: The Gathering",
+                "count": 11
+            },
+            {
+                "value": "Disney Lorcana",
+                "count": 1
+            }
+        ],
+        "availableItems": [
+            {
+                "value": "Include Out of Stock",
+                "count": 0
+            }
+        ]
+    },
+    "products": {
+        "totalItems": 11,
+        "items": [
+            {
+                "id": 1174,
+                "name": "Lightning Bolt",
+                "isPresale": false,
+                "rarityName": "Common",
+                "imageCount": 1,
+                "lowestPrice": 3000,
+                "setId": 7,
+                "setName": "Alpha Edition",
+                "setUrlName": "alpha-edition",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "lightning-bolt",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "Lightning Bolt does 3 damage to one target.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant ",
+                    "releaseDate": "1993-09-05T00:00:00Z",
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            },
+            {
+                "id": 8819,
+                "name": "Lightning Bolt",
+                "isPresale": false,
+                "rarityName": "Common",
+                "imageCount": 1,
+                "lowestPrice": 1200,
+                "setId": 17,
+                "setName": "Beta Edition",
+                "setUrlName": "beta-edition",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "lightning-bolt",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "Lightning Bolt does 3 damage to one target.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant ",
+                    "releaseDate": "1993-10-04T00:00:00Z",
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            },
+            {
+                "id": 214901,
+                "name": "Lightning Bolt (084)",
+                "isPresale": false,
+                "rarityName": "Promo",
+                "imageCount": 1,
+                "lowestPrice": 4.93,
+                "setId": 2576,
+                "setName": "Secret Lair Drop Series",
+                "setUrlName": "secret-lair-drop-series",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "lightning-bolt-084",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "<div class=\"SecretLair\"><strong> Mountain, Go</strong></div><br>Lightning Bolt deals 3 damage to any target.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant",
+                    "releaseDate": null,
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            },
+            {
+                "id": 214900,
+                "name": "Lightning Bolt (085)",
+                "isPresale": false,
+                "rarityName": "Promo",
+                "imageCount": 1,
+                "lowestPrice": 4.74,
+                "setId": 2576,
+                "setName": "Secret Lair Drop Series",
+                "setUrlName": "secret-lair-drop-series",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "lightning-bolt-085",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "<div class=\"SecretLair\"><strong> Mountain, Go</strong></div><br>Lightning Bolt deals 3 damage to any target.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant",
+                    "releaseDate": null,
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            },
+            {
+                "id": 214899,
+                "name": "Lightning Bolt (083)",
+                "isPresale": false,
+                "rarityName": "Promo",
+                "imageCount": 1,
+                "lowestPrice": 4.35,
+                "setId": 2576,
+                "setName": "Secret Lair Drop Series",
+                "setUrlName": "secret-lair-drop-series",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "lightning-bolt-083",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "<div class=\"SecretLair\"><strong> Mountain, Go</strong></div><br>Lightning Bolt deals 3 damage to any target.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant",
+                    "releaseDate": null,
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            },
+            {
+                "id": 1825,
+                "name": "Lightning Bolt",
+                "isPresale": false,
+                "rarityName": "Common",
+                "imageCount": 1,
+                "lowestPrice": 0.9,
+                "setId": 46,
+                "setName": "Fourth Edition",
+                "setUrlName": "fourth-edition",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "lightning-bolt",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "Lightning Bolt deals 3 damage to target creature or player.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant ",
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            },
+            {
+                "id": 276485,
+                "name": "Lightning Bolt (Borderless)",
+                "isPresale": false,
+                "rarityName": "Uncommon",
+                "imageCount": 1,
+                "lowestPrice": 1.77,
+                "setId": 3070,
+                "setName": "Double Masters 2022",
+                "setUrlName": "double-masters-2022",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "lightning-bolt-borderless",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "Lightning Bolt deals 3 damage to any target.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant",
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "<em>\"My, how shocking.\"<br>\u2014Barrin, Tolarian archmage</em>",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            },
+            {
+                "id": 1479,
+                "name": "Lightning Bolt",
+                "isPresale": false,
+                "rarityName": "Common",
+                "imageCount": 1,
+                "lowestPrice": 1.61,
+                "setId": 97,
+                "setName": "Revised Edition",
+                "setUrlName": "revised-edition",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "lightning-bolt",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "Lightning Bolt does 3 damage to one target.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant ",
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            },
+            {
+                "id": 267051,
+                "name": "Lightning Bolt",
+                "isPresale": false,
+                "rarityName": "Common",
+                "imageCount": 1,
+                "lowestPrice": 1.02,
+                "setId": 3047,
+                "setName": "Commander Legends: Battle for Baldur's Gate",
+                "setUrlName": "commander-legends-battle-for-baldurs-gate",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "lightning-bolt",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "Lightning Bolt deals 3 damage to any target.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant",
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "<em>\u201cHasn\u2019t she heard of knocking?!\u201d<br>\u2014Snerd, Flaming Fist guard</em>",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            },
+            {
+                "id": 240810,
+                "name": "Lightning Bolt (A25)",
+                "isPresale": false,
+                "rarityName": "Uncommon",
+                "imageCount": 1,
+                "lowestPrice": 0.91,
+                "setId": 2715,
+                "setName": "The List Reprints",
+                "setUrlName": "the-list-reprints",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "lightning-bolt-a25",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "Lightning Bolt deals 3 damage to target creature or player.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant",
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "<em>The sparkmage shrieked, calling on the rage of the storms of his youth. To his surprise, the sky responded with a fierce energy he'd never thought to see again.</em>",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            },
+            {
+                "id": 632180,
+                "name": "Thrum of the Vestige - Lightning Bolt (Showcase)",
+                "isPresale": false,
+                "rarityName": "Uncommon",
+                "imageCount": 1,
+                "lowestPrice": 0.5,
+                "setId": 24226,
+                "setName": "FINAL FANTASY: Through the Ages",
+                "setUrlName": "final-fantasy-through-the-ages",
+                "productLineId": 1,
+                "productLineName": "Magic: The Gathering",
+                "productLineUrlName": "magic",
+                "productUrlName": "thrum-of-the-vestige-lightning-bolt-showcase",
+                "customAttributes": {
+                    "formats": null,
+                    "description": "Thrum of the Vestige deals 3 damage to any target.",
+                    "powerNumber": null,
+                    "color": [
+                        "Red"
+                    ],
+                    "fullType": "Instant",
+                    "releaseDate": "2025-06-13T00:00:00Z",
+                    "cardType": [
+                        "Instant"
+                    ],
+                    "convertedCost": "1",
+                    "power": null,
+                    "flavorText": "",
+                    "toughnessNumber": null,
+                    "toughness": null
+                }
+            }
+        ]
+    }
+}
