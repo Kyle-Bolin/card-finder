@@ -37,6 +37,8 @@ interface SiteResponse {
 /**
  * Fetch store details from `GET {storeUrl}/api/site`.
  * Returns null when no storefront exists at that URL (404).
+ * Stores that rename their storefront redirect the old subdomain to the new one;
+ * the returned `url` is where the request ended up.
  */
 export async function getSite(
   storeUrl: string,
@@ -48,9 +50,10 @@ export async function getSite(
   const data = (await res.json()) as SiteResponse;
   const contact = data.contactInfo ?? {};
   const addr = contact.storeAddress;
+  const url = res.url ? new URL(res.url).origin : storeUrl;
   return {
-    url: storeUrl,
-    name: contact.storeName || data.settings?.siteName || new URL(storeUrl).hostname,
+    url,
+    name: contact.storeName || data.settings?.siteName || new URL(url).hostname,
     address: addr
       ? {
           street: addr.street ?? "",
@@ -64,4 +67,75 @@ export async function getSite(
     email: contact.email ?? undefined,
     sellerKey: data.seller?.sellerKey,
   };
+}
+
+/** A product from a storefront's catalog search. */
+export interface CatalogProduct {
+  id: number;
+  name: string;
+  setName: string;
+  productLineUrlName: string;
+  setUrlName: string;
+  productUrlName: string;
+}
+
+export interface Sku {
+  conditionName: string;
+  languageName: string;
+  isFoil: boolean;
+  price: number;
+  quantity: number;
+}
+
+const MAGIC = "Magic: The Gathering";
+const SKU_BATCH = 100;
+
+/** In-stock Magic products matching `query` (fuzzy) at a storefront. */
+export async function searchProducts(
+  storeUrl: string,
+  query: string,
+  fetchFn: FetchFn = fetch,
+): Promise<CatalogProduct[]> {
+  const res = await fetchFn(`${storeUrl}/api/catalog/search`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({
+      query,
+      context: { productLineName: MAGIC },
+      filters: {},
+      from: 0,
+      size: 48,
+    }),
+  });
+  if (!res.ok)
+    throw new Error(`Search failed at ${new URL(storeUrl).hostname} (HTTP ${res.status})`);
+  const data = (await res.json()) as { products?: { items?: CatalogProduct[] } };
+  return data.products?.items ?? [];
+}
+
+/** Per-condition price and stock for products, keyed by product ID. */
+export async function getSkus(
+  storeUrl: string,
+  productIds: number[],
+  fetchFn: FetchFn = fetch,
+): Promise<Map<number, Sku[]>> {
+  const skus = new Map<number, Sku[]>();
+  for (let i = 0; i < productIds.length; i += SKU_BATCH) {
+    const ids = productIds.slice(i, i + SKU_BATCH).join(",");
+    const res = await fetchFn(`${storeUrl}/api/inventory/skus?productIds=${ids}`, {
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok)
+      throw new Error(
+        `Inventory lookup failed at ${new URL(storeUrl).hostname} (HTTP ${res.status})`,
+      );
+    const data = (await res.json()) as { productId: number; skus: Sku[] }[];
+    for (const product of data) skus.set(product.productId, product.skus ?? []);
+  }
+  return skus;
+}
+
+/** Link to a product's page on the storefront (route: /catalog/:line/:set/:product/:id). */
+export function productUrl(storeUrl: string, product: CatalogProduct): string {
+  return `${storeUrl}/catalog/${product.productLineUrlName}/${product.setUrlName}/${product.productUrlName}/${product.id}`;
 }

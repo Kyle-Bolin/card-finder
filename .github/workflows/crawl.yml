@@ -24,10 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 330
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
       - name: Crawl
@@ -45,7 +45,7 @@ jobs:
         run: |
           {
             echo '```'
-            sed -n '/^Done in/,$p' crawl.log | head -60
+            awk '/^Done in/ { show = 1 } show && shown++ < 60' crawl.log
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Commit updated directory

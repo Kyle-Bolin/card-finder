@@ -21,6 +21,7 @@ const ctx = await context({
     "content/moxfield": "src/content/moxfield.ts",
     "options/options": "src/options/options.ts",
     "popup/popup": "src/popup/popup.ts",
+    "results/results": "src/results/results.ts",
   },
   absWorkingDir: root,
   outdir: dist,

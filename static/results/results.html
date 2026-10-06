@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Card Finder</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Check a card list</h1>
+      <p class="hint">
+        Paste cards one per line, e.g. <code>1 Sol Ring</code> or a Moxfield export. Card Finder
+        checks every store in your settings.
+      </p>
+      <form id="list-form">
+        <textarea
+          id="list"
+          rows="8"
+          placeholder="1 Arid Archway&#10;1 Cloudshift&#10;1 Pearl Medallion"
+        ></textarea>
+        <div class="row">
+          <button type="submit" id="check">Check stores</button>
+          <button type="button" id="settings" class="secondary">Settings &amp; stores</button>
+        </div>
+      </form>
+      <p id="status" class="status" role="status"></p>
+      <div id="results"></div>
+    </main>
+    <script src="results.js"></script>
+  </body>
+</html>

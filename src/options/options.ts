@@ -234,7 +234,9 @@ async function search(point: GeoPoint): Promise<void> {
       nearbyWpnStores(point, miles).catch(() => [] as WpnStore[]),
     ]);
     if (directory) {
-      found = nearbyFromDirectory(directory, point, miles * METERS_PER_MILE);
+      found = nearbyFromDirectory(directory, point, miles * METERS_PER_MILE, {
+        includeOnlineOnly: $<HTMLInputElement>("include-online").checked,
+      });
       renderFound();
     }
     const checked = new Set(directory?.checkedWpnStoreIds ?? []);

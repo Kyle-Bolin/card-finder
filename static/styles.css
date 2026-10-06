@@ -134,3 +134,40 @@ button:disabled {
   border: 1px solid var(--border);
   color: var(--muted);
 }
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  color: var(--muted);
+}
+.checkbox input {
+  flex: none;
+  min-height: auto;
+  width: 20px;
+  height: 20px;
+}
+textarea {
+  width: 100%;
+  font:
+    14px/1.4 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: var(--bg);
+  color: var(--fg);
+}
+.popup .last {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 8px 0;
+}
+.popup button {
+  width: 100%;
+  margin: 4px 0;
+}

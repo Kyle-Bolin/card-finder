@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { crawl, EMPTY_STATE, type CrawlState } from "../src/crawler/crawl";
+import {
+  crawl,
+  EMPTY_STATE,
+  hasStreetAddress,
+  isSameStore,
+  type CrawlState,
+} from "../src/crawler/crawl";
+import { similarStoreNames } from "../src/lib/storeFinder";
 import {
   extractStorefrontLinks,
   robotsAllows,
@@ -411,5 +418,358 @@ describe("crawl", () => {
     expect(directory.storefronts.map((s) => s.url)).toContain(
       "https://dicecitygames.tcgplayerpro.com",
     );
+  });
+});
+
+describe("crawler fixes", () => {
+  const WPN = "https://api.tabletop.wizards.com/silverbeak-griffin-service/graphql";
+  const region = { point: { latitude: 42.8, longitude: -71.6, label: "Milford" }, miles: 30 };
+  const siteJson = (
+    name: string,
+    zip: string,
+    sellerKey: string,
+    street = "1 Main St",
+    phone: string | null = null,
+  ) => ({
+    contactInfo: {
+      storeName: name,
+      storeAddress: { street, city: "Town", state: "RI", zip },
+      phone,
+    },
+    seller: { sellerKey },
+  });
+  /** A response whose .url says where the request ended up after redirects. */
+  const landed = (body: unknown, url: string) => {
+    const res = new Response(JSON.stringify(body), {
+      headers: { "content-type": "application/json" },
+    });
+    Object.defineProperty(res, "url", { value: url });
+    return res;
+  };
+
+  it("getSite reports the storefront a renamed subdomain redirects to", async () => {
+    const fetchFn = (async () =>
+      landed(
+        siteJson("Twin Dragons", "02895", "k1"),
+        "https://twindragonscollections.tcgplayerpro.com/api/site",
+      )) as FetchFn;
+    const { getSite } = await import("../src/lib/tcgplayerpro");
+    expect((await getSite("https://kingkongkoi.tcgplayerpro.com", fetchFn))?.url).toBe(
+      "https://twindragonscollections.tcgplayerpro.com",
+    );
+  });
+
+  it("moves renamed storefronts to their new URL and merges duplicates", async () => {
+    const previous: Directory = {
+      generatedAt: "2026-10-01T00:00:00.000Z",
+      checkedWpnStoreIds: [],
+      storefronts: ["omnisource", "omnisourcegames"].map((sub) => ({
+        url: `https://${sub}.tcgplayerpro.com`,
+        name: "OmniSource Games",
+        sources: ["marketplace"],
+        firstSeen: "2026-10-01T00:00:00.000Z",
+        lastSeen: "2026-10-01T00:00:00.000Z",
+        locations: [
+          {
+            latitude: 41.6,
+            longitude: -71.1,
+            storeName: "OmniSource Games",
+            postalAddress: "",
+            confidence: "geocoded" as const,
+          },
+        ],
+      })),
+    };
+    const body = siteJson("OmniSource Games", "02790", "omni", "875 State Rd");
+    const fetchFn = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url === WPN) {
+        return new Response(
+          JSON.stringify({
+            data: {
+              storesByLocation: {
+                stores: [],
+                pageInfo: { page: 0, pageSize: 1000, totalResults: 0 },
+              },
+            },
+          }),
+        );
+      }
+      if (url.includes("omnisource"))
+        return landed(body, "https://omnisourcegames.tcgplayerpro.com/api/site");
+      return new Response("", { status: 404 });
+    }) as FetchFn;
+    const { directory } = await crawl(previous, EMPTY_STATE, [], { fetchFn, region });
+    expect(directory.storefronts.map((s) => s.url)).toEqual([
+      "https://omnisourcegames.tcgplayerpro.com",
+    ]);
+    expect(directory.storefronts[0]?.firstSeen).toBe("2026-10-01T00:00:00.000Z");
+  });
+
+  it("drops links an older run made from a shared ZIP alone", async () => {
+    const gamestop = {
+      id: "23237",
+      name: "GameStop - 0774",
+      postalAddress: "114 March Ave, Manchester, NH, 03103",
+      latitude: 42.96,
+      longitude: -71.44,
+      distance: 0,
+      phoneNumber: "1603-647-7707",
+      website: "https://www.gamestop.com/",
+    };
+    const state: CrawlState = {
+      ...EMPTY_STATE,
+      wpn: {
+        "23237": {
+          checkedAt: new Date().toISOString(),
+          storefront: "https://seller.tcgplayerpro.com",
+          confidence: "confirmed",
+          source: "marketplace",
+        },
+      },
+    };
+    const fetchFn = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url === WPN) {
+        return new Response(
+          JSON.stringify({
+            data: {
+              storesByLocation: {
+                stores: [gamestop],
+                pageInfo: { page: 0, pageSize: 1000, totalResults: 1 },
+              },
+            },
+          }),
+        );
+      }
+      if (url === "https://seller.tcgplayerpro.com/api/site") {
+        return landed(siteJson("Some Online Seller", "03103", "s", "PO Box 1"), url);
+      }
+      if (url.startsWith("https://api.zippopotam.us/")) {
+        return new Response(
+          JSON.stringify({
+            places: [
+              {
+                "place name": "Manchester",
+                "state abbreviation": "NH",
+                latitude: "42.99",
+                longitude: "-71.46",
+              },
+            ],
+          }),
+        );
+      }
+      return new Response("", { status: 404 });
+    }) as FetchFn;
+    const { directory, state: next } = await crawl(null, state, [], { fetchFn, region });
+    expect(next.wpn["23237"]?.storefront).toBeUndefined();
+    expect(directory.storefronts[0]).toMatchObject({
+      name: "Some Online Seller",
+      physical: false,
+      locations: [{ storeName: "Some Online Seller", confidence: "geocoded" }],
+    });
+  });
+
+  it("doesn't carry a dropped WPN location over from the previous directory", async () => {
+    const previous: Directory = {
+      generatedAt: "",
+      checkedWpnStoreIds: ["20798"],
+      storefronts: [
+        {
+          url: "https://twindragonscollections.tcgplayerpro.com",
+          name: "Twin dragons collections",
+          address: {
+            street: "136 poplar st",
+            city: "WOONSOCKET",
+            state: "Rhode Island",
+            zip: "02895",
+          },
+          sources: ["marketplace"],
+          firstSeen: "",
+          lastSeen: "",
+          locations: [
+            {
+              latitude: 42.0,
+              longitude: -71.5,
+              storeName: "GameStop - 2551 - Walnut Hill",
+              postalAddress: "1500 Diamond Hill Rd, Woonsocket, RI, 02895",
+              wpnStoreId: "20798",
+              confidence: "confirmed",
+            },
+          ],
+        },
+      ],
+    };
+    // The GameStop is inside the crawl region, so its old location isn't kept as
+    // "outside this run's area".
+    const walnutHill = {
+      id: "20798",
+      name: "GameStop - 2551 - Walnut Hill",
+      postalAddress: "1500 Diamond Hill Rd, Woonsocket, RI, 02895, US",
+      latitude: 42.0,
+      longitude: -71.5,
+      distance: 0,
+      phoneNumber: "1(401) 762-5452",
+      website: "https://www.gamestop.com/",
+    };
+    const fetchFn = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url === WPN) {
+        return new Response(
+          JSON.stringify({
+            data: {
+              storesByLocation: {
+                stores: [walnutHill],
+                pageInfo: { page: 0, pageSize: 1000, totalResults: 1 },
+              },
+            },
+          }),
+        );
+      }
+      if (url === "https://twindragonscollections.tcgplayerpro.com/api/site") {
+        return landed(siteJson("Twin dragons collections", "02895", "t", "136 poplar st"), url);
+      }
+      if (url.startsWith("https://api.zippopotam.us/")) {
+        return new Response(
+          JSON.stringify({
+            places: [
+              {
+                "place name": "Woonsocket",
+                "state abbreviation": "RI",
+                latitude: "42.0",
+                longitude: "-71.5",
+              },
+            ],
+          }),
+        );
+      }
+      return new Response("", { status: 404 });
+    }) as FetchFn;
+    const { directory } = await crawl(previous, EMPTY_STATE, [], { fetchFn, region });
+    expect(directory.storefronts[0]?.locations).toEqual([
+      expect.objectContaining({ storeName: "Twin dragons collections", confidence: "geocoded" }),
+    ]);
+  });
+
+  it("isSameStore needs a phone match or ZIP plus a similar name", () => {
+    const gamestop = {
+      id: "g",
+      name: "GameStop - 2551 - Walnut Hill",
+      postalAddress: "1500 Diamond Hill Rd, Woonsocket, RI, 02895",
+      latitude: 0,
+      longitude: 0,
+      distance: 0,
+      phoneNumber: "1401-555-0100",
+      website: null,
+    };
+    const site = (name: string, zip: string, phone?: string) => ({
+      url: "https://x.tcgplayerpro.com",
+      name,
+      address: { street: "1 Main", city: "Woonsocket", state: "RI", zip },
+      phone,
+    });
+    expect(isSameStore(gamestop, site("Twin Dragons Collections", "02895"))).toBe(false); // ZIP only
+    expect(isSameStore(gamestop, site("Twin Dragons Collections", "02895", "(401) 555-0100"))).toBe(
+      true,
+    );
+    expect(isSameStore(gamestop, site("GameStop Walnut Hill", "02895"))).toBe(true);
+    expect(isSameStore(gamestop, site("GameStop Walnut Hill", "02903"))).toBe(false);
+  });
+
+  it("similarStoreNames ignores generic words", () => {
+    expect(similarStoreNames("Gathering Grounds", "Finn and Flicker at Gathering Grounds")).toBe(
+      true,
+    );
+    expect(similarStoreNames("Double Midnight Comics - Concord", "Double Midnight Comics")).toBe(
+      true,
+    );
+    expect(similarStoreNames("Collectible Games", "Cobb Co Arena Games")).toBe(false);
+    // Only generic words in common: too weak to call it the same store.
+    expect(similarStoreNames("The Card Shop", "Card Shop Games")).toBe(false);
+  });
+
+  it("hasStreetAddress rejects missing addresses and PO boxes", () => {
+    const addr = (street: string) => ({ street, city: "", state: "", zip: "" });
+    expect(hasStreetAddress(addr("252 Willow St"))).toBe(true);
+    expect(hasStreetAddress(addr("PO BOX 12"))).toBe(false);
+    expect(hasStreetAddress(addr("P.O. Box 24"))).toBe(false);
+    expect(hasStreetAddress(addr(""))).toBe(false);
+    expect(hasStreetAddress(undefined)).toBe(false);
+  });
+
+  it("hides online-only sellers unless asked", () => {
+    const directory: Directory = {
+      generatedAt: "",
+      checkedWpnStoreIds: [],
+      storefronts: [true, false, undefined].map((physical, i) => ({
+        url: `https://s${i}.tcgplayerpro.com`,
+        name: `S${i}`,
+        physical,
+        sources: [],
+        firstSeen: "",
+        lastSeen: "",
+        locations: [
+          {
+            latitude: 42.8,
+            longitude: -71.6,
+            storeName: `S${i}`,
+            postalAddress: "",
+            confidence: "geocoded" as const,
+          },
+        ],
+      })),
+    };
+    const point = { latitude: 42.8, longitude: -71.6 };
+    expect(nearbyFromDirectory(directory, point, 1000).map((m) => m.store.name)).toEqual([
+      "S0",
+      "S2",
+    ]);
+    expect(nearbyFromDirectory(directory, point, 1000, { includeOnlineOnly: true })).toHaveLength(
+      3,
+    );
+  });
+
+  it("marks storefronts physical from a WPN location or street address", async () => {
+    const fetchFn = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url === WPN) {
+        return new Response(
+          JSON.stringify({
+            data: {
+              storesByLocation: {
+                stores: [],
+                pageInfo: { page: 0, pageSize: 1000, totalResults: 0 },
+              },
+            },
+          }),
+        );
+      }
+      if (url === "https://shop.tcgplayerpro.com/api/site")
+        return landed(siteJson("Real Shop", "03055", "a", "10 Elm St"), url);
+      if (url === "https://online.tcgplayerpro.com/api/site")
+        return landed(siteJson("Online Only", "03055", "b", "PO Box 3"), url);
+      if (url.startsWith("https://api.zippopotam.us/")) {
+        return new Response(
+          JSON.stringify({
+            places: [
+              {
+                "place name": "Milford",
+                "state abbreviation": "NH",
+                latitude: "42.83",
+                longitude: "-71.65",
+              },
+            ],
+          }),
+        );
+      }
+      return new Response("", { status: 404 });
+    }) as FetchFn;
+    const seeds = ["shop", "online"].map((s) => ({
+      url: `https://${s}.tcgplayerpro.com`,
+      source: "commoncrawl",
+    }));
+    const { directory } = await crawl(null, EMPTY_STATE, seeds, { fetchFn, region });
+    const physical = Object.fromEntries(directory.storefronts.map((s) => [s.name, s.physical]));
+    expect(physical).toEqual({ "Online Only": false, "Real Shop": true });
   });
 });

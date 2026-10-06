@@ -49,3 +49,29 @@ export interface GeoPoint {
 }
 
 export type FetchFn = typeof fetch;
+
+/** A card the user wants, from a Moxfield deck or a pasted list. */
+export interface WantedCard {
+  name: string;
+  quantity: number;
+  /** Where it came from, e.g. "Atraxa (maybeboard)"; empty for pasted lists. */
+  sources: string[];
+}
+
+export type Condition = "NM" | "LP" | "MP" | "HP" | "DMG";
+
+/** One in-stock SKU of a card at a store. */
+export interface Listing {
+  storeUrl: string;
+  /** The wanted card this listing matches. */
+  cardName: string;
+  /** The store's product name, e.g. "Lightning Bolt (Borderless)". */
+  productName: string;
+  setName: string;
+  condition: Condition | string;
+  language: string;
+  foil: boolean;
+  price: number;
+  quantity: number;
+  url: string;
+}
