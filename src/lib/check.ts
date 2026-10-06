@@ -1,6 +1,9 @@
+import { applyFilters } from "./filters";
 import { isSingleCard, matchesCard, parseCondition } from "./matching";
 import type { TtlCache } from "./cache";
+import { describeFetchError } from "./fetchError";
 import { limitFetch } from "./limit";
+import type { Filters } from "./settings";
 import { mapLimit } from "./storeFinder";
 import { getSkus, productUrl, searchProducts, type CatalogProduct } from "./tcgplayerpro";
 import type { FetchFn, Listing, Store, WantedCard } from "./types";
@@ -84,6 +87,8 @@ export interface CheckOptions extends FindOptions {
   maxInFlight?: number;
   /** Results of the last check, used to put stores with earlier finds first. */
   previous?: StoreResult[];
+  /** Only listings passing these count. */
+  filters?: Filters;
 }
 
 /**
@@ -102,6 +107,7 @@ export async function checkStores(
     maxInFlight = DEFAULT_MAX_IN_FLIGHT,
     searchCache,
     previous,
+    filters,
   }: CheckOptions = {},
 ): Promise<StoreResult[]> {
   const limited = limitFetch(fetchFn, maxInFlight);
@@ -109,14 +115,15 @@ export async function checkStores(
   return mapLimit(ordered, concurrency, async (store) => {
     let result: StoreResult;
     try {
-      const listings = await findListings(store, wanted, limited, { cardConcurrency, searchCache });
+      const all = await findListings(store, wanted, limited, { cardConcurrency, searchCache });
+      const listings = filters ? applyFilters(all, filters) : all;
       result = { store, listings, found: [...new Set(listings.map((l) => l.cardName))] };
     } catch (err) {
       result = {
         store,
         listings: [],
         found: [],
-        error: err instanceof Error ? err.message : String(err),
+        error: describeFetchError(err, store.url),
       };
     }
     onResult(result);

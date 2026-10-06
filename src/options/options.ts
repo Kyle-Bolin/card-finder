@@ -1,9 +1,13 @@
+import { clearHistory } from "../lib/history";
+import { ALL_CONDITIONS, normalizeFilters } from "../lib/filters";
 import { nearbyFromDirectory } from "../lib/directory";
 import { loadDirectory } from "../lib/directoryCache";
+import { isWelcomeQuery, welcomeSteps } from "../lib/onboarding";
 import {
   findStorefronts,
   metersToMiles,
   nearbyWpnStores,
+  withCoordinates,
   zipToLocation,
   type StorefrontMatch,
 } from "../lib/storeFinder";
@@ -14,6 +18,13 @@ import {
   upsertStore,
   type Settings,
 } from "../lib/settings";
+import { describeFetchError } from "../lib/fetchError";
+import {
+  FIND_STORES_ORIGINS,
+  missingOrigins,
+  requestOrigins,
+  STORE_ORIGINS,
+} from "../lib/permissions";
 import { getSite, normalizeStoreUrl } from "../lib/tcgplayerpro";
 import type { GeoPoint, Store, StoreSite, WpnStore } from "../lib/types";
 
@@ -43,8 +54,10 @@ function formatAddress(store: Pick<Store, "address">): string {
   return a ? [a.street, a.city, `${a.state} ${a.zip}`.trim()].filter(Boolean).join(", ") : "";
 }
 
-function siteToStore(site: StoreSite): Store {
+function siteToStore(site: StoreSite, location?: GeoPoint): Store {
   return {
+    latitude: location?.latitude,
+    longitude: location?.longitude,
     url: site.url,
     name: site.name,
     address: site.address,
@@ -56,6 +69,9 @@ function siteToStore(site: StoreSite): Store {
 function mapsUrl(address: string): string {
   return `https://maps.apple.com/?q=${encodeURIComponent(address)}`;
 }
+
+const ACCESS_DENIED =
+  "Card Finder needs access to store sites. Allow it in Safari's settings, then try again.";
 
 const METERS_PER_MILE = 1609.344;
 
@@ -97,8 +113,9 @@ function renderStores(): void {
   }
 }
 
-async function addStore(site: StoreSite): Promise<void> {
-  settings.stores = upsertStore(settings.stores, siteToStore(site));
+async function addStore(site: StoreSite, location?: GeoPoint): Promise<void> {
+  const store = await withCoordinates(siteToStore(site, location));
+  settings.stores = upsertStore(settings.stores, store);
   await saveSettings(settings);
   renderStores();
   renderFoundButtons();
@@ -109,6 +126,8 @@ async function addStore(site: StoreSite): Promise<void> {
 $<HTMLFormElement>("add-store-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const status = $("add-store-status");
+  // Request first: Safari only shows the prompt for a call made straight from the click.
+  const accessGranted = requestOrigins(STORE_ORIGINS);
   const input = $<HTMLInputElement>("store-url");
   const url = normalizeStoreUrl(input.value);
   if (!url) {
@@ -117,6 +136,10 @@ $<HTMLFormElement>("add-store-form").addEventListener("submit", async (event) =>
       "That doesn't look like a TCGplayer Pro store (something.tcgplayerpro.com).",
       true,
     );
+    return;
+  }
+  if (!(await accessGranted)) {
+    setStatus(status, ACCESS_DENIED, true);
     return;
   }
   setStatus(status, "Checking store…");
@@ -130,7 +153,7 @@ $<HTMLFormElement>("add-store-form").addEventListener("submit", async (event) =>
     input.value = "";
     setStatus(status, `Added ${site.name}.`);
   } catch (err) {
-    setStatus(status, `Couldn't reach the store: ${String(err)}`, true);
+    setStatus(status, describeFetchError(err, url), true);
   }
 });
 
@@ -143,6 +166,36 @@ $<HTMLFormElement>("tag-form").addEventListener("submit", async (event) => {
   settings.tag = tag;
   await saveSettings(settings);
 });
+
+// --- Result filters ---------------------------------------------------------
+
+function renderFilters(): void {
+  const f = settings.filters;
+  $<HTMLInputElement>("max-price").value = f.maxPrice === null ? "" : String(f.maxPrice);
+  $<HTMLSelectElement>("foil").value = f.foil;
+  $<HTMLInputElement>("english-only").checked = f.englishOnly;
+  for (const box of $("conditions").querySelectorAll<HTMLInputElement>("input")) {
+    box.checked = f.conditions.includes(box.value as (typeof ALL_CONDITIONS)[number]);
+  }
+}
+
+async function saveFilters(): Promise<void> {
+  const price = $<HTMLInputElement>("max-price").value.trim();
+  settings.filters = normalizeFilters({
+    maxPrice: price === "" ? null : Number(price),
+    conditions: [...$("conditions").querySelectorAll<HTMLInputElement>("input:checked")].map(
+      (box) => box.value as (typeof ALL_CONDITIONS)[number],
+    ),
+    foil: $<HTMLSelectElement>("foil").value as "any" | "nonfoil" | "foil",
+    englishOnly: $<HTMLInputElement>("english-only").checked,
+  });
+  await saveSettings(settings);
+}
+
+for (const id of ["max-price", "conditions", "foil", "english-only"]) {
+  const node = $(id);
+  node.addEventListener(node.id === "max-price" ? "input" : "change", () => void saveFilters());
+}
 
 // --- Find stores near me --------------------------------------------------
 
@@ -207,7 +260,7 @@ function renderFound(): void {
     const li = el("li", {}, info);
     if (!button) {
       button = el("button", { type: "button", textContent: "Add" });
-      button.addEventListener("click", () => void addStore(match.site));
+      button.addEventListener("click", () => void addStore(match.site, match.store));
       foundButtons.set(match.site.url, button);
       li.append(button);
     } else {
@@ -230,6 +283,8 @@ async function search(point: GeoPoint): Promise<void> {
   const miles = Number($<HTMLSelectElement>("radius").value);
   const submit = $<HTMLFormElement>("find-form").querySelectorAll("button");
   submit.forEach((b) => (b.disabled = true));
+  settings.home = point;
+  void saveSettings(settings);
   found = [];
   renderFound();
   try {
@@ -269,7 +324,7 @@ async function search(point: GeoPoint): Promise<void> {
         : `No TCGplayer Pro web stores found within ${miles} mi.`,
     );
   } catch (err) {
-    setStatus(status, String(err), true);
+    setStatus(status, describeFetchError(err, "https://api.tabletop.wizards.com"), true);
   } finally {
     submit.forEach((b) => (b.disabled = false));
   }
@@ -284,11 +339,16 @@ $<HTMLButtonElement>("refresh-directory").addEventListener("click", () => {
 $<HTMLFormElement>("find-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const status = $("find-status");
+  const accessGranted = requestOrigins(FIND_STORES_ORIGINS);
   try {
+    if (!(await accessGranted)) {
+      setStatus(status, ACCESS_DENIED, true);
+      return;
+    }
     const point = await zipToLocation($<HTMLInputElement>("zip").value);
     await search(point);
   } catch (err) {
-    setStatus(status, err instanceof Error ? err.message : String(err), true);
+    setStatus(status, describeFetchError(err, "https://api.zippopotam.us"), true);
   }
 });
 
@@ -299,13 +359,19 @@ $<HTMLButtonElement>("use-location").addEventListener("click", () => {
     return;
   }
   setStatus(status, "Getting your location…");
+  const accessGranted = requestOrigins(FIND_STORES_ORIGINS);
   navigator.geolocation.getCurrentPosition(
-    (pos) =>
+    async (pos) => {
+      if (!(await accessGranted)) {
+        setStatus(status, ACCESS_DENIED, true);
+        return;
+      }
       void search({
         latitude: pos.coords.latitude,
         longitude: pos.coords.longitude,
         label: "your location",
-      }),
+      });
+    },
     () => setStatus(status, "Couldn't get your location. Enter a ZIP code instead.", true),
     { timeout: 15000, maximumAge: 10 * 60 * 1000 },
   );
@@ -317,4 +383,36 @@ void (async () => {
   settings = await loadSettings();
   $<HTMLInputElement>("tag").value = settings.tag;
   renderStores();
+  renderFilters();
+  await showAccessBanner();
 })();
+
+// --- Site access ------------------------------------------------------------
+
+/** Offer the access prompt when site access is missing (always after "Grant access" in the panel). */
+async function showAccessBanner(): Promise<void> {
+  const banner = $("access");
+  if (!(await missingOrigins(STORE_ORIGINS)).length) {
+    banner.hidden = true;
+    return;
+  }
+  banner.hidden = false;
+  $<HTMLButtonElement>("grant-access").onclick = () => {
+    void requestOrigins(STORE_ORIGINS).then(showAccessBanner);
+  };
+}
+
+// --- First-run welcome ----------------------------------------------------
+
+if (isWelcomeQuery(location.search)) {
+  void loadSettings().then(({ tag }) => {
+    $("welcome-steps").replaceChildren(...welcomeSteps(tag).map((step) => el("li", {}, step)));
+    $("welcome").hidden = false;
+    $<HTMLInputElement>("zip").focus();
+  });
+}
+
+$("clear-history").addEventListener("click", async () => {
+  await clearHistory();
+  $("clear-history-status").textContent = "History cleared.";
+});
