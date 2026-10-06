@@ -16,14 +16,18 @@ Safari extensions ship inside a small app built with Xcode, so you need a Mac wi
 
 ### One-time setup (Mac)
 
+The Xcode project is committed in `xcode/`, so you only need to build the extension:
+
 ```sh
 npm ci
 npm run build
-./scripts/create-xcode-project.sh   # generates xcode/ from dist/
 ```
 
-The Xcode project references `dist/` in place, so after the first setup, `npm run build` (or
-`npm run dev`) and then **Run** in Xcode picks up your changes.
+The Xcode project references the files in `dist/` in place, so `npm run build` (or `npm run dev`)
+and then **Run** in Xcode picks up your changes. If a build adds a new top-level file to `dist/`,
+regenerate the project: run the **Generate Xcode project** workflow from the Actions tab (it
+pushes to the `xcode-project` branch), or delete `xcode/` and run
+`./scripts/create-xcode-project.sh` on a Mac.
 
 ### Mac
 
