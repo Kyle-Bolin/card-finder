@@ -422,9 +422,13 @@ export async function crawl(
       };
       continue;
     }
+    // Reuse an earlier run's geocode when the ZIP hasn't changed. Only geocoded
+    // locations: WPN-linked ones are rebuilt above, so a link that no longer
+    // holds up (e.g. a ZIP-only match) mustn't sneak back in from the old directory.
     const prev = prevByCanonical.get(url);
-    if (prev?.locations.length && prev.address?.zip === site.address?.zip) {
-      locations.set(url, prev.locations); // already geocoded on an earlier run
+    const geocoded = prev?.locations.filter((l) => l.confidence === "geocoded") ?? [];
+    if (geocoded.length && prev?.address?.zip === site.address?.zip) {
+      locations.set(url, geocoded);
       continue;
     }
     let point: GeoPoint | null = null;

@@ -570,6 +570,87 @@ describe("crawler fixes", () => {
     });
   });
 
+  it("doesn't carry a dropped WPN location over from the previous directory", async () => {
+    const previous: Directory = {
+      generatedAt: "",
+      checkedWpnStoreIds: ["20798"],
+      storefronts: [
+        {
+          url: "https://twindragonscollections.tcgplayerpro.com",
+          name: "Twin dragons collections",
+          address: {
+            street: "136 poplar st",
+            city: "WOONSOCKET",
+            state: "Rhode Island",
+            zip: "02895",
+          },
+          sources: ["marketplace"],
+          firstSeen: "",
+          lastSeen: "",
+          locations: [
+            {
+              latitude: 42.0,
+              longitude: -71.5,
+              storeName: "GameStop - 2551 - Walnut Hill",
+              postalAddress: "1500 Diamond Hill Rd, Woonsocket, RI, 02895",
+              wpnStoreId: "20798",
+              confidence: "confirmed",
+            },
+          ],
+        },
+      ],
+    };
+    // The GameStop is inside the crawl region, so its old location isn't kept as
+    // "outside this run's area".
+    const walnutHill = {
+      id: "20798",
+      name: "GameStop - 2551 - Walnut Hill",
+      postalAddress: "1500 Diamond Hill Rd, Woonsocket, RI, 02895, US",
+      latitude: 42.0,
+      longitude: -71.5,
+      distance: 0,
+      phoneNumber: "1(401) 762-5452",
+      website: "https://www.gamestop.com/",
+    };
+    const fetchFn = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url === WPN) {
+        return new Response(
+          JSON.stringify({
+            data: {
+              storesByLocation: {
+                stores: [walnutHill],
+                pageInfo: { page: 0, pageSize: 1000, totalResults: 1 },
+              },
+            },
+          }),
+        );
+      }
+      if (url === "https://twindragonscollections.tcgplayerpro.com/api/site") {
+        return landed(siteJson("Twin dragons collections", "02895", "t", "136 poplar st"), url);
+      }
+      if (url.startsWith("https://api.zippopotam.us/")) {
+        return new Response(
+          JSON.stringify({
+            places: [
+              {
+                "place name": "Woonsocket",
+                "state abbreviation": "RI",
+                latitude: "42.0",
+                longitude: "-71.5",
+              },
+            ],
+          }),
+        );
+      }
+      return new Response("", { status: 404 });
+    }) as FetchFn;
+    const { directory } = await crawl(previous, EMPTY_STATE, [], { fetchFn, region });
+    expect(directory.storefronts[0]?.locations).toEqual([
+      expect.objectContaining({ storeName: "Twin dragons collections", confidence: "geocoded" }),
+    ]);
+  });
+
   it("isSameStore needs a phone match or ZIP plus a similar name", () => {
     const gamestop = {
       id: "g",
