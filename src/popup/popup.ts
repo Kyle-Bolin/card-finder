@@ -1,6 +1,7 @@
 import browser from "webextension-polyfill";
 import { formatAgo } from "../lib/history";
 import { loadLastCheck } from "../lib/lastCheck";
+import { onboardingState } from "../lib/onboarding";
 import { loadSettings } from "../lib/settings";
 
 function openResults(query = ""): void {
@@ -10,6 +11,14 @@ function openResults(query = ""): void {
 
 void (async () => {
   const { stores, tag } = await loadSettings();
+  if (onboardingState({ stores }).needsStores) {
+    // Setup comes first: make settings the primary button.
+    document.getElementById("open-settings")?.classList.remove("secondary");
+    document.getElementById("check-list")?.classList.add("secondary");
+    const settingsButton = document.getElementById("open-settings");
+    const checkButton = document.getElementById("check-list");
+    if (settingsButton && checkButton) checkButton.before(settingsButton);
+  }
   const summary = document.getElementById("summary");
   if (summary) {
     summary.textContent = stores.length

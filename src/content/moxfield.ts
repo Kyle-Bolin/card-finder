@@ -5,9 +5,15 @@ import { formatAgo, loadDeckHistory } from "../lib/history";
 import { deckApiUrl, extractWanted, parseDeckId } from "../lib/moxfield";
 import { summarizeDeck } from "../lib/moxfieldDiagnostic";
 import { runCheck, type BackgroundRequest } from "../lib/messages";
+import { onboardingState } from "../lib/onboarding";
 import { loadSettings } from "../lib/settings";
-import type { WantedCard } from "../lib/types";
-import { renderResults, RESULTS_CSS, type ResultsState } from "../ui/results";
+import type { GeoPoint, WantedCard } from "../lib/types";
+import {
+  renderNeedsPermission,
+  renderResults,
+  RESULTS_CSS,
+  type ResultsState,
+} from "../ui/results";
 
 // Moxfield is a single-page app: decks open without a full page load, so the
 // content script runs on every moxfield.com page and shows the button only on decks.
@@ -100,6 +106,7 @@ class Panel {
   private wanted: WantedCard[] = [];
   private deckName = "Deck";
   private tag = "unowned";
+  private home?: GeoPoint;
   private load: DeckLoad | null = null;
   private stopCheck: (() => void) | null = null;
 
@@ -140,8 +147,10 @@ class Panel {
   private async loadDeck(): Promise<void> {
     if (!this.deckId) return;
     this.body.replaceChildren(el("p", { className: "muted" }, "Reading this deck…"));
-    const { tag } = await loadSettings();
+    const settings = await loadSettings();
+    const { tag, home } = settings;
     this.tag = tag;
+    this.home = home;
     this.load = await loadDeck(this.deckId);
     const deck = this.load.deck as { name?: unknown } | undefined;
     if (!deck) {
@@ -176,12 +185,18 @@ class Panel {
     });
     button.addEventListener("click", () => this.check(button));
     const lastChecked = el("p", { className: "muted" });
-    this.body.replaceChildren(
+    const children: HTMLElement[] = [
       el("p", { className: "muted" }, `Cards tagged “${tag}” in ${this.deckName}.`),
       lastChecked,
-      button,
-      this.links(),
-    );
+    ];
+    if (onboardingState(settings).needsStores) {
+      const add = el("button", { className: "primary", textContent: "Add stores" });
+      add.addEventListener("click", () => void sendBackground({ type: "openOptions" }));
+      children.push(el("p", {}, "Add your local stores before checking."), add);
+      button.className = "secondary";
+    }
+    children.push(button, this.links());
+    this.body.replaceChildren(...children);
     const deckId = this.deckId;
     void loadDeckHistory(`deck:${deckId}`).then((history) => {
       const ago = history ? formatAgo(history.checkedAt) : "";
@@ -199,6 +214,8 @@ class Panel {
       totalStores: 0,
       results: [] as StoreResult[],
       done: false,
+      home: this.home,
+      onOpenSettings: () => void sendBackground({ type: "openOptions" }),
     };
     results.append(el("p", { className: "muted" }, "Starting…"));
     this.stopCheck = runCheck(
@@ -215,15 +232,24 @@ class Panel {
             results.replaceChildren(el("p", {}, "You haven't added any stores yet."), open);
             return;
           }
+          case "needs-permission":
+            // Content scripts can't call permissions.request; the settings page can.
+            renderNeedsPermission(
+              results,
+              () => void sendBackground({ type: "openOptions", grant: true }),
+            );
+            return;
           case "started":
             state.totalStores = event.totalStores;
+            state.filters = event.filters;
             break;
           case "result":
             state.results.push(event.result);
             break;
           case "done":
             state.done = true;
-            state.changes = event.changes;
+            // A later disconnect also reports "done", without changes: keep the badges.
+            state.changes = event.changes ?? state.changes;
             break;
           case "error":
             results.append(el("p", { className: "cf-error" }, event.message));

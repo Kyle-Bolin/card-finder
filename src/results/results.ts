@@ -2,8 +2,15 @@ import browser from "webextension-polyfill";
 import { parseCardList, type StoreResult } from "../lib/check";
 import { formatAgo } from "../lib/history";
 import { loadLastCheck } from "../lib/lastCheck";
+import { loadSettings } from "../lib/settings";
 import { runCheck } from "../lib/messages";
-import { renderResults, RESULTS_CSS, type ResultsState } from "../ui/results";
+import { requestOrigins } from "../lib/permissions";
+import {
+  renderNeedsPermission,
+  renderResults,
+  RESULTS_CSS,
+  type ResultsState,
+} from "../ui/results";
 
 function $<T extends HTMLElement>(id: string): T {
   const node = document.getElementById(id);
@@ -19,7 +26,8 @@ const status = $("status");
 const resultsEl = $("results");
 const checkButton = $<HTMLButtonElement>("check");
 
-$("settings").addEventListener("click", () => void browser.runtime.openOptionsPage());
+const openSettings = () => void browser.runtime.openOptionsPage();
+$("settings").addEventListener("click", openSettings);
 
 $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
   event.preventDefault();
@@ -30,7 +38,14 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
   }
   status.textContent = "";
   checkButton.disabled = true;
-  const state: ResultsState = { wanted, totalStores: 0, results: [] as StoreResult[], done: false };
+  const state: ResultsState = {
+    wanted,
+    totalStores: 0,
+    results: [] as StoreResult[],
+    done: false,
+    onOpenSettings: openSettings,
+  };
+  void loadSettings().then((s) => (state.home = s.home));
   runCheck(wanted, `Card list (${wanted.length})`, (event) => {
     switch (event.type) {
       case "no-stores":
@@ -38,15 +53,26 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
           "You haven't added any stores yet. Open Settings & stores to add some.";
         checkButton.disabled = false;
         return;
+      case "needs-permission":
+        checkButton.disabled = false;
+        renderNeedsPermission(resultsEl, async () => {
+          if (await requestOrigins(event.origins)) {
+            $<HTMLFormElement>("list-form").requestSubmit();
+          } else {
+            status.textContent = "Access wasn't granted. Allow Card Finder in Safari's settings.";
+          }
+        });
+        return;
       case "started":
         state.totalStores = event.totalStores;
+        state.filters = event.filters;
         break;
       case "result":
         state.results.push(event.result);
         break;
       case "done":
         state.done = true;
-        state.changes = event.changes;
+        state.changes = event.changes ?? state.changes;
         checkButton.disabled = false;
         break;
       case "error":
@@ -67,5 +93,6 @@ void (async () => {
   $<HTMLTextAreaElement>("list").value = last.wanted
     .map((w) => `${w.quantity} ${w.name}`)
     .join("\n");
-  renderResults(resultsEl, { ...last, done: true });
+  const { home } = await loadSettings();
+  renderResults(resultsEl, { ...last, done: true, home, onOpenSettings: openSettings });
 })();
