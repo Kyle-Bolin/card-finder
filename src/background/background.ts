@@ -1,6 +1,8 @@
 import browser from "webextension-polyfill";
 import { checkStores, type StoreResult } from "../lib/check";
-import { saveLastCheck } from "../lib/lastCheck";
+import { SEARCH_CACHE_TTL_MS, TtlCache, sessionSearchStore } from "../lib/cache";
+import { loadLastCheck, saveLastCheck } from "../lib/lastCheck";
+import type { CatalogProduct } from "../lib/tcgplayerpro";
 import {
   CHECK_PORT,
   type BackgroundRequest,
@@ -15,6 +17,13 @@ export interface FetchTextResponse {
   body?: string;
   error?: string;
 }
+
+/** Catalog searches are reused for 10 minutes; SKU stock is always fetched fresh. */
+const searchCache = new TtlCache<CatalogProduct[]>(
+  sessionSearchStore(),
+  "search:",
+  SEARCH_CACHE_TTL_MS,
+);
 
 const ALLOWED_FETCH_HOSTS = new Set(["api2.moxfield.com", "api.moxfield.com"]);
 
@@ -76,8 +85,11 @@ browser.runtime.onConnect.addListener((port) => {
     }
     send({ type: "started", totalStores: stores.length });
     try {
-      const results: StoreResult[] = await checkStores(stores, request.wanted, (result) =>
-        send({ type: "result", result }),
+      const results: StoreResult[] = await checkStores(
+        stores,
+        request.wanted,
+        (result) => send({ type: "result", result }),
+        { previous: (await loadLastCheck())?.results, searchCache },
       );
       await saveLastCheck({
         at: new Date().toISOString(),

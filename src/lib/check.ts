@@ -1,4 +1,6 @@
 import { isSingleCard, matchesCard, parseCondition } from "./matching";
+import type { TtlCache } from "./cache";
+import { limitFetch } from "./limit";
 import { mapLimit } from "./storeFinder";
 import { getSkus, productUrl, searchProducts, type CatalogProduct } from "./tcgplayerpro";
 import type { FetchFn, Listing, Store, WantedCard } from "./types";
@@ -11,23 +13,35 @@ export interface StoreResult {
   error?: string;
 }
 
+export interface FindOptions {
+  /** Card searches in flight per store. */
+  cardConcurrency?: number;
+  /** Short-lived cache of catalog searches (never used for SKU stock). */
+  searchCache?: TtlCache<CatalogProduct[]>;
+}
+
 /**
  * In-stock listings of the wanted cards at one store: one catalog search per card
- * (exact name matches only), then one batched inventory lookup.
+ * (exact name matches only, a few at a time), then one batched inventory lookup.
  */
 export async function findListings(
   store: Store,
   wanted: WantedCard[],
   fetchFn: FetchFn = fetch,
+  { cardConcurrency = 1, searchCache }: FindOptions = {},
 ): Promise<Listing[]> {
-  const matches: { card: string; product: CatalogProduct }[] = [];
-  for (const card of wanted) {
-    for (const product of await searchProducts(store.url, card.name, fetchFn)) {
-      if (matchesCard(product.name, card.name) && isSingleCard(product.setName, product.name)) {
-        matches.push({ card: card.name, product });
-      }
-    }
-  }
+  const search = (card: WantedCard) => {
+    const load = () => searchProducts(store.url, card.name, fetchFn);
+    return searchCache
+      ? searchCache.getOrLoad(`${store.url}|${card.name.toLowerCase()}`, load)
+      : load();
+  };
+  const perCard = await mapLimit(wanted, cardConcurrency, async (card) =>
+    (await search(card))
+      .filter((p) => matchesCard(p.name, card.name) && isSingleCard(p.setName, p.name))
+      .map((product) => ({ card: card.name, product })),
+  );
+  const matches: { card: string; product: CatalogProduct }[] = perCard.flat();
   if (!matches.length) return [];
   const skus = await getSkus(store.url, [...new Set(matches.map((m) => m.product.id))], fetchFn);
   const listings: Listing[] = [];
@@ -51,20 +65,51 @@ export async function findListings(
   return listings.sort((a, b) => a.cardName.localeCompare(b.cardName) || a.price - b.price);
 }
 
+/** Stores that had finds in the previous check first; otherwise the original order. */
+export function prioritizeStores(stores: Store[], previous: StoreResult[] = []): Store[] {
+  const hadFinds = new Set(previous.filter((r) => r.found.length).map((r) => r.store.url));
+  return [
+    ...stores.filter((s) => hadFinds.has(s.url)),
+    ...stores.filter((s) => !hadFinds.has(s.url)),
+  ];
+}
+
+export const DEFAULT_MAX_IN_FLIGHT = 8;
+
+export interface CheckOptions extends FindOptions {
+  fetchFn?: FetchFn;
+  /** Stores checked at once. */
+  concurrency?: number;
+  /** Total requests in flight across all stores. */
+  maxInFlight?: number;
+  /** Results of the last check, used to put stores with earlier finds first. */
+  previous?: StoreResult[];
+}
+
 /**
- * Check several stores (a few at a time), reporting each store's result as soon
- * as it's done. A failing store reports its error; the others carry on.
+ * Check several stores (a few at a time, each searching a few cards at a time, with
+ * a cap on total in-flight requests), reporting each store's result as soon as it's
+ * done. A failing store reports its error; the others carry on.
  */
 export async function checkStores(
   stores: Store[],
   wanted: WantedCard[],
   onResult: (result: StoreResult) => void,
-  { fetchFn = fetch, concurrency = 3 }: { fetchFn?: FetchFn; concurrency?: number } = {},
+  {
+    fetchFn = fetch,
+    concurrency = 3,
+    cardConcurrency = 3,
+    maxInFlight = DEFAULT_MAX_IN_FLIGHT,
+    searchCache,
+    previous,
+  }: CheckOptions = {},
 ): Promise<StoreResult[]> {
-  return mapLimit(stores, concurrency, async (store) => {
+  const limited = limitFetch(fetchFn, maxInFlight);
+  const ordered = prioritizeStores(stores, previous);
+  return mapLimit(ordered, concurrency, async (store) => {
     let result: StoreResult;
     try {
-      const listings = await findListings(store, wanted, fetchFn);
+      const listings = await findListings(store, wanted, limited, { cardConcurrency, searchCache });
       result = { store, listings, found: [...new Set(listings.map((l) => l.cardName))] };
     } catch (err) {
       result = {
