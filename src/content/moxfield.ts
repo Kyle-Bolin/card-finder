@@ -4,9 +4,15 @@ import type { StoreResult } from "../lib/check";
 import { deckApiUrl, extractWanted, parseDeckId } from "../lib/moxfield";
 import { summarizeDeck } from "../lib/moxfieldDiagnostic";
 import { runCheck, type BackgroundRequest } from "../lib/messages";
+import { onboardingState } from "../lib/onboarding";
 import { loadSettings } from "../lib/settings";
 import type { GeoPoint, WantedCard } from "../lib/types";
-import { renderResults, RESULTS_CSS, type ResultsState } from "../ui/results";
+import {
+  renderNeedsPermission,
+  renderResults,
+  RESULTS_CSS,
+  type ResultsState,
+} from "../ui/results";
 
 // Moxfield is a single-page app: decks open without a full page load, so the
 // content script runs on every moxfield.com page and shows the button only on decks.
@@ -140,7 +146,8 @@ class Panel {
   private async loadDeck(): Promise<void> {
     if (!this.deckId) return;
     this.body.replaceChildren(el("p", { className: "muted" }, "Reading this deck…"));
-    const { tag, home } = await loadSettings();
+    const settings = await loadSettings();
+    const { tag, home } = settings;
     this.tag = tag;
     this.home = home;
     this.load = await loadDeck(this.deckId);
@@ -176,11 +183,17 @@ class Panel {
       textContent: `Check local stores (${this.wanted.length} card${this.wanted.length === 1 ? "" : "s"})`,
     });
     button.addEventListener("click", () => this.check(button));
-    this.body.replaceChildren(
+    const children: HTMLElement[] = [
       el("p", { className: "muted" }, `Cards tagged “${tag}” in ${this.deckName}.`),
-      button,
-      this.links(),
-    );
+    ];
+    if (onboardingState(settings).needsStores) {
+      const add = el("button", { className: "primary", textContent: "Add stores" });
+      add.addEventListener("click", () => void sendBackground({ type: "openOptions" }));
+      children.push(el("p", {}, "Add your local stores before checking."), add);
+      button.className = "secondary";
+    }
+    children.push(button, this.links());
+    this.body.replaceChildren(...children);
   }
 
   private check(button: HTMLButtonElement): void {
@@ -193,6 +206,7 @@ class Panel {
       results: [] as StoreResult[],
       done: false,
       home: this.home,
+      onOpenSettings: () => void sendBackground({ type: "openOptions" }),
     };
     results.append(el("p", { className: "muted" }, "Starting…"));
     this.stopCheck = runCheck(this.wanted, this.deckName, (event) => {
@@ -206,8 +220,16 @@ class Panel {
           results.replaceChildren(el("p", {}, "You haven't added any stores yet."), open);
           return;
         }
+        case "needs-permission":
+          // Content scripts can't call permissions.request; the settings page can.
+          renderNeedsPermission(
+            results,
+            () => void sendBackground({ type: "openOptions", grant: true }),
+          );
+          return;
         case "started":
           state.totalStores = event.totalStores;
+          state.filters = event.filters;
           break;
         case "result":
           state.results.push(event.result);

@@ -1,0 +1,30 @@
+import browser from "webextension-polyfill";
+
+/** Match patterns for the sites Card Finder reads; each must be granted separately in Safari. */
+export const STORE_ORIGINS = ["https://*.tcgplayerpro.com/*"];
+export const FIND_STORES_ORIGINS = [
+  ...STORE_ORIGINS,
+  "https://api.tabletop.wizards.com/*",
+  "https://api.zippopotam.us/*",
+  "https://raw.githubusercontent.com/*",
+];
+
+/** The subset of `origins` the extension doesn't have access to yet. */
+export async function missingOrigins(origins: string[]): Promise<string[]> {
+  const granted = await Promise.all(
+    origins.map((origin) => browser.permissions.contains({ origins: [origin] })),
+  );
+  return origins.filter((_, i) => !granted[i]);
+}
+
+/**
+ * Ask the user for access to `origins`. Must be called from a user gesture (a click
+ * handler), before any `await`, or Safari won't show the prompt.
+ */
+export async function requestOrigins(origins: string[]): Promise<boolean> {
+  try {
+    return await browser.permissions.request({ origins });
+  } catch {
+    return false;
+  }
+}

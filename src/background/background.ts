@@ -7,6 +7,8 @@ import {
   type CheckEvent,
   type CheckRequest,
 } from "../lib/messages";
+import { missingOrigins, STORE_ORIGINS } from "../lib/permissions";
+import { shouldShowWelcomeOnInstall, WELCOME_PARAM } from "../lib/onboarding";
 import { loadSettings, saveSettings } from "../lib/settings";
 import { mapLimit, withCoordinates } from "../lib/storeFinder";
 
@@ -46,7 +48,11 @@ browser.runtime.onMessage.addListener(async (message: unknown) => {
     case "fetchText":
       return typeof request.url === "string" ? fetchText(request.url) : undefined;
     case "openOptions":
-      await browser.runtime.openOptionsPage();
+      if (request.grant) {
+        await browser.tabs.create({ url: browser.runtime.getURL("options/options.html?grant=1") });
+      } else {
+        await browser.runtime.openOptionsPage();
+      }
       return undefined;
     case "openResults": {
       const query = typeof request.query === "string" ? request.query : "";
@@ -56,6 +62,13 @@ browser.runtime.onMessage.addListener(async (message: unknown) => {
     default:
       return undefined;
   }
+});
+
+browser.runtime.onInstalled.addListener((details) => {
+  if (!shouldShowWelcomeOnInstall(details)) return;
+  void browser.tabs.create({
+    url: browser.runtime.getURL(`options/options.html?${WELCOME_PARAM}=1`),
+  });
 });
 
 // Store checks run here: the worker has host permissions for the storefronts.
@@ -71,12 +84,18 @@ browser.runtime.onConnect.addListener((port) => {
     const request = message as Partial<CheckRequest>;
     if (request?.type !== "start" || !Array.isArray(request.wanted)) return;
     const settings = await loadSettings();
+    const { filters } = settings;
     let { stores } = settings;
     if (!stores.length) {
       send({ type: "no-stores" });
       return;
     }
-    send({ type: "started", totalStores: stores.length });
+    const origins = await missingOrigins(STORE_ORIGINS);
+    if (origins.length) {
+      send({ type: "needs-permission", origins });
+      return;
+    }
+    send({ type: "started", totalStores: stores.length, filters });
     // Stores saved before coordinates existed are located once, on their next check.
     if (stores.some((s) => s.latitude === undefined)) {
       const located = await mapLimit(stores, 3, (store) => withCoordinates(store));
@@ -86,14 +105,18 @@ browser.runtime.onConnect.addListener((port) => {
       }
     }
     try {
-      const results: StoreResult[] = await checkStores(stores, request.wanted, (result) =>
-        send({ type: "result", result }),
+      const results: StoreResult[] = await checkStores(
+        stores,
+        request.wanted,
+        (result) => send({ type: "result", result }),
+        { filters },
       );
       await saveLastCheck({
         at: new Date().toISOString(),
         label: request.label ?? "Card list",
         wanted: request.wanted,
         totalStores: stores.length,
+        filters,
         results,
       });
       send({ type: "done" });

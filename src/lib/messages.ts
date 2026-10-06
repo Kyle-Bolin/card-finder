@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import type { StoreResult } from "./check";
+import type { Filters } from "./filters";
 import type { WantedCard } from "./types";
 
 /** Port name for running a store check in the background worker. */
@@ -13,16 +14,19 @@ export interface CheckRequest {
 }
 
 export type CheckEvent =
-  | { type: "started"; totalStores: number }
+  | { type: "started"; totalStores: number; filters: Filters }
   | { type: "result"; result: StoreResult }
   | { type: "done" }
   | { type: "no-stores" }
+  /** Safari hasn't granted access to these origins yet. */
+  | { type: "needs-permission"; origins: string[] }
   | { type: "error"; message: string };
 
 /** One-off requests to the background worker. */
 export type BackgroundRequest =
   | { type: "fetchText"; url: string }
-  | { type: "openOptions" }
+  /** `grant` opens the settings page ready to ask for site access. */
+  | { type: "openOptions"; grant?: boolean }
   | { type: "openResults"; query?: string };
 
 /**

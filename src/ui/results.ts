@@ -1,4 +1,5 @@
 import type { StoreResult } from "../lib/check";
+import { describeFilters, type Filters } from "../lib/filters";
 import { todaysHours } from "../lib/hours";
 import { distanceMiles } from "../lib/storeFinder";
 import type { GeoPoint, Listing, WantedCard } from "../lib/types";
@@ -7,6 +8,10 @@ import type { GeoPoint, Listing, WantedCard } from "../lib/types";
 export interface ResultsState {
   wanted: WantedCard[];
   totalStores: number;
+  /** Filters the results were checked with. */
+  filters?: Filters;
+  /** Opens the settings page; when set, the filter summary links to it. */
+  onOpenSettings?: () => void;
   results: StoreResult[];
   done: boolean;
   /** Where the user searches from; enables distances and the "Closest" sort. */
@@ -161,9 +166,28 @@ function storeCard(
   return card;
 }
 
+/** Ask for site access; `onGrant` runs on click, so it can call `permissions.request`. */
+export function renderNeedsPermission(container: HTMLElement, onGrant: () => void): void {
+  const button = el("button", { className: "primary", textContent: "Grant access" });
+  button.addEventListener("click", onGrant);
+  container.replaceChildren(
+    el(
+      "div",
+      { className: "cf-results" },
+      el("p", {}, "Card Finder needs access to store sites"),
+      el(
+        "p",
+        { className: "cf-meta" },
+        "Safari asks you to allow each site separately before Card Finder can check store inventories.",
+      ),
+      button,
+    ),
+  );
+}
+
 /** Render (or re-render) the results view into `container`. */
 export function renderResults(container: HTMLElement, state: ResultsState): void {
-  const { wanted, results, totalStores, done, home, now } = state;
+  const { wanted, results, totalStores, done, filters, onOpenSettings, home, now } = state;
   const mode = sortChoice.get(container) ?? (home ? "closest" : "cards");
   const found = new Set(results.flatMap((r) => r.found));
   const root = el("div", { className: "cf-results" });
@@ -181,6 +205,21 @@ export function renderResults(container: HTMLElement, state: ResultsState): void
         : `Checking stores… ${results.length} of ${totalStores} done`,
     ),
   );
+  if (filters) {
+    const active = describeFilters(filters);
+    const line = el(
+      "div",
+      { className: "cf-progress" },
+      active.length ? `Filters: ${active.join(" · ")} · ` : "No filters · ",
+    );
+    const link = el("a", { href: "#", textContent: "Change in settings" });
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      onOpenSettings?.();
+    });
+    line.append(link);
+    root.append(line);
+  }
   const withStock = sortStores(results, home ? mode : "cards", home);
   if (home && withStock.length > 1) {
     const toggle = el("div", { className: "cf-sort" });

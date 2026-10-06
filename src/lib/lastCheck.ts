@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import type { StoreResult } from "./check";
+import type { Filters } from "./filters";
 import type { WantedCard } from "./types";
 
 /** The most recent check, shown again in the popup and results page. */
@@ -8,6 +9,8 @@ export interface LastCheck {
   label: string;
   wanted: WantedCard[];
   totalStores: number;
+  /** Filters in effect for this check; absent in checks saved before filters existed. */
+  filters?: Filters;
   results: StoreResult[];
 }
 
