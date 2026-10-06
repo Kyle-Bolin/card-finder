@@ -59,10 +59,20 @@ options (TestFlight).
 4. **Read the results.** Each store shows how many of your wanted cards it has ("3 of 12"). Under
    each card are the listings with set, condition, foil, price and quantity, plus a **View** link
    to the store's page. Cards no store has are collected under a "not found" list.
+   - Stores are sorted **Closest** first (from where you last searched for stores) or by
+     **Most cards**, with each store's distance, a map link and today's hours.
+   - When you check the same deck again, listings are marked **new** or with a **price drop**,
+     and anything that sold out since the last check is listed.
+5. **Filter.** In settings, under **Results**, set a max price per copy, conditions, foil or
+   non-foil, and English only. Results show which filters were applied.
+
+If Safari hasn't given Card Finder access to the store sites yet, the check shows a **Grant access**
+button. Allow the sites when Safari asks.
 
 ## Privacy
 
-- Your settings (tag, stores) are stored in Safari on each device.
+- Your settings (tag, stores, filters) and recent results are stored in Safari on each device.
+  Results history can be cleared in settings.
 - Checks go straight from your browser to Moxfield and the stores' TCGplayer Pro sites. There is
   no Card Finder server.
 - Finding stores near you queries the Wizards store locator, and a ZIP code lookup
