@@ -7,6 +7,7 @@ import {
   type CheckEvent,
   type CheckRequest,
 } from "../lib/messages";
+import { missingOrigins, STORE_ORIGINS } from "../lib/permissions";
 import { loadSettings } from "../lib/settings";
 
 export interface FetchTextResponse {
@@ -45,7 +46,11 @@ browser.runtime.onMessage.addListener(async (message: unknown) => {
     case "fetchText":
       return typeof request.url === "string" ? fetchText(request.url) : undefined;
     case "openOptions":
-      await browser.runtime.openOptionsPage();
+      if (request.grant) {
+        await browser.tabs.create({ url: browser.runtime.getURL("options/options.html?grant=1") });
+      } else {
+        await browser.runtime.openOptionsPage();
+      }
       return undefined;
     case "openResults": {
       const query = typeof request.query === "string" ? request.query : "";
@@ -72,6 +77,11 @@ browser.runtime.onConnect.addListener((port) => {
     const { stores } = await loadSettings();
     if (!stores.length) {
       send({ type: "no-stores" });
+      return;
+    }
+    const origins = await missingOrigins(STORE_ORIGINS);
+    if (origins.length) {
+      send({ type: "needs-permission", origins });
       return;
     }
     send({ type: "started", totalStores: stores.length });
