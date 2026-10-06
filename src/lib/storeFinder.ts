@@ -209,6 +209,34 @@ export function zipFromAddress(address: string): string | undefined {
     ?.slice(0, 5);
 }
 
+/** Words too common in store names to tell two stores apart. */
+const GENERIC_NAME_WORDS = new Set(
+  "the and of games gaming game comics comic cards card collectibles collectables hobbies hobby shop store tcg ccg llc inc co trading".split(
+    " ",
+  ),
+);
+
+/**
+ * Whether two store names plausibly refer to the same business: one contains the
+ * other, or they share a distinctive word ("Gathering Grounds" / "Finn and Flicker
+ * at Gathering Grounds").
+ */
+export function similarStoreNames(a: string, b: string): boolean {
+  const sa = slug(baseStoreName(a));
+  const sb = slug(baseStoreName(b));
+  if (sa && sb && (sa.includes(sb) || sb.includes(sa))) return true;
+  const words = (name: string) =>
+    new Set(
+      baseStoreName(name)
+        .toLowerCase()
+        .replace(/&/g, " and ")
+        .split(/[^a-z0-9]+/)
+        .filter((w) => w.length >= 3 && !GENERIC_NAME_WORDS.has(w)),
+    );
+  const wb = words(b);
+  return [...words(a)].some((w) => wb.has(w));
+}
+
 export type MatchConfidence = "confirmed" | "possible";
 
 /**

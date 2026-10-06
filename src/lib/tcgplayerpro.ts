@@ -37,6 +37,8 @@ interface SiteResponse {
 /**
  * Fetch store details from `GET {storeUrl}/api/site`.
  * Returns null when no storefront exists at that URL (404).
+ * Stores that rename their storefront redirect the old subdomain to the new one;
+ * the returned `url` is where the request ended up.
  */
 export async function getSite(
   storeUrl: string,
@@ -48,9 +50,10 @@ export async function getSite(
   const data = (await res.json()) as SiteResponse;
   const contact = data.contactInfo ?? {};
   const addr = contact.storeAddress;
+  const url = res.url ? new URL(res.url).origin : storeUrl;
   return {
-    url: storeUrl,
-    name: contact.storeName || data.settings?.siteName || new URL(storeUrl).hostname,
+    url,
+    name: contact.storeName || data.settings?.siteName || new URL(url).hostname,
     address: addr
       ? {
           street: addr.street ?? "",

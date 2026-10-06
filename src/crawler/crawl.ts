@@ -4,13 +4,14 @@ import {
   matchConfidence,
   nearbyWpnStores,
   phoneKey,
+  similarStoreNames,
   subdomainGuesses,
   zipFromAddress,
   zipToLocation,
   type MatchConfidence,
 } from "../lib/storeFinder";
 import { getSite } from "../lib/tcgplayerpro";
-import type { FetchFn, GeoPoint, StoreSite, WpnStore } from "../lib/types";
+import type { FetchFn, GeoPoint, StoreAddress, StoreSite, WpnStore } from "../lib/types";
 import { scanHomepage } from "./homepage";
 import { collectProSellers, type ProSeller } from "./marketplace";
 
@@ -155,6 +156,22 @@ async function cityToLocation(
   }
 }
 
+/** Evidence that a storefront is this WPN store: same phone, or same ZIP and a similar name. */
+export function isSameStore(store: WpnStore, site: StoreSite): boolean {
+  const phone = phoneKey(store.phoneNumber);
+  if (phone.length === 10 && phone === phoneKey(site.phone)) return true;
+  const zip = site.address?.zip?.slice(0, 5);
+  return (
+    !!zip && zip === zipFromAddress(store.postalAddress) && similarStoreNames(store.name, site.name)
+  );
+}
+
+/** A street address a customer could visit (not missing, not a PO box). */
+export function hasStreetAddress(address: StoreAddress | undefined): boolean {
+  const street = address?.street?.trim() ?? "";
+  return /^\d+\s+\S/.test(street) && !/\bp\.?\s*o\.?\s*box\b/i.test(street);
+}
+
 function locationFor(store: WpnStore, confidence: MatchConfidence): DirectoryLocation {
   return {
     latitude: store.latitude,
@@ -285,6 +302,8 @@ export async function crawl(
   log(`Verifying ${urls.size} storefronts…`);
   const sites = new Map<string, StoreSite>();
   const removed: string[] = [];
+  /** Old storefront URL → new one, for stores that renamed their subdomain (it redirects). */
+  const renamed = new Map<string, string>();
   await mapLimit([...urls], concurrency, async (url) => {
     let site: StoreSite | null = null;
     let gone = false;
@@ -296,13 +315,29 @@ export async function crawl(
       // Network trouble: keep the previous entry, don't count as a miss.
     }
     if (site) {
-      sites.set(url, site);
+      sites.set(site.url, site);
+      if (site.url !== url) renamed.set(url, site.url);
       delete state.misses[url];
     } else if (gone) {
       state.misses[url] = (state.misses[url] ?? 0) + 1;
       if (state.misses[url] >= DROP_AFTER_MISSES) removed.push(url);
     }
   });
+  for (const [from, to] of renamed) {
+    urls.delete(from);
+    urls.add(to);
+    for (const entry of [...Object.values(state.wpn), ...Object.values(sellerState)]) {
+      if (entry.storefront === from) entry.storefront = to;
+    }
+  }
+  if (renamed.size) log(`${renamed.size} storefronts were renamed`);
+  const canonical = (url: string) => renamed.get(url) ?? url;
+  // Previous entries keyed by their current URL (renamed ones carry their history over).
+  const prevByCanonical = new Map<string, DirectoryStorefront>();
+  for (const [url, prev] of prevByUrl) {
+    if (!prevByCanonical.has(canonical(url))) prevByCanonical.set(canonical(url), prev);
+  }
+
   for (const url of removed) {
     delete state.misses[url];
     for (const entry of Object.values(sellerState)) {
@@ -330,14 +365,14 @@ export async function crawl(
     locations.set(entry.storefront, list);
     addSource(entry.storefront, entry.source ?? "guess");
   }
-  for (const seed of seeds) addSource(seed.url, seed.source);
+  for (const seed of seeds) addSource(canonical(seed.url), seed.source);
   for (const entry of Object.values(sellerState)) {
     if (entry.storefront) addSource(entry.storefront, "marketplace");
   }
 
   // Region runs only see part of the WPN list: keep earlier locations from outside it.
   if (region) {
-    for (const [url, prev] of prevByUrl) {
+    for (const [url, prev] of prevByCanonical) {
       const kept = prev.locations.filter((l) => !l.wpnStoreId || !wpn.has(l.wpnStoreId));
       if (kept.length) locations.set(url, [...(locations.get(url) ?? []), ...kept]);
       prev.sources.forEach((s) => addSource(url, s));
@@ -361,12 +396,13 @@ export async function crawl(
       ...(byPhone.get(phoneKey(site.phone)) ?? []),
       ...(zip ? (byZip.get(zip) ?? []) : []),
     ];
-    const match = candidates
-      .map((store) => ({ store, confidence: matchConfidence(store, site) }))
-      .find((c) => c.confidence === "confirmed");
+    // Only claim a WPN store's location with real evidence: a matching phone, or the
+    // same ZIP and a similar name. A shared ZIP alone (e.g. an online seller near a
+    // GameStop) is not enough.
+    const match = candidates.find((store) => isSameStore(store, site));
     if (match) {
-      locations.set(url, [locationFor(match.store, "confirmed")]);
-      state.wpn[match.store.id] = {
+      locations.set(url, [locationFor(match, "confirmed")]);
+      state.wpn[match.id] = {
         checkedAt: nowIso,
         storefront: url,
         confidence: "confirmed",
@@ -374,7 +410,7 @@ export async function crawl(
       };
       continue;
     }
-    const prev = prevByUrl.get(url);
+    const prev = prevByCanonical.get(url);
     if (prev?.locations.length && prev.address?.zip === site.address?.zip) {
       locations.set(url, prev.locations); // already geocoded on an earlier run
       continue;
@@ -410,9 +446,10 @@ export async function crawl(
   const newStorefronts: string[] = [];
   for (const url of [...urls].sort()) {
     if (removed.includes(url)) continue;
-    const prev = prevByUrl.get(url);
+    const prev = prevByCanonical.get(url);
     const site = sites.get(url);
     const locs = locations.get(url) ?? prev?.locations ?? [];
+    const address = site?.address ?? prev?.address;
     if (!site && !prev) continue; // never verified
     if (!locs.length) continue; // nowhere to place it on a map
     if (!prev) newStorefronts.push(url);
@@ -420,8 +457,9 @@ export async function crawl(
       url,
       name: site?.name ?? prev?.name ?? url,
       sellerKey: site?.sellerKey?.toLowerCase() ?? prev?.sellerKey,
-      address: site?.address ?? prev?.address,
+      address,
       phone: site?.phone ?? prev?.phone,
+      physical: locs.some((l) => l.wpnStoreId) || hasStreetAddress(address),
       locations: locs.sort((a, b) => a.storeName.localeCompare(b.storeName)),
       sources: [...(sources.get(url) ?? new Set(prev?.sources ?? []))].sort(),
       firstSeen: prev?.firstSeen ?? nowIso,

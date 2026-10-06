@@ -20,6 +20,11 @@ export interface DirectoryStorefront {
   sellerKey?: string;
   address?: StoreAddress;
   phone?: string;
+  /**
+   * Has a shop you can visit: a WPN location or a street address. False for
+   * online-only sellers (no address, or a PO box). Missing in older directories.
+   */
+  physical?: boolean;
   /** Physical locations (several when one storefront serves multiple branches). */
   locations: DirectoryLocation[];
   /** How the storefront was found: "guess", "homepage", "custom-domain", "commoncrawl", "manual". */
@@ -73,9 +78,11 @@ export function nearbyFromDirectory(
   directory: Directory,
   point: GeoPoint,
   maxMeters: number,
+  { includeOnlineOnly = false }: { includeOnlineOnly?: boolean } = {},
 ): StorefrontMatch[] {
   const matches: StorefrontMatch[] = [];
   for (const sf of directory.storefronts) {
+    if (sf.physical === false && !includeOnlineOnly) continue;
     for (const loc of sf.locations) {
       const distance = distanceMeters(point, loc);
       if (distance > maxMeters) continue;
