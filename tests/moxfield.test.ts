@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { deckApiUrl, parseDeckId } from "../src/lib/moxfield";
+import { deckApiUrl, extractWanted, parseDeckId } from "../src/lib/moxfield";
 import { summarizeDeck } from "../src/lib/moxfieldDiagnostic";
+import { fixture } from "./helpers";
 
 describe("parseDeckId", () => {
   it.each([
@@ -58,5 +59,38 @@ describe("summarizeDeck", () => {
   it("tolerates unexpected shapes", () => {
     expect(summarizeDeck(null, "unowned")).toMatchObject({ boards: [], taggedCards: [] });
     expect(summarizeDeck({ boards: "nope", authorTags: [] }, "unowned").taggedCards).toEqual([]);
+  });
+});
+
+// A real v3 response for the test deck (saved from Safari), trimmed to the fields we read.
+describe("real deck snapshot", () => {
+  const deck = fixture("moxfield/deck_with_tags.json");
+
+  it("finds every card tagged unowned, all in Considering", () => {
+    const wanted = extractWanted(deck, "unowned");
+    expect(wanted.map((w) => w.name)).toEqual([
+      "Abdel Adrian, Gorion's Ward",
+      "Arid Archway",
+      "Cloudshift",
+      "Eiganjo, Seat of the Empire",
+      "Exalted Sunborn",
+      "Justiciar's Portal",
+      "Lazotep Quarry",
+      "Pearl Medallion",
+      "Phelia, Exuberant Shepherd",
+      "Ranger-Captain of Eos",
+      "Sword of Hearth and Home",
+      "The Mind Stone",
+      "White Plume Adventurer",
+    ]);
+    for (const w of wanted) {
+      expect(w.quantity).toBe(1);
+      expect(w.sources).toEqual(["White Value[Bracket 3] (considering)"]);
+    }
+  });
+
+  it("ignores the deck's other tags", () => {
+    expect(extractWanted(deck, "Add").length).toBeGreaterThan(0);
+    expect(extractWanted(deck, "nonexistent")).toEqual([]);
   });
 });
