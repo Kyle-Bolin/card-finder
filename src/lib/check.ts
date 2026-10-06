@@ -1,5 +1,6 @@
 import { applyFilters } from "./filters";
 import { isSingleCard, matchesCard, parseCondition } from "./matching";
+import { describeFetchError } from "./fetchError";
 import type { Filters } from "./settings";
 import { mapLimit } from "./storeFinder";
 import { getSkus, productUrl, searchProducts, type CatalogProduct } from "./tcgplayerpro";
@@ -78,7 +79,7 @@ export async function checkStores(
         store,
         listings: [],
         found: [],
-        error: err instanceof Error ? err.message : String(err),
+        error: describeFetchError(err, store.url),
       };
     }
     onResult(result);

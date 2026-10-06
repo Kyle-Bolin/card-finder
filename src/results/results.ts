@@ -2,7 +2,13 @@ import browser from "webextension-polyfill";
 import { parseCardList, type StoreResult } from "../lib/check";
 import { loadLastCheck } from "../lib/lastCheck";
 import { runCheck } from "../lib/messages";
-import { renderResults, RESULTS_CSS, type ResultsState } from "../ui/results";
+import { requestOrigins } from "../lib/permissions";
+import {
+  renderNeedsPermission,
+  renderResults,
+  RESULTS_CSS,
+  type ResultsState,
+} from "../ui/results";
 
 function $<T extends HTMLElement>(id: string): T {
   const node = document.getElementById(id);
@@ -43,6 +49,16 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
         status.textContent =
           "You haven't added any stores yet. Open Settings & stores to add some.";
         checkButton.disabled = false;
+        return;
+      case "needs-permission":
+        checkButton.disabled = false;
+        renderNeedsPermission(resultsEl, async () => {
+          if (await requestOrigins(event.origins)) {
+            $<HTMLFormElement>("list-form").requestSubmit();
+          } else {
+            status.textContent = "Access wasn't granted. Allow Card Finder in Safari's settings.";
+          }
+        });
         return;
       case "started":
         state.totalStores = event.totalStores;
