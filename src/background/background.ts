@@ -9,7 +9,8 @@ import {
 } from "../lib/messages";
 import { missingOrigins, STORE_ORIGINS } from "../lib/permissions";
 import { shouldShowWelcomeOnInstall, WELCOME_PARAM } from "../lib/onboarding";
-import { loadSettings } from "../lib/settings";
+import { loadSettings, saveSettings } from "../lib/settings";
+import { mapLimit, withCoordinates } from "../lib/storeFinder";
 
 export interface FetchTextResponse {
   ok: boolean;
@@ -82,7 +83,9 @@ browser.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener(async (message: unknown) => {
     const request = message as Partial<CheckRequest>;
     if (request?.type !== "start" || !Array.isArray(request.wanted)) return;
-    const { stores, filters } = await loadSettings();
+    const settings = await loadSettings();
+    const { filters } = settings;
+    let { stores } = settings;
     if (!stores.length) {
       send({ type: "no-stores" });
       return;
@@ -93,6 +96,14 @@ browser.runtime.onConnect.addListener((port) => {
       return;
     }
     send({ type: "started", totalStores: stores.length, filters });
+    // Stores saved before coordinates existed are located once, on their next check.
+    if (stores.some((s) => s.latitude === undefined)) {
+      const located = await mapLimit(stores, 3, (store) => withCoordinates(store));
+      if (located.some((s, i) => s !== stores[i])) {
+        stores = located;
+        await saveSettings({ ...(await loadSettings()), stores: located });
+      }
+    }
     try {
       const results: StoreResult[] = await checkStores(
         stores,

@@ -1,6 +1,7 @@
 import browser from "webextension-polyfill";
 import { parseCardList, type StoreResult } from "../lib/check";
 import { loadLastCheck } from "../lib/lastCheck";
+import { loadSettings } from "../lib/settings";
 import { runCheck } from "../lib/messages";
 import { requestOrigins } from "../lib/permissions";
 import {
@@ -43,6 +44,7 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
     done: false,
     onOpenSettings: openSettings,
   };
+  void loadSettings().then((s) => (state.home = s.home));
   runCheck(wanted, `Card list (${wanted.length})`, (event) => {
     switch (event.type) {
       case "no-stores":
@@ -89,5 +91,6 @@ void (async () => {
   $<HTMLTextAreaElement>("list").value = last.wanted
     .map((w) => `${w.quantity} ${w.name}`)
     .join("\n");
-  renderResults(resultsEl, { ...last, done: true, onOpenSettings: openSettings });
+  const { home } = await loadSettings();
+  renderResults(resultsEl, { ...last, done: true, home, onOpenSettings: openSettings });
 })();

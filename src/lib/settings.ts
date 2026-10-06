@@ -1,6 +1,6 @@
 import browser from "webextension-polyfill";
 import { DEFAULT_FILTERS, normalizeFilters, type Filters } from "./filters";
-import type { Store } from "./types";
+import type { GeoPoint, Store } from "./types";
 
 export type { Filters };
 
@@ -9,6 +9,8 @@ export interface Settings {
   tag: string;
   stores: Store[];
   filters: Filters;
+  /** Where the user last searched from; results are sorted by distance to it. */
+  home?: GeoPoint;
 }
 
 export const DEFAULT_SETTINGS: Settings = {

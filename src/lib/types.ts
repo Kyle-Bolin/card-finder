@@ -6,6 +6,8 @@ export interface Store {
   address?: StoreAddress;
   phone?: string;
   hours?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface StoreAddress {

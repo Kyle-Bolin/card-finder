@@ -6,7 +6,7 @@ import { summarizeDeck } from "../lib/moxfieldDiagnostic";
 import { runCheck, type BackgroundRequest } from "../lib/messages";
 import { onboardingState } from "../lib/onboarding";
 import { loadSettings } from "../lib/settings";
-import type { WantedCard } from "../lib/types";
+import type { GeoPoint, WantedCard } from "../lib/types";
 import {
   renderNeedsPermission,
   renderResults,
@@ -105,6 +105,7 @@ class Panel {
   private wanted: WantedCard[] = [];
   private deckName = "Deck";
   private tag = "unowned";
+  private home?: GeoPoint;
   private load: DeckLoad | null = null;
   private stopCheck: (() => void) | null = null;
 
@@ -146,8 +147,9 @@ class Panel {
     if (!this.deckId) return;
     this.body.replaceChildren(el("p", { className: "muted" }, "Reading this deck…"));
     const settings = await loadSettings();
-    const { tag } = settings;
+    const { tag, home } = settings;
     this.tag = tag;
+    this.home = home;
     this.load = await loadDeck(this.deckId);
     const deck = this.load.deck as { name?: unknown } | undefined;
     if (!deck) {
@@ -203,6 +205,7 @@ class Panel {
       totalStores: 0,
       results: [] as StoreResult[],
       done: false,
+      home: this.home,
       onOpenSettings: () => void sendBackground({ type: "openOptions" }),
     };
     results.append(el("p", { className: "muted" }, "Starting…"));

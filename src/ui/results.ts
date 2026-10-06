@@ -1,6 +1,8 @@
 import type { StoreResult } from "../lib/check";
 import { describeFilters, type Filters } from "../lib/filters";
-import type { Listing, WantedCard } from "../lib/types";
+import { todaysHours } from "../lib/hours";
+import { distanceMiles } from "../lib/storeFinder";
+import type { GeoPoint, Listing, WantedCard } from "../lib/types";
 
 /** Everything the results view shows; re-rendered as stores report in. */
 export interface ResultsState {
@@ -12,6 +14,44 @@ export interface ResultsState {
   onOpenSettings?: () => void;
   results: StoreResult[];
   done: boolean;
+  /** Where the user searches from; enables distances and the "Closest" sort. */
+  home?: GeoPoint;
+  /** Overrides the clock for "today's hours" (tests). */
+  now?: Date;
+}
+
+export type SortMode = "closest" | "cards";
+
+/** Miles from `home` to the store, or null when either location is unknown. */
+export function storeDistance(result: StoreResult, home: GeoPoint | undefined): number | null {
+  const { latitude, longitude } = result.store;
+  if (!home || latitude === undefined || longitude === undefined) return null;
+  return distanceMiles(home, { latitude, longitude });
+}
+
+/** Stores with stock, ordered by distance (unknown distances last) or by number of cards. */
+export function sortStores(
+  results: StoreResult[],
+  mode: SortMode,
+  home: GeoPoint | undefined,
+): StoreResult[] {
+  const byCards = (a: StoreResult, b: StoreResult) =>
+    b.found.length - a.found.length || a.store.name.localeCompare(b.store.name);
+  const withStock = results.filter((r) => r.found.length);
+  if (mode === "cards") return withStock.sort(byCards);
+  const distance = new Map(withStock.map((r) => [r, storeDistance(r, home)]));
+  return withStock.sort((a, b) => {
+    const da = distance.get(a) ?? null;
+    const db = distance.get(b) ?? null;
+    if (da === null || db === null) return da === db ? byCards(a, b) : da === null ? 1 : -1;
+    return da - db || byCards(a, b);
+  });
+}
+
+const sortChoice = new WeakMap<HTMLElement, SortMode>();
+
+function mapsUrl(address: string): string {
+  return `https://maps.apple.com/?q=${encodeURIComponent(address)}`;
 }
 
 export const RESULTS_CSS = `
@@ -23,6 +63,10 @@ export const RESULTS_CSS = `
   .cf-store-name { font-weight: 600; }
   .cf-store-name a { color: inherit; text-decoration: none; }
   .cf-count { color: #db7d30; font-weight: 600; white-space: nowrap; font-size: 13px; }
+  .cf-sort { display: flex; gap: 6px; margin: 6px 0; }
+  .cf-sort button { font: inherit; font-size: 12px; padding: 2px 10px; border-radius: 999px; border: 1px solid rgba(127,127,127,.4); background: none; color: inherit; cursor: pointer; }
+  .cf-sort button[aria-pressed="true"] { background: #db7d30; border-color: #db7d30; color: #fff; }
+  .cf-meta a { color: inherit; }
   .cf-card { margin-top: 8px; }
   .cf-card-name { font-weight: 600; font-size: 13px; }
   .cf-listing { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; padding: 3px 0; border-bottom: 1px solid rgba(127,127,127,.15); }
@@ -68,7 +112,12 @@ function listingRow(listing: Listing): HTMLElement {
   );
 }
 
-function storeCard(result: StoreResult, wantedCount: number): HTMLElement {
+function storeCard(
+  result: StoreResult,
+  wantedCount: number,
+  home: GeoPoint | undefined,
+  now: Date | undefined,
+): HTMLElement {
   const head = el(
     "div",
     { className: "cf-store-head" },
@@ -81,8 +130,22 @@ function storeCard(result: StoreResult, wantedCount: number): HTMLElement {
   );
   const card = el("div", { className: "cf-store" }, head);
   const a = result.store.address;
-  if (a?.city)
-    card.append(el("div", { className: "cf-meta" }, [a.street, a.city].filter(Boolean).join(", ")));
+  const miles = storeDistance(result, home);
+  if (a?.city) {
+    const short = [a.street, a.city].filter(Boolean).join(", ");
+    const full = [a.street, a.city, `${a.state} ${a.zip}`.trim()].filter(Boolean).join(", ");
+    const line = el(
+      "div",
+      { className: "cf-meta" },
+      el("a", { href: mapsUrl(full), target: "_blank", rel: "noopener" }, short),
+    );
+    if (miles !== null) line.append(` · ${Math.round(miles)} mi`);
+    card.append(line);
+  } else if (miles !== null) {
+    card.append(el("div", { className: "cf-meta" }, `${Math.round(miles)} mi`));
+  }
+  const hours = todaysHours(result.store.hours, now);
+  if (hours) card.append(el("div", { className: "cf-meta" }, `Today: ${hours}`));
   const byCard = new Map<string, Listing[]>();
   for (const listing of result.listings) {
     byCard.set(listing.cardName, [...(byCard.get(listing.cardName) ?? []), listing]);
@@ -124,7 +187,8 @@ export function renderNeedsPermission(container: HTMLElement, onGrant: () => voi
 
 /** Render (or re-render) the results view into `container`. */
 export function renderResults(container: HTMLElement, state: ResultsState): void {
-  const { wanted, results, totalStores, done, filters, onOpenSettings } = state;
+  const { wanted, results, totalStores, done, filters, onOpenSettings, home, now } = state;
+  const mode = sortChoice.get(container) ?? (home ? "closest" : "cards");
   const found = new Set(results.flatMap((r) => r.found));
   const root = el("div", { className: "cf-results" });
   root.append(
@@ -156,10 +220,24 @@ export function renderResults(container: HTMLElement, state: ResultsState): void
     line.append(link);
     root.append(line);
   }
-  const withStock = results
-    .filter((r) => r.found.length)
-    .sort((a, b) => b.found.length - a.found.length || a.store.name.localeCompare(b.store.name));
-  withStock.forEach((r) => root.append(storeCard(r, wanted.length)));
+  const withStock = sortStores(results, home ? mode : "cards", home);
+  if (home && withStock.length > 1) {
+    const toggle = el("div", { className: "cf-sort" });
+    for (const [value, label] of [
+      ["closest", "Closest"],
+      ["cards", "Most cards"],
+    ] as const) {
+      const button = el("button", { type: "button", textContent: label });
+      button.setAttribute("aria-pressed", String(mode === value));
+      button.addEventListener("click", () => {
+        sortChoice.set(container, value);
+        renderResults(container, state);
+      });
+      toggle.append(button);
+    }
+    root.append(toggle);
+  }
+  withStock.forEach((r) => root.append(storeCard(r, wanted.length, home, now)));
 
   const missing = wanted.filter((w) => !found.has(w.name));
   if (done && missing.length) {
