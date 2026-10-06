@@ -1,4 +1,5 @@
 import type { StoreResult } from "../lib/check";
+import { formatAgo, listingKey, type CheckChanges, type HistoryEntry } from "../lib/history";
 import { describeFilters, type Filters } from "../lib/filters";
 import { todaysHours } from "../lib/hours";
 import { distanceMiles } from "../lib/storeFinder";
@@ -14,6 +15,8 @@ export interface ResultsState {
   onOpenSettings?: () => void;
   results: StoreResult[];
   done: boolean;
+  /** Differences from the previous check, once it's done. */
+  changes?: CheckChanges;
   /** Where the user searches from; enables distances and the "Closest" sort. */
   home?: GeoPoint;
   /** Overrides the clock for "today's hours" (tests). */
@@ -75,6 +78,12 @@ export const RESULTS_CSS = `
   .cf-meta { color: #8e8e93; }
   .cf-price { font-variant-numeric: tabular-nums; white-space: nowrap; }
   .cf-foil { display: inline-block; font-size: 10px; font-weight: 700; padding: 0 4px; border-radius: 4px; background: linear-gradient(90deg,#f6d365,#a1c4fd); color: #1d1d1f; margin-left: 4px; }
+  .cf-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 0 5px; border-radius: 4px; margin-left: 4px; }
+  .cf-badge-new { background: #30d158; color: #06280f; }
+  .cf-badge-drop { background: #0a84ff; color: #fff; }
+  .cf-soldout { margin-top: 12px; color: #8e8e93; }
+  .cf-soldout summary { cursor: pointer; font-weight: 600; }
+  .cf-soldout ul { margin: 6px 0 0; padding-left: 18px; }
   .cf-error { color: #ff453a; font-size: 12px; }
   .cf-missing { margin-top: 12px; color: #8e8e93; }
   .cf-missing summary { cursor: pointer; font-weight: 600; }
@@ -93,11 +102,19 @@ function el<K extends keyof HTMLElementTagNameMap>(
 
 const money = (n: number) => `$${n.toFixed(2)}`;
 
-function listingRow(listing: Listing): HTMLElement {
+function listingRow(listing: Listing, changes?: CheckChanges): HTMLElement {
   const details = [listing.setName, listing.condition];
   if (listing.language && listing.language !== "English") details.push(listing.language);
   const left = el("span", {}, el("span", { className: "cf-meta" }, details.join(" · ")));
   if (listing.foil) left.append(el("span", { className: "cf-foil" }, "FOIL"));
+  const badge = changes?.badges[listingKey(listing)];
+  if (badge?.kind === "new") left.append(el("span", { className: "cf-badge cf-badge-new" }, "NEW"));
+  if (badge?.kind === "drop") {
+    left.append(
+      el("span", { className: "cf-badge cf-badge-drop" }, "↓ price drop"),
+      el("span", { className: "cf-meta" }, ` was ${money(badge.oldPrice)}`),
+    );
+  }
   return el(
     "div",
     { className: "cf-listing" },
@@ -117,6 +134,7 @@ function storeCard(
   wantedCount: number,
   home: GeoPoint | undefined,
   now: Date | undefined,
+  changes?: CheckChanges,
 ): HTMLElement {
   const head = el(
     "div",
@@ -157,7 +175,7 @@ function storeCard(
       { className: "cf-card" },
       el("div", { className: "cf-card-name" }, name),
     );
-    shown.forEach((l) => block.append(listingRow(l)));
+    shown.forEach((l) => block.append(listingRow(l, changes)));
     if (listings.length > shown.length) {
       block.append(el("div", { className: "cf-meta" }, `+${listings.length - shown.length} more`));
     }
@@ -187,7 +205,7 @@ export function renderNeedsPermission(container: HTMLElement, onGrant: () => voi
 
 /** Render (or re-render) the results view into `container`. */
 export function renderResults(container: HTMLElement, state: ResultsState): void {
-  const { wanted, results, totalStores, done, filters, onOpenSettings, home, now } = state;
+  const { wanted, results, totalStores, done, filters, onOpenSettings, home, now, changes } = state;
   const mode = sortChoice.get(container) ?? (home ? "closest" : "cards");
   const found = new Set(results.flatMap((r) => r.found));
   const root = el("div", { className: "cf-results" });
@@ -201,7 +219,8 @@ export function renderResults(container: HTMLElement, state: ResultsState): void
       "div",
       { className: "cf-progress" },
       done
-        ? `Checked ${totalStores} stores`
+        ? `Checked ${totalStores} stores` +
+            (changes?.previousAt ? `. Previous check ${formatAgo(changes.previousAt)}` : "")
         : `Checking stores… ${results.length} of ${totalStores} done`,
     ),
   );
@@ -237,7 +256,7 @@ export function renderResults(container: HTMLElement, state: ResultsState): void
     }
     root.append(toggle);
   }
-  withStock.forEach((r) => root.append(storeCard(r, wanted.length, home, now)));
+  withStock.forEach((r) => root.append(storeCard(r, wanted.length, home, now, changes)));
 
   const missing = wanted.filter((w) => !found.has(w.name));
   if (done && missing.length) {
@@ -248,6 +267,26 @@ export function renderResults(container: HTMLElement, state: ResultsState): void
         "details",
         { className: "cf-missing", open: missing.length <= 5 },
         el("summary", {}, `Not in stock nearby (${missing.length})`),
+        list,
+      ),
+    );
+  }
+  if (done && changes?.soldOut.length) {
+    const list = el("ul");
+    changes.soldOut.forEach((e: HistoryEntry) =>
+      list.append(
+        el(
+          "li",
+          {},
+          `${e.card} (${e.set}, ${e.condition}${e.foil ? ", foil" : ""}) at ${e.storeName}, was ${money(e.price)}`,
+        ),
+      ),
+    );
+    root.append(
+      el(
+        "details",
+        { className: "cf-soldout" },
+        el("summary", {}, `Sold out since last check (${changes.soldOut.length})`),
         list,
       ),
     );

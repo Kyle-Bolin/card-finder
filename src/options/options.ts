@@ -1,3 +1,4 @@
+import { clearHistory } from "../lib/history";
 import { ALL_CONDITIONS, normalizeFilters } from "../lib/filters";
 import { fetchDirectory, nearbyFromDirectory } from "../lib/directory";
 import { isWelcomeQuery, welcomeSteps } from "../lib/onboarding";
@@ -397,3 +398,8 @@ if (isWelcomeQuery(location.search)) {
     $<HTMLInputElement>("zip").focus();
   });
 }
+
+$("clear-history").addEventListener("click", async () => {
+  await clearHistory();
+  $("clear-history-status").textContent = "History cleared.";
+});

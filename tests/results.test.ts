@@ -1,9 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { StoreResult } from "../src/lib/check";
 import { todaysHours } from "../src/lib/hours";
 import { distanceMiles, withCoordinates } from "../src/lib/storeFinder";
 import { sortStores, storeDistance } from "../src/ui/results";
 import { fakeFetch } from "./helpers";
+
+// ui/results pulls in history.ts, which imports the extension polyfill.
+vi.mock("webextension-polyfill", () => ({ default: {} }));
 
 const home = { latitude: 40.0, longitude: -75.0 };
 

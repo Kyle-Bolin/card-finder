@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import { parseCardList, type StoreResult } from "../lib/check";
+import { formatAgo } from "../lib/history";
 import { loadLastCheck } from "../lib/lastCheck";
 import { loadSettings } from "../lib/settings";
 import { runCheck } from "../lib/messages";
@@ -71,6 +72,7 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
         break;
       case "done":
         state.done = true;
+        state.changes = event.changes ?? state.changes;
         checkButton.disabled = false;
         break;
       case "error":
@@ -87,7 +89,7 @@ void (async () => {
   if (!new URLSearchParams(location.search).has("last")) return;
   const last = await loadLastCheck();
   if (!last) return;
-  status.textContent = `${last.label}, checked ${new Date(last.at).toLocaleString()}`;
+  status.textContent = `${last.label}, checked ${formatAgo(last.at)}`;
   $<HTMLTextAreaElement>("list").value = last.wanted
     .map((w) => `${w.quantity} ${w.name}`)
     .join("\n");

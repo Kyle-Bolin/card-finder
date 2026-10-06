@@ -1,6 +1,7 @@
 import browser from "webextension-polyfill";
 import type { FetchTextResponse } from "../background/background";
 import type { StoreResult } from "../lib/check";
+import { formatAgo, loadDeckHistory } from "../lib/history";
 import { deckApiUrl, extractWanted, parseDeckId } from "../lib/moxfield";
 import { summarizeDeck } from "../lib/moxfieldDiagnostic";
 import { runCheck, type BackgroundRequest } from "../lib/messages";
@@ -183,8 +184,10 @@ class Panel {
       textContent: `Check local stores (${this.wanted.length} card${this.wanted.length === 1 ? "" : "s"})`,
     });
     button.addEventListener("click", () => this.check(button));
+    const lastChecked = el("p", { className: "muted" });
     const children: HTMLElement[] = [
       el("p", { className: "muted" }, `Cards tagged “${tag}” in ${this.deckName}.`),
+      lastChecked,
     ];
     if (onboardingState(settings).needsStores) {
       const add = el("button", { className: "primary", textContent: "Add stores" });
@@ -194,6 +197,12 @@ class Panel {
     }
     children.push(button, this.links());
     this.body.replaceChildren(...children);
+    const deckId = this.deckId;
+    void loadDeckHistory(`deck:${deckId}`).then((history) => {
+      const ago = history ? formatAgo(history.checkedAt) : "";
+      if (ago) lastChecked.textContent = `Last checked ${ago}.`;
+      else lastChecked.remove();
+    });
   }
 
   private check(button: HTMLButtonElement): void {
@@ -209,40 +218,47 @@ class Panel {
       onOpenSettings: () => void sendBackground({ type: "openOptions" }),
     };
     results.append(el("p", { className: "muted" }, "Starting…"));
-    this.stopCheck = runCheck(this.wanted, this.deckName, (event) => {
-      switch (event.type) {
-        case "no-stores": {
-          const open = el("button", {
-            className: "primary",
-            textContent: "Add stores in settings",
-          });
-          open.addEventListener("click", () => void sendBackground({ type: "openOptions" }));
-          results.replaceChildren(el("p", {}, "You haven't added any stores yet."), open);
-          return;
+    this.stopCheck = runCheck(
+      this.wanted,
+      this.deckName,
+      (event) => {
+        switch (event.type) {
+          case "no-stores": {
+            const open = el("button", {
+              className: "primary",
+              textContent: "Add stores in settings",
+            });
+            open.addEventListener("click", () => void sendBackground({ type: "openOptions" }));
+            results.replaceChildren(el("p", {}, "You haven't added any stores yet."), open);
+            return;
+          }
+          case "needs-permission":
+            // Content scripts can't call permissions.request; the settings page can.
+            renderNeedsPermission(
+              results,
+              () => void sendBackground({ type: "openOptions", grant: true }),
+            );
+            return;
+          case "started":
+            state.totalStores = event.totalStores;
+            state.filters = event.filters;
+            break;
+          case "result":
+            state.results.push(event.result);
+            break;
+          case "done":
+            state.done = true;
+            // A later disconnect also reports "done", without changes: keep the badges.
+            state.changes = event.changes ?? state.changes;
+            break;
+          case "error":
+            results.append(el("p", { className: "cf-error" }, event.message));
+            return;
         }
-        case "needs-permission":
-          // Content scripts can't call permissions.request; the settings page can.
-          renderNeedsPermission(
-            results,
-            () => void sendBackground({ type: "openOptions", grant: true }),
-          );
-          return;
-        case "started":
-          state.totalStores = event.totalStores;
-          state.filters = event.filters;
-          break;
-        case "result":
-          state.results.push(event.result);
-          break;
-        case "done":
-          state.done = true;
-          break;
-        case "error":
-          results.append(el("p", { className: "cf-error" }, event.message));
-          return;
-      }
-      if (state.totalStores) renderResults(results, state);
-    });
+        if (state.totalStores) renderResults(results, state);
+      },
+      `deck:${this.deckId}`,
+    );
   }
 
   private showDiagnostic(): void {
