@@ -1,0 +1,1005 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		430062C730758EBD00F8735F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430062C630758EBD00F8735F /* AppDelegate.swift */; };
+		430062C930758EBD00F8735F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430062C830758EBD00F8735F /* SceneDelegate.swift */; };
+		430062CC30758EBD00F8735F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 430062CA30758EBD00F8735F /* LaunchScreen.storyboard */; };
+		430062CF30758EBD00F8735F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 430062CD30758EBD00F8735F /* Main.storyboard */; };
+		430062D830758EBD00F8735F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430062D730758EBD00F8735F /* AppDelegate.swift */; };
+		430062DB30758EBD00F8735F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 430062D930758EBD00F8735F /* Main.storyboard */; };
+		430062E230758EBD00F8735F /* Card Finder Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 430062E130758EBD00F8735F /* Card Finder Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		430062EC30758EBD00F8735F /* Card Finder Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 430062EB30758EBD00F8735F /* Card Finder Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		430062F130758EBD00F8735F /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 430062B630758EBA00F8735F /* Main.html */; };
+		430062F230758EBD00F8735F /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 430062B630758EBA00F8735F /* Main.html */; };
+		430062F330758EBD00F8735F /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 430062B830758EBA00F8735F /* Icon.png */; };
+		430062F430758EBD00F8735F /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 430062B830758EBA00F8735F /* Icon.png */; };
+		430062F530758EBD00F8735F /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 430062B930758EBA00F8735F /* Style.css */; };
+		430062F630758EBD00F8735F /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 430062B930758EBA00F8735F /* Style.css */; };
+		430062F730758EBD00F8735F /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = 430062BA30758EBA00F8735F /* Script.js */; };
+		430062F830758EBD00F8735F /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = 430062BA30758EBA00F8735F /* Script.js */; };
+		430062F930758EBD00F8735F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430062BB30758EBA00F8735F /* ViewController.swift */; };
+		430062FA30758EBD00F8735F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430062BB30758EBA00F8735F /* ViewController.swift */; };
+		430062FB30758EBD00F8735F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 430062BC30758EBD00F8735F /* Assets.xcassets */; };
+		430062FC30758EBD00F8735F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 430062BC30758EBD00F8735F /* Assets.xcassets */; };
+		430062FD30758EBD00F8735F /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430062BE30758EBD00F8735F /* SafariWebExtensionHandler.swift */; };
+		430062FE30758EBD00F8735F /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430062BE30758EBD00F8735F /* SafariWebExtensionHandler.swift */; };
+		4300631830758EC100F8735F /* options in Resources */ = {isa = PBXBuildFile; fileRef = 4300631030758EC100F8735F /* options */; };
+		4300631930758EC100F8735F /* popup in Resources */ = {isa = PBXBuildFile; fileRef = 4300631130758EC100F8735F /* popup */; };
+		4300631A30758EC100F8735F /* styles.css in Resources */ = {isa = PBXBuildFile; fileRef = 4300631230758EC100F8735F /* styles.css */; };
+		4300631B30758EC100F8735F /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = 4300631330758EC100F8735F /* background.js */; };
+		4300631C30758EC100F8735F /* content in Resources */ = {isa = PBXBuildFile; fileRef = 4300631430758EC100F8735F /* content */; };
+		4300631D30758EC100F8735F /* results in Resources */ = {isa = PBXBuildFile; fileRef = 4300631530758EC100F8735F /* results */; };
+		4300631E30758EC100F8735F /* icons in Resources */ = {isa = PBXBuildFile; fileRef = 4300631630758EC100F8735F /* icons */; };
+		4300631F30758EC100F8735F /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 4300631730758EC100F8735F /* manifest.json */; };
+		4300632030758EC100F8735F /* options in Resources */ = {isa = PBXBuildFile; fileRef = 4300631030758EC100F8735F /* options */; };
+		4300632130758EC100F8735F /* popup in Resources */ = {isa = PBXBuildFile; fileRef = 4300631130758EC100F8735F /* popup */; };
+		4300632230758EC100F8735F /* styles.css in Resources */ = {isa = PBXBuildFile; fileRef = 4300631230758EC100F8735F /* styles.css */; };
+		4300632330758EC100F8735F /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = 4300631330758EC100F8735F /* background.js */; };
+		4300632430758EC100F8735F /* content in Resources */ = {isa = PBXBuildFile; fileRef = 4300631430758EC100F8735F /* content */; };
+		4300632530758EC100F8735F /* results in Resources */ = {isa = PBXBuildFile; fileRef = 4300631530758EC100F8735F /* results */; };
+		4300632630758EC100F8735F /* icons in Resources */ = {isa = PBXBuildFile; fileRef = 4300631630758EC100F8735F /* icons */; };
+		4300632730758EC100F8735F /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 4300631730758EC100F8735F /* manifest.json */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		430062E330758EBD00F8735F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 430062B030758EB900F8735F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 430062E030758EBD00F8735F;
+			remoteInfo = "Card Finder Extension (iOS)";
+		};
+		430062ED30758EBD00F8735F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 430062B030758EB900F8735F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 430062EA30758EBD00F8735F;
+			remoteInfo = "Card Finder Extension (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4300630430758EBD00F8735F /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				430062E230758EBD00F8735F /* Card Finder Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4300630B30758EBD00F8735F /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				430062EC30758EBD00F8735F /* Card Finder Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		430062B730758EBA00F8735F /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
+		430062B830758EBA00F8735F /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		430062B930758EBA00F8735F /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		430062BA30758EBA00F8735F /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		430062BB30758EBA00F8735F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		430062BC30758EBD00F8735F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		430062BE30758EBD00F8735F /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		430062C330758EBD00F8735F /* Card Finder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Card Finder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		430062C630758EBD00F8735F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		430062C830758EBD00F8735F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		430062CB30758EBD00F8735F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		430062CE30758EBD00F8735F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		430062D030758EBD00F8735F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		430062D530758EBD00F8735F /* Card Finder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Card Finder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		430062D730758EBD00F8735F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		430062DA30758EBD00F8735F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		430062DC30758EBD00F8735F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		430062E130758EBD00F8735F /* Card Finder Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Card Finder Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		430062E630758EBD00F8735F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		430062EB30758EBD00F8735F /* Card Finder Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Card Finder Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		430062F030758EBD00F8735F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4300631030758EC100F8735F /* options */ = {isa = PBXFileReference; lastKnownFileType = folder; name = options; path = ../../../dist/options; sourceTree = "<group>"; };
+		4300631130758EC100F8735F /* popup */ = {isa = PBXFileReference; lastKnownFileType = folder; name = popup; path = ../../../dist/popup; sourceTree = "<group>"; };
+		4300631230758EC100F8735F /* styles.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = styles.css; path = ../../../dist/styles.css; sourceTree = "<group>"; };
+		4300631330758EC100F8735F /* background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = background.js; path = ../../../dist/background.js; sourceTree = "<group>"; };
+		4300631430758EC100F8735F /* content */ = {isa = PBXFileReference; lastKnownFileType = folder; name = content; path = ../../../dist/content; sourceTree = "<group>"; };
+		4300631530758EC100F8735F /* results */ = {isa = PBXFileReference; lastKnownFileType = folder; name = results; path = ../../../dist/results; sourceTree = "<group>"; };
+		4300631630758EC100F8735F /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../../dist/icons; sourceTree = "<group>"; };
+		4300631730758EC100F8735F /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../../dist/manifest.json; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		430062C030758EBD00F8735F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		430062D230758EBD00F8735F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		430062DE30758EBD00F8735F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		430062E830758EBD00F8735F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		430062AF30758EB900F8735F = {
+			isa = PBXGroup;
+			children = (
+				430062B430758EBA00F8735F /* Shared (App) */,
+				430062BD30758EBD00F8735F /* Shared (Extension) */,
+				430062C530758EBD00F8735F /* iOS (App) */,
+				430062D630758EBD00F8735F /* macOS (App) */,
+				430062E530758EBD00F8735F /* iOS (Extension) */,
+				430062EF30758EBD00F8735F /* macOS (Extension) */,
+				430062C430758EBD00F8735F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		430062B430758EBA00F8735F /* Shared (App) */ = {
+			isa = PBXGroup;
+			children = (
+				430062BB30758EBA00F8735F /* ViewController.swift */,
+				430062BC30758EBD00F8735F /* Assets.xcassets */,
+				430062B530758EBA00F8735F /* Resources */,
+			);
+			path = "Shared (App)";
+			sourceTree = "<group>";
+		};
+		430062B530758EBA00F8735F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				430062B630758EBA00F8735F /* Main.html */,
+				430062B830758EBA00F8735F /* Icon.png */,
+				430062B930758EBA00F8735F /* Style.css */,
+				430062BA30758EBA00F8735F /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		430062BD30758EBD00F8735F /* Shared (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				4300630F30758EC100F8735F /* Resources */,
+				430062BE30758EBD00F8735F /* SafariWebExtensionHandler.swift */,
+			);
+			path = "Shared (Extension)";
+			sourceTree = "<group>";
+		};
+		430062C430758EBD00F8735F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				430062C330758EBD00F8735F /* Card Finder.app */,
+				430062D530758EBD00F8735F /* Card Finder.app */,
+				430062E130758EBD00F8735F /* Card Finder Extension.appex */,
+				430062EB30758EBD00F8735F /* Card Finder Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		430062C530758EBD00F8735F /* iOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				430062C630758EBD00F8735F /* AppDelegate.swift */,
+				430062C830758EBD00F8735F /* SceneDelegate.swift */,
+				430062CA30758EBD00F8735F /* LaunchScreen.storyboard */,
+				430062CD30758EBD00F8735F /* Main.storyboard */,
+				430062D030758EBD00F8735F /* Info.plist */,
+			);
+			path = "iOS (App)";
+			sourceTree = "<group>";
+		};
+		430062D630758EBD00F8735F /* macOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				430062D730758EBD00F8735F /* AppDelegate.swift */,
+				430062D930758EBD00F8735F /* Main.storyboard */,
+				430062DC30758EBD00F8735F /* Info.plist */,
+			);
+			path = "macOS (App)";
+			sourceTree = "<group>";
+		};
+		430062E530758EBD00F8735F /* iOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				430062E630758EBD00F8735F /* Info.plist */,
+			);
+			path = "iOS (Extension)";
+			sourceTree = "<group>";
+		};
+		430062EF30758EBD00F8735F /* macOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				430062F030758EBD00F8735F /* Info.plist */,
+			);
+			path = "macOS (Extension)";
+			sourceTree = "<group>";
+		};
+		4300630F30758EC100F8735F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4300631030758EC100F8735F /* options */,
+				4300631130758EC100F8735F /* popup */,
+				4300631230758EC100F8735F /* styles.css */,
+				4300631330758EC100F8735F /* background.js */,
+				4300631430758EC100F8735F /* content */,
+				4300631530758EC100F8735F /* results */,
+				4300631630758EC100F8735F /* icons */,
+				4300631730758EC100F8735F /* manifest.json */,
+			);
+			name = Resources;
+			path = "Shared (Extension)";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		430062C230758EBD00F8735F /* Card Finder (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4300630530758EBD00F8735F /* Build configuration list for PBXNativeTarget "Card Finder (iOS)" */;
+			buildPhases = (
+				430062BF30758EBD00F8735F /* Sources */,
+				430062C030758EBD00F8735F /* Frameworks */,
+				430062C130758EBD00F8735F /* Resources */,
+				4300630430758EBD00F8735F /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				430062E430758EBD00F8735F /* PBXTargetDependency */,
+			);
+			name = "Card Finder (iOS)";
+			packageProductDependencies = (
+			);
+			productName = "Card Finder (iOS)";
+			productReference = 430062C330758EBD00F8735F /* Card Finder.app */;
+			productType = "com.apple.product-type.application";
+		};
+		430062D430758EBD00F8735F /* Card Finder (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4300630C30758EBD00F8735F /* Build configuration list for PBXNativeTarget "Card Finder (macOS)" */;
+			buildPhases = (
+				430062D130758EBD00F8735F /* Sources */,
+				430062D230758EBD00F8735F /* Frameworks */,
+				430062D330758EBD00F8735F /* Resources */,
+				4300630B30758EBD00F8735F /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				430062EE30758EBD00F8735F /* PBXTargetDependency */,
+			);
+			name = "Card Finder (macOS)";
+			packageProductDependencies = (
+			);
+			productName = "Card Finder (macOS)";
+			productReference = 430062D530758EBD00F8735F /* Card Finder.app */;
+			productType = "com.apple.product-type.application";
+		};
+		430062E030758EBD00F8735F /* Card Finder Extension (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4300630130758EBD00F8735F /* Build configuration list for PBXNativeTarget "Card Finder Extension (iOS)" */;
+			buildPhases = (
+				430062DD30758EBD00F8735F /* Sources */,
+				430062DE30758EBD00F8735F /* Frameworks */,
+				430062DF30758EBD00F8735F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Card Finder Extension (iOS)";
+			packageProductDependencies = (
+			);
+			productName = "Card Finder Extension (iOS)";
+			productReference = 430062E130758EBD00F8735F /* Card Finder Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		430062EA30758EBD00F8735F /* Card Finder Extension (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4300630830758EBD00F8735F /* Build configuration list for PBXNativeTarget "Card Finder Extension (macOS)" */;
+			buildPhases = (
+				430062E730758EBD00F8735F /* Sources */,
+				430062E830758EBD00F8735F /* Frameworks */,
+				430062E930758EBD00F8735F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Card Finder Extension (macOS)";
+			packageProductDependencies = (
+			);
+			productName = "Card Finder Extension (macOS)";
+			productReference = 430062EB30758EBD00F8735F /* Card Finder Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		430062B030758EB900F8735F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2660;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					430062C230758EBD00F8735F = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					430062D430758EBD00F8735F = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					430062E030758EBD00F8735F = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					430062EA30758EBD00F8735F = {
+						CreatedOnToolsVersion = 26.6;
+					};
+				};
+			};
+			buildConfigurationList = 430062B330758EB900F8735F /* Build configuration list for PBXProject "Card Finder" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 430062AF30758EB900F8735F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 430062C430758EBD00F8735F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				430062C230758EBD00F8735F /* Card Finder (iOS) */,
+				430062D430758EBD00F8735F /* Card Finder (macOS) */,
+				430062E030758EBD00F8735F /* Card Finder Extension (iOS) */,
+				430062EA30758EBD00F8735F /* Card Finder Extension (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		430062C130758EBD00F8735F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				430062F330758EBD00F8735F /* Icon.png in Resources */,
+				430062CC30758EBD00F8735F /* LaunchScreen.storyboard in Resources */,
+				430062F130758EBD00F8735F /* Main.html in Resources */,
+				430062F730758EBD00F8735F /* Script.js in Resources */,
+				430062FB30758EBD00F8735F /* Assets.xcassets in Resources */,
+				430062CF30758EBD00F8735F /* Main.storyboard in Resources */,
+				430062F530758EBD00F8735F /* Style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		430062D330758EBD00F8735F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				430062F430758EBD00F8735F /* Icon.png in Resources */,
+				430062F630758EBD00F8735F /* Style.css in Resources */,
+				430062DB30758EBD00F8735F /* Main.storyboard in Resources */,
+				430062F830758EBD00F8735F /* Script.js in Resources */,
+				430062FC30758EBD00F8735F /* Assets.xcassets in Resources */,
+				430062F230758EBD00F8735F /* Main.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		430062DF30758EBD00F8735F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4300632330758EC100F8735F /* background.js in Resources */,
+				4300632230758EC100F8735F /* styles.css in Resources */,
+				4300632030758EC100F8735F /* options in Resources */,
+				4300632530758EC100F8735F /* results in Resources */,
+				4300632730758EC100F8735F /* manifest.json in Resources */,
+				4300632130758EC100F8735F /* popup in Resources */,
+				4300632630758EC100F8735F /* icons in Resources */,
+				4300632430758EC100F8735F /* content in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		430062E930758EBD00F8735F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4300631B30758EC100F8735F /* background.js in Resources */,
+				4300631A30758EC100F8735F /* styles.css in Resources */,
+				4300631830758EC100F8735F /* options in Resources */,
+				4300631D30758EC100F8735F /* results in Resources */,
+				4300631F30758EC100F8735F /* manifest.json in Resources */,
+				4300631930758EC100F8735F /* popup in Resources */,
+				4300631E30758EC100F8735F /* icons in Resources */,
+				4300631C30758EC100F8735F /* content in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		430062BF30758EBD00F8735F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				430062F930758EBD00F8735F /* ViewController.swift in Sources */,
+				430062C730758EBD00F8735F /* AppDelegate.swift in Sources */,
+				430062C930758EBD00F8735F /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		430062D130758EBD00F8735F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				430062FA30758EBD00F8735F /* ViewController.swift in Sources */,
+				430062D830758EBD00F8735F /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		430062DD30758EBD00F8735F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				430062FD30758EBD00F8735F /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		430062E730758EBD00F8735F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				430062FE30758EBD00F8735F /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		430062E430758EBD00F8735F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 430062E030758EBD00F8735F /* Card Finder Extension (iOS) */;
+			targetProxy = 430062E330758EBD00F8735F /* PBXContainerItemProxy */;
+		};
+		430062EE30758EBD00F8735F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 430062EA30758EBD00F8735F /* Card Finder Extension (macOS) */;
+			targetProxy = 430062ED30758EBD00F8735F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		430062B630758EBA00F8735F /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				430062B730758EBA00F8735F /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		430062CA30758EBD00F8735F /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				430062CB30758EBD00F8735F /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		430062CD30758EBD00F8735F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				430062CE30758EBD00F8735F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		430062D930758EBD00F8735F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				430062DA30758EBD00F8735F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		430062FF30758EBD00F8735F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4300630030758EBD00F8735F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		4300630230758EBD00F8735F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Card Finder Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kylebolin.cardfinder.Extension;
+				PRODUCT_NAME = "Card Finder Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4300630330758EBD00F8735F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Card Finder Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kylebolin.cardfinder.Extension;
+				PRODUCT_NAME = "Card Finder Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4300630630758EBD00F8735F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Card Finder";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kylebolin.cardfinder;
+				PRODUCT_NAME = "Card Finder";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4300630730758EBD00F8735F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Card Finder";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kylebolin.cardfinder;
+				PRODUCT_NAME = "Card Finder";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4300630930758EBD00F8735F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Card Finder Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kylebolin.cardfinder.Extension;
+				PRODUCT_NAME = "Card Finder Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4300630A30758EBD00F8735F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Card Finder Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kylebolin.cardfinder.Extension;
+				PRODUCT_NAME = "Card Finder Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		4300630D30758EBD00F8735F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Card Finder";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kylebolin.cardfinder;
+				PRODUCT_NAME = "Card Finder";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4300630E30758EBD00F8735F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Card Finder";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kylebolin.cardfinder;
+				PRODUCT_NAME = "Card Finder";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		430062B330758EB900F8735F /* Build configuration list for PBXProject "Card Finder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				430062FF30758EBD00F8735F /* Debug */,
+				4300630030758EBD00F8735F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4300630130758EBD00F8735F /* Build configuration list for PBXNativeTarget "Card Finder Extension (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4300630230758EBD00F8735F /* Debug */,
+				4300630330758EBD00F8735F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4300630530758EBD00F8735F /* Build configuration list for PBXNativeTarget "Card Finder (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4300630630758EBD00F8735F /* Debug */,
+				4300630730758EBD00F8735F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4300630830758EBD00F8735F /* Build configuration list for PBXNativeTarget "Card Finder Extension (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4300630930758EBD00F8735F /* Debug */,
+				4300630A30758EBD00F8735F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4300630C30758EBD00F8735F /* Build configuration list for PBXNativeTarget "Card Finder (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4300630D30758EBD00F8735F /* Debug */,
+				4300630E30758EBD00F8735F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 430062B030758EB900F8735F /* Project object */;
+}
