@@ -1,6 +1,7 @@
 import { clearHistory } from "../lib/history";
 import { ALL_CONDITIONS, normalizeFilters } from "../lib/filters";
-import { fetchDirectory, nearbyFromDirectory } from "../lib/directory";
+import { nearbyFromDirectory } from "../lib/directory";
+import { loadDirectory } from "../lib/directoryCache";
 import { isWelcomeQuery, welcomeSteps } from "../lib/onboarding";
 import {
   findStorefronts,
@@ -271,7 +272,13 @@ function renderFound(): void {
   renderFoundButtons();
 }
 
+let lastPoint: GeoPoint | undefined;
+let refreshDirectory = false;
+
 async function search(point: GeoPoint): Promise<void> {
+  lastPoint = point;
+  const refresh = refreshDirectory;
+  refreshDirectory = false;
   const status = $("find-status");
   const miles = Number($<HTMLSelectElement>("radius").value);
   const submit = $<HTMLFormElement>("find-form").querySelectorAll("button");
@@ -285,7 +292,7 @@ async function search(point: GeoPoint): Promise<void> {
     // The published directory (built weekly by the crawler) answers instantly; then we
     // only live-check WPN stores the crawler hasn't seen yet.
     const [directory, stores] = await Promise.all([
-      fetchDirectory(),
+      loadDirectory({ refresh }),
       nearbyWpnStores(point, miles).catch(() => [] as WpnStore[]),
     ]);
     if (directory) {
@@ -322,6 +329,12 @@ async function search(point: GeoPoint): Promise<void> {
     submit.forEach((b) => (b.disabled = false));
   }
 }
+
+$<HTMLButtonElement>("refresh-directory").addEventListener("click", () => {
+  refreshDirectory = true;
+  if (lastPoint) void search(lastPoint);
+  else setStatus($("find-status"), "The store list will be refreshed on your next search.");
+});
 
 $<HTMLFormElement>("find-form").addEventListener("submit", async (event) => {
   event.preventDefault();
