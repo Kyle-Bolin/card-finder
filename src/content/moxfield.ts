@@ -4,6 +4,7 @@ import type { StoreResult } from "../lib/check";
 import { deckApiUrl, extractWanted, parseDeckId } from "../lib/moxfield";
 import { summarizeDeck } from "../lib/moxfieldDiagnostic";
 import { runCheck, type BackgroundRequest } from "../lib/messages";
+import { onboardingState } from "../lib/onboarding";
 import { loadSettings } from "../lib/settings";
 import type { WantedCard } from "../lib/types";
 import { renderResults, RESULTS_CSS } from "../ui/results";
@@ -139,7 +140,8 @@ class Panel {
   private async loadDeck(): Promise<void> {
     if (!this.deckId) return;
     this.body.replaceChildren(el("p", { className: "muted" }, "Reading this deck…"));
-    const { tag } = await loadSettings();
+    const settings = await loadSettings();
+    const { tag } = settings;
     this.tag = tag;
     this.load = await loadDeck(this.deckId);
     const deck = this.load.deck as { name?: unknown } | undefined;
@@ -174,11 +176,17 @@ class Panel {
       textContent: `Check local stores (${this.wanted.length} card${this.wanted.length === 1 ? "" : "s"})`,
     });
     button.addEventListener("click", () => this.check(button));
-    this.body.replaceChildren(
+    const children: HTMLElement[] = [
       el("p", { className: "muted" }, `Cards tagged “${tag}” in ${this.deckName}.`),
-      button,
-      this.links(),
-    );
+    ];
+    if (onboardingState(settings).needsStores) {
+      const add = el("button", { className: "primary", textContent: "Add stores" });
+      add.addEventListener("click", () => void sendBackground({ type: "openOptions" }));
+      children.push(el("p", {}, "Add your local stores before checking."), add);
+      button.className = "secondary";
+    }
+    children.push(button, this.links());
+    this.body.replaceChildren(...children);
   }
 
   private check(button: HTMLButtonElement): void {

@@ -1,4 +1,5 @@
 import { fetchDirectory, nearbyFromDirectory } from "../lib/directory";
+import { isWelcomeQuery, welcomeSteps } from "../lib/onboarding";
 import {
   findStorefronts,
   metersToMiles,
@@ -305,3 +306,13 @@ void (async () => {
   $<HTMLInputElement>("tag").value = settings.tag;
   renderStores();
 })();
+
+// --- First-run welcome ----------------------------------------------------
+
+if (isWelcomeQuery(location.search)) {
+  void loadSettings().then(({ tag }) => {
+    $("welcome-steps").replaceChildren(...welcomeSteps(tag).map((step) => el("li", {}, step)));
+    $("welcome").hidden = false;
+    $<HTMLInputElement>("zip").focus();
+  });
+}
