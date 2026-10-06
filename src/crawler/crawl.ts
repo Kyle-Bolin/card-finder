@@ -65,6 +65,8 @@ export interface CrawlOptions {
 }
 
 const SELLER_CACHE_DAYS = 3;
+/** Sources whose WPN links come from the ZIP/phone fallback rather than discovery. */
+const FALLBACK_SOURCES = new Set(["marketplace", "commoncrawl", "seed"]);
 
 export interface CrawlStats {
   wpnStores: number;
@@ -360,6 +362,16 @@ export async function crawl(
   for (const [id, entry] of Object.entries(state.wpn)) {
     const store = wpn.get(id);
     if (!entry.storefront || !store || removed.includes(entry.storefront)) continue;
+    // Links made by the ZIP/phone fallback (not by discovering the storefront from
+    // this store's own name or website) must still hold up; older runs accepted a
+    // shared ZIP alone.
+    const site = sites.get(entry.storefront);
+    if (site && FALLBACK_SOURCES.has(entry.source ?? "") && !isSameStore(store, site)) {
+      delete entry.storefront;
+      delete entry.confidence;
+      delete entry.source;
+      continue;
+    }
     const list = locations.get(entry.storefront) ?? [];
     list.push(locationFor(store, entry.confidence ?? "possible"));
     locations.set(entry.storefront, list);

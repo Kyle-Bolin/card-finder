@@ -506,6 +506,70 @@ describe("crawler fixes", () => {
     expect(directory.storefronts[0]?.firstSeen).toBe("2026-10-01T00:00:00.000Z");
   });
 
+  it("drops links an older run made from a shared ZIP alone", async () => {
+    const gamestop = {
+      id: "23237",
+      name: "GameStop - 0774",
+      postalAddress: "114 March Ave, Manchester, NH, 03103",
+      latitude: 42.96,
+      longitude: -71.44,
+      distance: 0,
+      phoneNumber: "1603-647-7707",
+      website: "https://www.gamestop.com/",
+    };
+    const state: CrawlState = {
+      ...EMPTY_STATE,
+      wpn: {
+        "23237": {
+          checkedAt: new Date().toISOString(),
+          storefront: "https://seller.tcgplayerpro.com",
+          confidence: "confirmed",
+          source: "marketplace",
+        },
+      },
+    };
+    const fetchFn = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url === WPN) {
+        return new Response(
+          JSON.stringify({
+            data: {
+              storesByLocation: {
+                stores: [gamestop],
+                pageInfo: { page: 0, pageSize: 1000, totalResults: 1 },
+              },
+            },
+          }),
+        );
+      }
+      if (url === "https://seller.tcgplayerpro.com/api/site") {
+        return landed(siteJson("Some Online Seller", "03103", "s", "PO Box 1"), url);
+      }
+      if (url.startsWith("https://api.zippopotam.us/")) {
+        return new Response(
+          JSON.stringify({
+            places: [
+              {
+                "place name": "Manchester",
+                "state abbreviation": "NH",
+                latitude: "42.99",
+                longitude: "-71.46",
+              },
+            ],
+          }),
+        );
+      }
+      return new Response("", { status: 404 });
+    }) as FetchFn;
+    const { directory, state: next } = await crawl(null, state, [], { fetchFn, region });
+    expect(next.wpn["23237"]?.storefront).toBeUndefined();
+    expect(directory.storefronts[0]).toMatchObject({
+      name: "Some Online Seller",
+      physical: false,
+      locations: [{ storeName: "Some Online Seller", confidence: "geocoded" }],
+    });
+  });
+
   it("isSameStore needs a phone match or ZIP plus a similar name", () => {
     const gamestop = {
       id: "g",
