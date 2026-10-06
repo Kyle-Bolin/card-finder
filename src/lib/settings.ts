@@ -1,22 +1,29 @@
 import browser from "webextension-polyfill";
-import type { Store } from "./types";
+import { DEFAULT_FILTERS, normalizeFilters, type Filters } from "./filters";
+import type { GeoPoint, Store } from "./types";
+
+export type { Filters };
 
 export interface Settings {
   /** Moxfield tag that marks a card as wanted (case-insensitive). */
   tag: string;
   stores: Store[];
+  filters: Filters;
+  /** Where the user last searched from; results are sorted by distance to it. */
+  home?: GeoPoint;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   tag: "unowned",
   stores: [],
+  filters: DEFAULT_FILTERS,
 };
 
 const KEY = "settings";
 
 export async function loadSettings(): Promise<Settings> {
   const stored = (await browser.storage.local.get(KEY))[KEY] as Partial<Settings> | undefined;
-  return { ...DEFAULT_SETTINGS, ...stored };
+  return { ...DEFAULT_SETTINGS, ...stored, filters: normalizeFilters(stored?.filters) };
 }
 
 export async function saveSettings(settings: Settings): Promise<void> {
