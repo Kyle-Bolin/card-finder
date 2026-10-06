@@ -8,6 +8,7 @@ import {
   type CheckRequest,
 } from "../lib/messages";
 import { missingOrigins, STORE_ORIGINS } from "../lib/permissions";
+import { shouldShowWelcomeOnInstall, WELCOME_PARAM } from "../lib/onboarding";
 import { loadSettings } from "../lib/settings";
 
 export interface FetchTextResponse {
@@ -60,6 +61,13 @@ browser.runtime.onMessage.addListener(async (message: unknown) => {
     default:
       return undefined;
   }
+});
+
+browser.runtime.onInstalled.addListener((details) => {
+  if (!shouldShowWelcomeOnInstall(details)) return;
+  void browser.tabs.create({
+    url: browser.runtime.getURL(`options/options.html?${WELCOME_PARAM}=1`),
+  });
 });
 
 // Store checks run here: the worker has host permissions for the storefronts.
