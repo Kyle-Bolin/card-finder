@@ -1,0 +1,46 @@
+name: Generate Xcode project
+
+# Run by hand (Actions tab → Generate Xcode project → Run workflow). Generates xcode/ on a
+# GitHub macOS runner with scripts/create-xcode-project.sh, checks that both apps build
+# unsigned, and pushes the result to the `xcode-project` branch for a pull request.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: ./scripts/create-xcode-project.sh
+      - name: List schemes
+        run: xcodebuild -list -project "xcode/Card Finder/Card Finder.xcodeproj"
+      - name: Build macOS app (unsigned)
+        run: >-
+          xcodebuild -project "xcode/Card Finder/Card Finder.xcodeproj" -scheme "Card Finder (macOS)"
+          -destination 'generic/platform=macOS' CODE_SIGNING_ALLOWED=NO build
+      - name: Build iOS app (unsigned)
+        run: >-
+          xcodebuild -project "xcode/Card Finder/Card Finder.xcodeproj" -scheme "Card Finder (iOS)"
+          -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
+      - name: Record bundle IDs
+        run: |
+          {
+            echo "## Bundle IDs"
+            grep -ho 'PRODUCT_BUNDLE_IDENTIFIER = [^;]*' "xcode/Card Finder/Card Finder.xcodeproj/project.pbxproj" | sort -u
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Push to the xcode-project branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b xcode-project
+          git add xcode
+          git commit -m "chore: generate Xcode project with safari-web-extension-converter"
+          git push --force -u origin xcode-project
