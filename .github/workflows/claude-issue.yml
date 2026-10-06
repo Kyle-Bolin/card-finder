@@ -1,0 +1,111 @@
+name: Claude issue routine
+
+# Starts a fresh Claude Code session for an issue by firing a Claude Code routine.
+# The session follows .claude/skills/work-on-issue/SKILL.md and opens a pull request.
+#
+# What starts a session:
+#   - an issue opened by the owner, a member or a collaborator, unless it carries
+#     one of the skip labels (repository variable CLAUDE_ISSUE_SKIP_LABELS,
+#     comma-separated, default "epic,roadmap,question"). Set the repository
+#     variable CLAUDE_ISSUE_ON_OPEN to "false" to start sessions only by label.
+#   - the trigger label being added to any issue (repository variable
+#     CLAUDE_ISSUE_LABEL, default "claude"). Only people with triage access can
+#     add labels.
+# Issues filed through a GitHub App (such as Claude itself) never start one on
+# their own, so sessions can't spawn more sessions.
+#
+# Setup: see the template's README.md, or run its setup.sh. Until the repository
+# variable CLAUDE_ISSUE_ROUTINE_ID exists, this workflow skips.
+on:
+  issues:
+    types: [opened, labeled]
+
+permissions: {}
+
+jobs:
+  start-session:
+    name: Start Claude session
+    if: >-
+      vars.CLAUDE_ISSUE_ROUTINE_ID != ''
+      && (
+        (
+          github.event.action == 'opened'
+          && vars.CLAUDE_ISSUE_ON_OPEN != 'false'
+          && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
+          && github.event.issue.performed_via_github_app == null
+          && !contains(github.event.issue.labels.*.name, vars.CLAUDE_ISSUE_LABEL || 'claude')
+        )
+        || (
+          github.event.action == 'labeled'
+          && github.event.label.name == (vars.CLAUDE_ISSUE_LABEL || 'claude')
+        )
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fire the routine
+        env:
+          ROUTINE_ID: ${{ vars.CLAUDE_ISSUE_ROUTINE_ID }}
+          ROUTINE_TOKEN: ${{ secrets.CLAUDE_ISSUE_ROUTINE_TOKEN }}
+          SKIP_LABELS: ${{ vars.CLAUDE_ISSUE_SKIP_LABELS || 'epic,roadmap,question' }}
+          ISSUE_LABELS: ${{ toJSON(github.event.issue.labels.*.name) }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          TRIGGER: ${{ github.event.action }}
+        run: |
+          set -euo pipefail
+
+          # A newly opened issue with a skip label (an epic, say) isn't a task.
+          # Adding the trigger label later still starts a session.
+          if [ "$TRIGGER" = "opened" ]; then
+            IFS=',' read -ra skip <<<"$SKIP_LABELS"
+            for label in "${skip[@]}"; do
+              label="$(echo "$label" | xargs)"
+              if [ -n "$label" ] && jq -e --arg l "$label" 'index($l) != null' <<<"$ISSUE_LABELS" >/dev/null; then
+                echo "::notice::Not starting a session: #${ISSUE_NUMBER} is labeled '${label}'"
+                exit 0
+              fi
+            done
+          fi
+
+          # Values pasted into GitHub settings often carry a trailing newline.
+          ROUTINE_ID="${ROUTINE_ID//[[:space:]]/}"
+          ROUTINE_TOKEN="${ROUTINE_TOKEN//[[:space:]]/}"
+
+          if [[ ! "$ROUTINE_ID" =~ ^trig_[A-Za-z0-9]+$ ]]; then
+            echo "::error::CLAUDE_ISSUE_ROUTINE_ID should look like trig_..., got '$ROUTINE_ID'"
+            exit 1
+          fi
+          if [ -z "$ROUTINE_TOKEN" ]; then
+            echo "::error::The CLAUDE_ISSUE_ROUTINE_TOKEN secret is not set"
+            exit 1
+          fi
+
+          body="${ISSUE_BODY:-}"
+          if [ "${#body}" -gt 10000 ]; then
+            body="${body:0:10000}"$'\n\n[Truncated. Read the full issue on GitHub.]'
+          fi
+          text=$(printf 'Issue #%s in %s\nLink: %s\nTitle: %s\nOpened by: %s\nTrigger: issue %s\n\n%s\n' \
+            "$ISSUE_NUMBER" "$GITHUB_REPOSITORY" "$ISSUE_URL" "$ISSUE_TITLE" "$ISSUE_AUTHOR" "$TRIGGER" "$body")
+
+          if ! response=$(jq -n --arg text "$text" '{text: $text}' \
+            | curl --silent --show-error --fail-with-body \
+                --request POST "https://api.anthropic.com/v1/claude_code/routines/${ROUTINE_ID}/fire" \
+                --header "Authorization: Bearer ${ROUTINE_TOKEN}" \
+                --header "anthropic-beta: experimental-cc-routine-2026-04-01" \
+                --header "anthropic-version: 2023-06-01" \
+                --header "Content-Type: application/json" \
+                --data @-); then
+            echo "::error::Firing the routine failed. Response: ${response:-<empty>}"
+            exit 1
+          fi
+
+          session_url=$(jq -r '.claude_code_session_url // empty' <<<"$response")
+          echo "Started a Claude session for #${ISSUE_NUMBER}: ${session_url:-no session URL returned}"
+          {
+            echo "### Claude session for #${ISSUE_NUMBER}"
+            echo "${session_url:-The routine accepted the request but returned no session URL.}"
+          } >> "$GITHUB_STEP_SUMMARY"
