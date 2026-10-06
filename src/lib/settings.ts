@@ -1,22 +1,27 @@
 import browser from "webextension-polyfill";
+import { DEFAULT_FILTERS, normalizeFilters, type Filters } from "./filters";
 import type { Store } from "./types";
+
+export type { Filters };
 
 export interface Settings {
   /** Moxfield tag that marks a card as wanted (case-insensitive). */
   tag: string;
   stores: Store[];
+  filters: Filters;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   tag: "unowned",
   stores: [],
+  filters: DEFAULT_FILTERS,
 };
 
 const KEY = "settings";
 
 export async function loadSettings(): Promise<Settings> {
   const stored = (await browser.storage.local.get(KEY))[KEY] as Partial<Settings> | undefined;
-  return { ...DEFAULT_SETTINGS, ...stored };
+  return { ...DEFAULT_SETTINGS, ...stored, filters: normalizeFilters(stored?.filters) };
 }
 
 export async function saveSettings(settings: Settings): Promise<void> {

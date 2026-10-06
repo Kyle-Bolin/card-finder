@@ -1,3 +1,4 @@
+import { ALL_CONDITIONS, normalizeFilters } from "../lib/filters";
 import { fetchDirectory, nearbyFromDirectory } from "../lib/directory";
 import {
   findStorefronts,
@@ -142,6 +143,36 @@ $<HTMLFormElement>("tag-form").addEventListener("submit", async (event) => {
   settings.tag = tag;
   await saveSettings(settings);
 });
+
+// --- Result filters ---------------------------------------------------------
+
+function renderFilters(): void {
+  const f = settings.filters;
+  $<HTMLInputElement>("max-price").value = f.maxPrice === null ? "" : String(f.maxPrice);
+  $<HTMLSelectElement>("foil").value = f.foil;
+  $<HTMLInputElement>("english-only").checked = f.englishOnly;
+  for (const box of $("conditions").querySelectorAll<HTMLInputElement>("input")) {
+    box.checked = f.conditions.includes(box.value as (typeof ALL_CONDITIONS)[number]);
+  }
+}
+
+async function saveFilters(): Promise<void> {
+  const price = $<HTMLInputElement>("max-price").value.trim();
+  settings.filters = normalizeFilters({
+    maxPrice: price === "" ? null : Number(price),
+    conditions: [...$("conditions").querySelectorAll<HTMLInputElement>("input:checked")].map(
+      (box) => box.value as (typeof ALL_CONDITIONS)[number],
+    ),
+    foil: $<HTMLSelectElement>("foil").value as "any" | "nonfoil" | "foil",
+    englishOnly: $<HTMLInputElement>("english-only").checked,
+  });
+  await saveSettings(settings);
+}
+
+for (const id of ["max-price", "conditions", "foil", "english-only"]) {
+  const node = $(id);
+  node.addEventListener(node.id === "max-price" ? "input" : "change", () => void saveFilters());
+}
 
 // --- Find stores near me --------------------------------------------------
 
@@ -304,4 +335,5 @@ void (async () => {
   settings = await loadSettings();
   $<HTMLInputElement>("tag").value = settings.tag;
   renderStores();
+  renderFilters();
 })();

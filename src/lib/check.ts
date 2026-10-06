@@ -1,4 +1,6 @@
+import { applyFilters } from "./filters";
 import { isSingleCard, matchesCard, parseCondition } from "./matching";
+import type { Filters } from "./settings";
 import { mapLimit } from "./storeFinder";
 import { getSkus, productUrl, searchProducts, type CatalogProduct } from "./tcgplayerpro";
 import type { FetchFn, Listing, Store, WantedCard } from "./types";
@@ -59,12 +61,17 @@ export async function checkStores(
   stores: Store[],
   wanted: WantedCard[],
   onResult: (result: StoreResult) => void,
-  { fetchFn = fetch, concurrency = 3 }: { fetchFn?: FetchFn; concurrency?: number } = {},
+  {
+    fetchFn = fetch,
+    concurrency = 3,
+    filters,
+  }: { fetchFn?: FetchFn; concurrency?: number; filters?: Filters } = {},
 ): Promise<StoreResult[]> {
   return mapLimit(stores, concurrency, async (store) => {
     let result: StoreResult;
     try {
-      const listings = await findListings(store, wanted, fetchFn);
+      const all = await findListings(store, wanted, fetchFn);
+      const listings = filters ? applyFilters(all, filters) : all;
       result = { store, listings, found: [...new Set(listings.map((l) => l.cardName))] };
     } catch (err) {
       result = {

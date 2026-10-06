@@ -6,7 +6,7 @@ import { summarizeDeck } from "../lib/moxfieldDiagnostic";
 import { runCheck, type BackgroundRequest } from "../lib/messages";
 import { loadSettings } from "../lib/settings";
 import type { WantedCard } from "../lib/types";
-import { renderResults, RESULTS_CSS } from "../ui/results";
+import { renderResults, RESULTS_CSS, type ResultsState } from "../ui/results";
 
 // Moxfield is a single-page app: decks open without a full page load, so the
 // content script runs on every moxfield.com page and shows the button only on decks.
@@ -185,11 +185,12 @@ class Panel {
     button.disabled = true;
     const results = el("div");
     this.body.replaceChildren(results, this.links());
-    const state = {
+    const state: ResultsState = {
       wanted: this.wanted,
       totalStores: 0,
       results: [] as StoreResult[],
       done: false,
+      onOpenSettings: () => void sendBackground({ type: "openOptions" }),
     };
     results.append(el("p", { className: "muted" }, "Starting…"));
     this.stopCheck = runCheck(this.wanted, this.deckName, (event) => {
@@ -205,6 +206,7 @@ class Panel {
         }
         case "started":
           state.totalStores = event.totalStores;
+          state.filters = event.filters;
           break;
         case "result":
           state.results.push(event.result);

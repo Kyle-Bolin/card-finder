@@ -22,6 +22,44 @@
       </section>
 
       <section>
+        <h2>Results</h2>
+        <p class="hint">
+          Only listings that pass these filters count as in stock. Changes save immediately.
+        </p>
+        <div class="row wrap">
+          <label for="max-price">Max price per copy ($)</label>
+          <input
+            id="max-price"
+            type="number"
+            min="0"
+            step="0.01"
+            inputmode="decimal"
+            placeholder="No limit"
+          />
+        </div>
+        <fieldset id="conditions">
+          <legend>Conditions</legend>
+          <label class="checkbox"><input type="checkbox" value="NM" /> NM</label>
+          <label class="checkbox"><input type="checkbox" value="LP" /> LP</label>
+          <label class="checkbox"><input type="checkbox" value="MP" /> MP</label>
+          <label class="checkbox"><input type="checkbox" value="HP" /> HP</label>
+          <label class="checkbox"><input type="checkbox" value="DMG" /> DMG</label>
+        </fieldset>
+        <div class="row wrap">
+          <label for="foil">Foil</label>
+          <select id="foil">
+            <option value="any">Any</option>
+            <option value="nonfoil">Non-foil only</option>
+            <option value="foil">Foil only</option>
+          </select>
+        </div>
+        <label class="checkbox">
+          <input id="english-only" type="checkbox" />
+          English only
+        </label>
+      </section>
+
+      <section>
         <h2>Your stores</h2>
         <ul id="stores" class="cards"></ul>
         <p id="no-stores" class="hint">
