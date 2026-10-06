@@ -7,7 +7,7 @@ import { runCheck, type BackgroundRequest } from "../lib/messages";
 import { onboardingState } from "../lib/onboarding";
 import { loadSettings } from "../lib/settings";
 import type { WantedCard } from "../lib/types";
-import { renderResults, RESULTS_CSS } from "../ui/results";
+import { renderNeedsPermission, renderResults, RESULTS_CSS } from "../ui/results";
 
 // Moxfield is a single-page app: decks open without a full page load, so the
 // content script runs on every moxfield.com page and shows the button only on decks.
@@ -211,6 +211,13 @@ class Panel {
           results.replaceChildren(el("p", {}, "You haven't added any stores yet."), open);
           return;
         }
+        case "needs-permission":
+          // Content scripts can't call permissions.request; the settings page can.
+          renderNeedsPermission(
+            results,
+            () => void sendBackground({ type: "openOptions", grant: true }),
+          );
+          return;
         case "started":
           state.totalStores = event.totalStores;
           break;

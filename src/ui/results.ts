@@ -98,6 +98,25 @@ function storeCard(result: StoreResult, wantedCount: number): HTMLElement {
   return card;
 }
 
+/** Ask for site access; `onGrant` runs on click, so it can call `permissions.request`. */
+export function renderNeedsPermission(container: HTMLElement, onGrant: () => void): void {
+  const button = el("button", { className: "primary", textContent: "Grant access" });
+  button.addEventListener("click", onGrant);
+  container.replaceChildren(
+    el(
+      "div",
+      { className: "cf-results" },
+      el("p", {}, "Card Finder needs access to store sites"),
+      el(
+        "p",
+        { className: "cf-meta" },
+        "Safari asks you to allow each site separately before Card Finder can check store inventories.",
+      ),
+      button,
+    ),
+  );
+}
+
 /** Render (or re-render) the results view into `container`. */
 export function renderResults(container: HTMLElement, state: ResultsState): void {
   const { wanted, results, totalStores, done } = state;
