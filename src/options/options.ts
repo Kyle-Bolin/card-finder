@@ -3,6 +3,7 @@ import {
   findStorefronts,
   metersToMiles,
   nearbyWpnStores,
+  withCoordinates,
   zipToLocation,
   type StorefrontMatch,
 } from "../lib/storeFinder";
@@ -42,8 +43,10 @@ function formatAddress(store: Pick<Store, "address">): string {
   return a ? [a.street, a.city, `${a.state} ${a.zip}`.trim()].filter(Boolean).join(", ") : "";
 }
 
-function siteToStore(site: StoreSite): Store {
+function siteToStore(site: StoreSite, location?: GeoPoint): Store {
   return {
+    latitude: location?.latitude,
+    longitude: location?.longitude,
     url: site.url,
     name: site.name,
     address: site.address,
@@ -96,8 +99,9 @@ function renderStores(): void {
   }
 }
 
-async function addStore(site: StoreSite): Promise<void> {
-  settings.stores = upsertStore(settings.stores, siteToStore(site));
+async function addStore(site: StoreSite, location?: GeoPoint): Promise<void> {
+  const store = await withCoordinates(siteToStore(site, location));
+  settings.stores = upsertStore(settings.stores, store);
   await saveSettings(settings);
   renderStores();
   renderFoundButtons();
@@ -206,7 +210,7 @@ function renderFound(): void {
     const li = el("li", {}, info);
     if (!button) {
       button = el("button", { type: "button", textContent: "Add" });
-      button.addEventListener("click", () => void addStore(match.site));
+      button.addEventListener("click", () => void addStore(match.site, match.store));
       foundButtons.set(match.site.url, button);
       li.append(button);
     } else {
@@ -223,6 +227,8 @@ async function search(point: GeoPoint): Promise<void> {
   const miles = Number($<HTMLSelectElement>("radius").value);
   const submit = $<HTMLFormElement>("find-form").querySelectorAll("button");
   submit.forEach((b) => (b.disabled = true));
+  settings.home = point;
+  void saveSettings(settings);
   found = [];
   renderFound();
   try {

@@ -1,10 +1,12 @@
 import browser from "webextension-polyfill";
-import type { Store } from "./types";
+import type { GeoPoint, Store } from "./types";
 
 export interface Settings {
   /** Moxfield tag that marks a card as wanted (case-insensitive). */
   tag: string;
   stores: Store[];
+  /** Where the user last searched from; results are sorted by distance to it. */
+  home?: GeoPoint;
 }
 
 export const DEFAULT_SETTINGS: Settings = {

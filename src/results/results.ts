@@ -1,8 +1,9 @@
 import browser from "webextension-polyfill";
 import { parseCardList, type StoreResult } from "../lib/check";
 import { loadLastCheck } from "../lib/lastCheck";
+import { loadSettings } from "../lib/settings";
 import { runCheck } from "../lib/messages";
-import { renderResults, RESULTS_CSS } from "../ui/results";
+import { renderResults, RESULTS_CSS, type ResultsState } from "../ui/results";
 
 function $<T extends HTMLElement>(id: string): T {
   const node = document.getElementById(id);
@@ -29,7 +30,8 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
   }
   status.textContent = "";
   checkButton.disabled = true;
-  const state = { wanted, totalStores: 0, results: [] as StoreResult[], done: false };
+  const state: ResultsState = { wanted, totalStores: 0, results: [] as StoreResult[], done: false };
+  void loadSettings().then((s) => (state.home = s.home));
   runCheck(wanted, `Card list (${wanted.length})`, (event) => {
     switch (event.type) {
       case "no-stores":
@@ -65,5 +67,6 @@ void (async () => {
   $<HTMLTextAreaElement>("list").value = last.wanted
     .map((w) => `${w.quantity} ${w.name}`)
     .join("\n");
-  renderResults(resultsEl, { ...last, done: true });
+  const { home } = await loadSettings();
+  renderResults(resultsEl, { ...last, done: true, home });
 })();

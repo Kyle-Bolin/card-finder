@@ -1,5 +1,5 @@
 import { getSite } from "./tcgplayerpro";
-import type { FetchFn, GeoPoint, StoreSite, WpnStore } from "./types";
+import type { FetchFn, GeoPoint, Store, StoreSite, WpnStore } from "./types";
 
 const WPN_GRAPHQL = "https://api.tabletop.wizards.com/silverbeak-griffin-service/graphql";
 const METERS_PER_MILE = 1609.344;
@@ -89,6 +89,30 @@ export async function nearbyWpnStores(
 
 export function metersToMiles(meters: number): number {
   return meters / METERS_PER_MILE;
+}
+
+/** Great-circle distance between two points, in miles. */
+export function distanceMiles(a: GeoPoint, b: GeoPoint): number {
+  const rad = (deg: number) => (deg * Math.PI) / 180;
+  const dLat = rad(b.latitude - a.latitude);
+  const dLon = rad(b.longitude - a.longitude);
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(rad(a.latitude)) * Math.cos(rad(b.latitude)) * Math.sin(dLon / 2) ** 2;
+  return metersToMiles(2 * 6371008.8 * Math.asin(Math.min(1, Math.sqrt(h))));
+}
+
+/** Copy `store` with coordinates geocoded from its ZIP; unchanged if it can't be located. */
+export async function withCoordinates(store: Store, fetchFn: FetchFn = fetch): Promise<Store> {
+  if (store.latitude !== undefined && store.longitude !== undefined) return store;
+  const zip = store.address?.zip;
+  if (!zip) return store;
+  try {
+    const { latitude, longitude } = await zipToLocation(zip, fetchFn);
+    return { ...store, latitude, longitude };
+  } catch {
+    return store;
+  }
 }
 
 /** Big chains and generic hosts that never have their own TCGplayer Pro storefront. */

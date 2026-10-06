@@ -5,8 +5,8 @@ import { deckApiUrl, extractWanted, parseDeckId } from "../lib/moxfield";
 import { summarizeDeck } from "../lib/moxfieldDiagnostic";
 import { runCheck, type BackgroundRequest } from "../lib/messages";
 import { loadSettings } from "../lib/settings";
-import type { WantedCard } from "../lib/types";
-import { renderResults, RESULTS_CSS } from "../ui/results";
+import type { GeoPoint, WantedCard } from "../lib/types";
+import { renderResults, RESULTS_CSS, type ResultsState } from "../ui/results";
 
 // Moxfield is a single-page app: decks open without a full page load, so the
 // content script runs on every moxfield.com page and shows the button only on decks.
@@ -99,6 +99,7 @@ class Panel {
   private wanted: WantedCard[] = [];
   private deckName = "Deck";
   private tag = "unowned";
+  private home?: GeoPoint;
   private load: DeckLoad | null = null;
   private stopCheck: (() => void) | null = null;
 
@@ -139,8 +140,9 @@ class Panel {
   private async loadDeck(): Promise<void> {
     if (!this.deckId) return;
     this.body.replaceChildren(el("p", { className: "muted" }, "Reading this deck…"));
-    const { tag } = await loadSettings();
+    const { tag, home } = await loadSettings();
     this.tag = tag;
+    this.home = home;
     this.load = await loadDeck(this.deckId);
     const deck = this.load.deck as { name?: unknown } | undefined;
     if (!deck) {
@@ -185,11 +187,12 @@ class Panel {
     button.disabled = true;
     const results = el("div");
     this.body.replaceChildren(results, this.links());
-    const state = {
+    const state: ResultsState = {
       wanted: this.wanted,
       totalStores: 0,
       results: [] as StoreResult[],
       done: false,
+      home: this.home,
     };
     results.append(el("p", { className: "muted" }, "Starting…"));
     this.stopCheck = runCheck(this.wanted, this.deckName, (event) => {
