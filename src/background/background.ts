@@ -1,5 +1,12 @@
 import browser from "webextension-polyfill";
 import { checkStores, type StoreResult } from "../lib/check";
+import {
+  diffCheck,
+  listKey,
+  loadDeckHistory,
+  saveDeckHistory,
+  type CheckChanges,
+} from "../lib/history";
 import { saveLastCheck } from "../lib/lastCheck";
 import {
   CHECK_PORT,
@@ -79,14 +86,28 @@ browser.runtime.onConnect.addListener((port) => {
       const results: StoreResult[] = await checkStores(stores, request.wanted, (result) =>
         send({ type: "result", result }),
       );
+      const at = new Date().toISOString();
+      let changes: CheckChanges | undefined;
+      // Nothing to compare or remember if every store failed.
+      if (results.some((r) => !r.error)) {
+        try {
+          const deckKey = request.deckKey ?? listKey(request.wanted);
+          const diff = diffCheck(await loadDeckHistory(deckKey), results, request.wanted, at);
+          await saveDeckHistory(deckKey, diff.history);
+          changes = diff.changes;
+        } catch {
+          // History is a nicety; the results still count.
+        }
+      }
       await saveLastCheck({
-        at: new Date().toISOString(),
+        at,
         label: request.label ?? "Card list",
         wanted: request.wanted,
         totalStores: stores.length,
         results,
+        changes,
       });
-      send({ type: "done" });
+      send({ type: "done", changes });
     } catch (err) {
       send({ type: "error", message: err instanceof Error ? err.message : String(err) });
     }

@@ -1,8 +1,9 @@
 import browser from "webextension-polyfill";
 import { parseCardList, type StoreResult } from "../lib/check";
+import { formatAgo } from "../lib/history";
 import { loadLastCheck } from "../lib/lastCheck";
 import { runCheck } from "../lib/messages";
-import { renderResults, RESULTS_CSS } from "../ui/results";
+import { renderResults, RESULTS_CSS, type ResultsState } from "../ui/results";
 
 function $<T extends HTMLElement>(id: string): T {
   const node = document.getElementById(id);
@@ -29,7 +30,7 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
   }
   status.textContent = "";
   checkButton.disabled = true;
-  const state = { wanted, totalStores: 0, results: [] as StoreResult[], done: false };
+  const state: ResultsState = { wanted, totalStores: 0, results: [] as StoreResult[], done: false };
   runCheck(wanted, `Card list (${wanted.length})`, (event) => {
     switch (event.type) {
       case "no-stores":
@@ -45,6 +46,7 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
         break;
       case "done":
         state.done = true;
+        state.changes = event.changes;
         checkButton.disabled = false;
         break;
       case "error":
@@ -61,7 +63,7 @@ void (async () => {
   if (!new URLSearchParams(location.search).has("last")) return;
   const last = await loadLastCheck();
   if (!last) return;
-  status.textContent = `${last.label}, checked ${new Date(last.at).toLocaleString()}`;
+  status.textContent = `${last.label}, checked ${formatAgo(last.at)}`;
   $<HTMLTextAreaElement>("list").value = last.wanted
     .map((w) => `${w.quantity} ${w.name}`)
     .join("\n");

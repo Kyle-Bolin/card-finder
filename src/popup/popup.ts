@@ -1,4 +1,5 @@
 import browser from "webextension-polyfill";
+import { formatAgo } from "../lib/history";
 import { loadLastCheck } from "../lib/lastCheck";
 import { loadSettings } from "../lib/settings";
 
@@ -27,7 +28,7 @@ void (async () => {
       openResults("?last=1");
     });
     lastEl.append(
-      `Last check: ${last.label}: ${found} of ${last.wanted.length} cards found. `,
+      `Last checked ${formatAgo(last.at)}: ${last.label}: ${found} of ${last.wanted.length} cards found. `,
       link,
     );
     lastEl.hidden = false;

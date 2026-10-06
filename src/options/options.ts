@@ -1,3 +1,4 @@
+import { clearHistory } from "../lib/history";
 import { fetchDirectory, nearbyFromDirectory } from "../lib/directory";
 import {
   findStorefronts,
@@ -305,3 +306,8 @@ void (async () => {
   $<HTMLInputElement>("tag").value = settings.tag;
   renderStores();
 })();
+
+$("clear-history").addEventListener("click", async () => {
+  await clearHistory();
+  $("clear-history-status").textContent = "History cleared.";
+});

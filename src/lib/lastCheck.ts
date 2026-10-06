@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import type { StoreResult } from "./check";
+import type { CheckChanges } from "./history";
 import type { WantedCard } from "./types";
 
 /** The most recent check, shown again in the popup and results page. */
@@ -9,6 +10,8 @@ export interface LastCheck {
   wanted: WantedCard[];
   totalStores: number;
   results: StoreResult[];
+  /** What changed since the check before; absent on older saves. */
+  changes?: CheckChanges;
 }
 
 const KEY = "lastCheck";
