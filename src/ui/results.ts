@@ -1,10 +1,15 @@
 import type { StoreResult } from "../lib/check";
+import { describeFilters, type Filters } from "../lib/filters";
 import type { Listing, WantedCard } from "../lib/types";
 
 /** Everything the results view shows; re-rendered as stores report in. */
 export interface ResultsState {
   wanted: WantedCard[];
   totalStores: number;
+  /** Filters the results were checked with. */
+  filters?: Filters;
+  /** Opens the settings page; when set, the filter summary links to it. */
+  onOpenSettings?: () => void;
   results: StoreResult[];
   done: boolean;
 }
@@ -119,7 +124,7 @@ export function renderNeedsPermission(container: HTMLElement, onGrant: () => voi
 
 /** Render (or re-render) the results view into `container`. */
 export function renderResults(container: HTMLElement, state: ResultsState): void {
-  const { wanted, results, totalStores, done } = state;
+  const { wanted, results, totalStores, done, filters, onOpenSettings } = state;
   const found = new Set(results.flatMap((r) => r.found));
   const root = el("div", { className: "cf-results" });
   root.append(
@@ -136,6 +141,21 @@ export function renderResults(container: HTMLElement, state: ResultsState): void
         : `Checking stores… ${results.length} of ${totalStores} done`,
     ),
   );
+  if (filters) {
+    const active = describeFilters(filters);
+    const line = el(
+      "div",
+      { className: "cf-progress" },
+      active.length ? `Filters: ${active.join(" · ")} · ` : "No filters · ",
+    );
+    const link = el("a", { href: "#", textContent: "Change in settings" });
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      onOpenSettings?.();
+    });
+    line.append(link);
+    root.append(line);
+  }
   const withStock = results
     .filter((r) => r.found.length)
     .sort((a, b) => b.found.length - a.found.length || a.store.name.localeCompare(b.store.name));

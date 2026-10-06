@@ -3,7 +3,12 @@ import { parseCardList, type StoreResult } from "../lib/check";
 import { loadLastCheck } from "../lib/lastCheck";
 import { runCheck } from "../lib/messages";
 import { requestOrigins } from "../lib/permissions";
-import { renderNeedsPermission, renderResults, RESULTS_CSS } from "../ui/results";
+import {
+  renderNeedsPermission,
+  renderResults,
+  RESULTS_CSS,
+  type ResultsState,
+} from "../ui/results";
 
 function $<T extends HTMLElement>(id: string): T {
   const node = document.getElementById(id);
@@ -19,7 +24,8 @@ const status = $("status");
 const resultsEl = $("results");
 const checkButton = $<HTMLButtonElement>("check");
 
-$("settings").addEventListener("click", () => void browser.runtime.openOptionsPage());
+const openSettings = () => void browser.runtime.openOptionsPage();
+$("settings").addEventListener("click", openSettings);
 
 $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
   event.preventDefault();
@@ -30,7 +36,13 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
   }
   status.textContent = "";
   checkButton.disabled = true;
-  const state = { wanted, totalStores: 0, results: [] as StoreResult[], done: false };
+  const state: ResultsState = {
+    wanted,
+    totalStores: 0,
+    results: [] as StoreResult[],
+    done: false,
+    onOpenSettings: openSettings,
+  };
   runCheck(wanted, `Card list (${wanted.length})`, (event) => {
     switch (event.type) {
       case "no-stores":
@@ -50,6 +62,7 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
         return;
       case "started":
         state.totalStores = event.totalStores;
+        state.filters = event.filters;
         break;
       case "result":
         state.results.push(event.result);
@@ -76,5 +89,5 @@ void (async () => {
   $<HTMLTextAreaElement>("list").value = last.wanted
     .map((w) => `${w.quantity} ${w.name}`)
     .join("\n");
-  renderResults(resultsEl, { ...last, done: true });
+  renderResults(resultsEl, { ...last, done: true, onOpenSettings: openSettings });
 })();

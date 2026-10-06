@@ -82,7 +82,7 @@ browser.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener(async (message: unknown) => {
     const request = message as Partial<CheckRequest>;
     if (request?.type !== "start" || !Array.isArray(request.wanted)) return;
-    const { stores } = await loadSettings();
+    const { stores, filters } = await loadSettings();
     if (!stores.length) {
       send({ type: "no-stores" });
       return;
@@ -92,16 +92,20 @@ browser.runtime.onConnect.addListener((port) => {
       send({ type: "needs-permission", origins });
       return;
     }
-    send({ type: "started", totalStores: stores.length });
+    send({ type: "started", totalStores: stores.length, filters });
     try {
-      const results: StoreResult[] = await checkStores(stores, request.wanted, (result) =>
-        send({ type: "result", result }),
+      const results: StoreResult[] = await checkStores(
+        stores,
+        request.wanted,
+        (result) => send({ type: "result", result }),
+        { filters },
       );
       await saveLastCheck({
         at: new Date().toISOString(),
         label: request.label ?? "Card list",
         wanted: request.wanted,
         totalStores: stores.length,
+        filters,
         results,
       });
       send({ type: "done" });

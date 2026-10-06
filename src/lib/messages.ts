@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import type { StoreResult } from "./check";
+import type { Filters } from "./filters";
 import type { WantedCard } from "./types";
 
 /** Port name for running a store check in the background worker. */
@@ -13,7 +14,7 @@ export interface CheckRequest {
 }
 
 export type CheckEvent =
-  | { type: "started"; totalStores: number }
+  | { type: "started"; totalStores: number; filters: Filters }
   | { type: "result"; result: StoreResult }
   | { type: "done" }
   | { type: "no-stores" }
