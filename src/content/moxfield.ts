@@ -2,7 +2,8 @@ import browser from "webextension-polyfill";
 import type { FetchTextResponse } from "../background/background";
 import type { StoreResult } from "../lib/check";
 import { formatAgo, loadDeckHistory } from "../lib/history";
-import { deckApiUrl, extractWanted, parseDeckId } from "../lib/moxfield";
+import { deckApiUrl, deckList, extractWanted, parseDeckId } from "../lib/moxfield";
+import { edhPowerLevelUrl } from "../lib/powerLevel";
 import { summarizeDeck } from "../lib/moxfieldDiagnostic";
 import { runCheck, type BackgroundRequest } from "../lib/messages";
 import { onboardingState } from "../lib/onboarding";
@@ -144,6 +145,18 @@ class Panel {
     return el("div", { className: "links" }, ...extra, settings, paste, diagnostic);
   }
 
+  /** Opens the deck on EDH Power Level in a new tab. */
+  private powerLevel(deck: unknown): HTMLElement {
+    const button = el("button", {
+      textContent: "Power level ↗",
+      title: "Analyse this deck on edhpowerlevel.com",
+    });
+    button.addEventListener("click", () => {
+      window.open(edhPowerLevelUrl(deckList(deck)), "_blank", "noopener");
+    });
+    return button;
+  }
+
   private async loadDeck(): Promise<void> {
     if (!this.deckId) return;
     this.body.replaceChildren(el("p", { className: "muted" }, "Reading this deck…"));
@@ -175,7 +188,7 @@ class Panel {
           { className: "muted" },
           "Tag the cards you don't own in Moxfield, or change the tag in settings.",
         ),
-        this.links(),
+        this.links(this.powerLevel(deck)),
       );
       return;
     }
@@ -195,7 +208,7 @@ class Panel {
       children.push(el("p", {}, "Add your local stores before checking."), add);
       button.className = "secondary";
     }
-    children.push(button, this.links());
+    children.push(button, this.links(this.powerLevel(deck)));
     this.body.replaceChildren(...children);
     const deckId = this.deckId;
     void loadDeckHistory(`deck:${deckId}`).then((history) => {
