@@ -87,3 +87,16 @@ export function extractWanted(deck: Json, tag: string): WantedCard[] {
   }
   return [...wanted.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
+
+/** Boards that make up the deck you play; the maybeboard, sideboard and tokens don't count. */
+const PLAYED_BOARDS = ["commanders", "companions", "mainboard"];
+
+/** The played deck as "1 Card Name" lines, commanders first. */
+export function deckList(deck: Json): string[] {
+  if (!isObject(deck)) return [];
+  const counts = new Map<string, number>();
+  const cards = deckCards(deck).filter((c) => PLAYED_BOARDS.includes(c.board));
+  cards.sort((a, b) => PLAYED_BOARDS.indexOf(a.board) - PLAYED_BOARDS.indexOf(b.board));
+  for (const { name, quantity } of cards) counts.set(name, (counts.get(name) ?? 0) + quantity);
+  return [...counts].map(([name, quantity]) => `${quantity} ${name}`);
+}
