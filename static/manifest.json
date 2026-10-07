@@ -33,6 +33,8 @@
     "https://*.tcgplayerpro.com/*",
     "https://api.tabletop.wizards.com/*",
     "https://api.zippopotam.us/*",
+    "https://ipapi.co/*",
+    "https://get.geojs.io/*",
     "https://raw.githubusercontent.com/*"
   ],
   "content_scripts": [

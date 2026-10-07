@@ -46,6 +46,8 @@ export interface DirectoryLocation {
 export const DIRECTORY_URL =
   "https://raw.githubusercontent.com/Kyle-Bolin/card-finder/main/data/storefronts.json";
 
+export const METERS_PER_MILE = 1609.344;
+
 const EARTH_RADIUS_METERS = 6_371_000;
 
 /** Great-circle distance in meters. */

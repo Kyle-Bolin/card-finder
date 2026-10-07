@@ -2,7 +2,8 @@ import browser from "webextension-polyfill";
 import { formatAgo } from "../lib/history";
 import { loadLastCheck } from "../lib/lastCheck";
 import { onboardingState } from "../lib/onboarding";
-import { loadSettings } from "../lib/settings";
+import { resolveStores } from "../lib/resolveStores";
+import { MANY_STORES } from "../lib/storeSet";
 
 function openResults(query = ""): void {
   void browser.tabs.create({ url: browser.runtime.getURL(`results/results.html${query}`) });
@@ -10,7 +11,10 @@ function openResults(query = ""): void {
 }
 
 void (async () => {
-  const { stores, tag } = await loadSettings();
+  const {
+    stores,
+    settings: { tag },
+  } = await resolveStores();
   if (onboardingState({ stores }).needsStores) {
     // Setup comes first: make settings the primary button.
     document.getElementById("open-settings")?.classList.remove("secondary");
@@ -22,8 +26,9 @@ void (async () => {
   const summary = document.getElementById("summary");
   if (summary) {
     summary.textContent = stores.length
-      ? `Checking ${stores.length} store${stores.length === 1 ? "" : "s"} for cards tagged "${tag}".`
-      : "No stores set up yet.";
+      ? `Checking ${stores.length} store${stores.length === 1 ? "" : "s"} for cards tagged "${tag}".` +
+        (stores.length > MANY_STORES ? " That's a lot of stores, so checks will take longer." : "")
+      : "No stores in range yet. Open settings to enter a ZIP code or widen the range.";
   }
   const last = await loadLastCheck();
   const lastEl = document.getElementById("last");

@@ -50,7 +50,7 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
     switch (event.type) {
       case "no-stores":
         status.textContent =
-          "You haven't added any stores yet. Open Settings & stores to add some.";
+          "No stores to check yet. Open Settings & stores to enter a ZIP code or widen the range.";
         checkButton.disabled = false;
         return;
       case "needs-permission":

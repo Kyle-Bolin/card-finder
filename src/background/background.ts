@@ -19,6 +19,7 @@ import {
 import { missingOrigins, STORE_ORIGINS } from "../lib/permissions";
 import { shouldShowWelcomeOnInstall, WELCOME_PARAM } from "../lib/onboarding";
 import { loadSettings, saveSettings } from "../lib/settings";
+import { resolveStores } from "../lib/resolveStores";
 import { mapLimit, withCoordinates } from "../lib/storeFinder";
 
 export interface FetchTextResponse {
@@ -99,9 +100,10 @@ browser.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener(async (message: unknown) => {
     const request = message as Partial<CheckRequest>;
     if (request?.type !== "start" || !Array.isArray(request.wanted)) return;
-    const settings = await loadSettings();
-    const { filters } = settings;
-    let { stores } = settings;
+    // Location + range + exclusions + always-include stores + directory → stores to check.
+    const resolved = await resolveStores();
+    const { filters } = resolved.settings;
+    let { stores } = resolved;
     if (!stores.length) {
       send({ type: "no-stores" });
       return;
@@ -112,11 +114,12 @@ browser.runtime.onConnect.addListener((port) => {
       return;
     }
     send({ type: "started", totalStores: stores.length, filters });
-    // Stores saved before coordinates existed are located once, on their next check.
-    if (stores.some((s) => s.latitude === undefined)) {
-      const located = await mapLimit(stores, 3, (store) => withCoordinates(store));
-      if (located.some((s, i) => s !== stores[i])) {
-        stores = located;
+    // Always-include stores saved before coordinates existed are located once, on their next check.
+    const saved = resolved.settings.stores;
+    if (saved.some((s) => s.latitude === undefined)) {
+      const located = await mapLimit(saved, 3, (store) => withCoordinates(store));
+      if (located.some((s, i) => s !== saved[i])) {
+        stores = stores.map((s) => located.find((l) => l.url === s.url) ?? s);
         await saveSettings({ ...(await loadSettings()), stores: located });
       }
     }
