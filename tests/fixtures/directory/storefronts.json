@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-10-06T00:07:05.203Z",
+  "storefronts": [
+    {
+      "url": "https://bazaargametrading.tcgplayerpro.com",
+      "name": "BazaarGameTrading",
+      "sellerKey": "6e29eb15",
+      "address": {
+        "street": "650 Amherst St",
+        "city": "Nashua",
+        "state": "New Hampshire",
+        "zip": "03063"
+      },
+      "locations": [
+        {
+          "latitude": 42.8028492,
+          "longitude": -71.5426284,
+          "storeName": "Bazaar Game Trading",
+          "postalAddress": "650 Amherst St, Nashua, NH, 03063, United States",
+          "wpnStoreId": "17846",
+          "confidence": "confirmed"
+        }
+      ],
+      "sources": [
+        "guess",
+        "marketplace"
+      ],
+      "firstSeen": "2026-10-06T00:07:05.203Z",
+      "lastSeen": "2026-10-06T00:07:05.203Z"
+    },
+    {
+      "url": "https://midgardcomicsangames.tcgplayerpro.com",
+      "name": "Midgard Hobbies and Games",
+      "sellerKey": "1334e093",
+      "address": {
+        "street": "55 Crystal Ave Unit 21",
+        "city": "DERRY",
+        "state": "New Hampshire",
+        "zip": "03038-1702"
+      },
+      "phone": "6032606180",
+      "locations": [
+        {
+          "latitude": 42.89246,
+          "longitude": -71.32682,
+          "storeName": "Midgard Comics and Games",
+          "postalAddress": "55 Crystal Avenue, Unit 21, Derry, NH 03038-1702, United States",
+          "wpnStoreId": "7016",
+          "confidence": "confirmed"
+        }
+      ],
+      "sources": [
+        "marketplace"
+      ],
+      "firstSeen": "2026-10-06T00:07:05.203Z",
+      "lastSeen": "2026-10-06T00:07:05.203Z"
+    },
+    {
+      "url": "https://relentlessdragon.tcgplayerpro.com",
+      "name": "The Relentless Dragon",
+      "sellerKey": "886ea383",
+      "address": {
+        "street": "483 Amherst Street",
+        "city": "Nashua",
+        "state": "New Hampshire",
+        "zip": "03063"
+      },
+      "phone": "603-204-5275",
+      "locations": [
+        {
+          "latitude": 42.79186,
+          "longitude": -71.5201,
+          "storeName": "The Relentless Dragon Nashua",
+          "postalAddress": "483 Amherst St, Nashua, NH 03063, United States",
+          "wpnStoreId": "7774",
+          "confidence": "confirmed"
+        }
+      ],
+      "sources": [
+        "guess"
+      ],
+      "firstSeen": "2026-10-06T00:07:05.203Z",
+      "lastSeen": "2026-10-06T00:07:05.203Z"
+    },
+    {
+      "url": "https://rjsgamingnh.tcgplayerpro.com",
+      "name": "rjsgamingNH",
+      "sellerKey": "d7ac457c",
+      "address": {
+        "street": "41 Songbird Drive",
+        "city": "Concord",
+        "state": "New Hampshire",
+        "zip": "03301"
+      },
+      "phone": "6037031403",
+      "locations": [
+        {
+          "latitude": 43.19971,
+          "longitude": -71.53905,
+          "storeName": "Collectibles Unlimited",
+          "postalAddress": "25 South St, Concord, NH, 03301, United States",
+          "wpnStoreId": "7321",
+          "confidence": "confirmed"
+        }
+      ],
+      "sources": [
+        "marketplace"
+      ],
+      "firstSeen": "2026-10-06T00:07:05.203Z",
+      "lastSeen": "2026-10-06T00:07:05.203Z"
+    }
+  ],
+  "checkedWpnStoreIds": []
+}

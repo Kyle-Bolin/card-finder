@@ -11,3 +11,5 @@ xcode/**/DerivedData/
 .vscode/
 .idea/
 .DS_Store
+playwright-report/
+test-results/
