@@ -21,7 +21,7 @@ export type CheckEvent =
   | { type: "result"; result: StoreResult }
   | { type: "done"; changes?: CheckChanges }
   | { type: "no-stores" }
-  /** Safari hasn't granted access to these origins yet. */
+  /** The browser hasn't granted access to these origins yet. */
   | { type: "needs-permission"; origins: string[] }
   | { type: "error"; message: string };
 

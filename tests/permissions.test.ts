@@ -41,7 +41,7 @@ describe("requestOrigins", () => {
 describe("describeFetchError", () => {
   it("explains a network TypeError as missing site access", () => {
     expect(describeFetchError(new TypeError("Load failed"), "https://x.tcgplayerpro.com")).toBe(
-      "Couldn't reach x.tcgplayerpro.com. Check Card Finder's site access in Safari settings.",
+      "Couldn't reach x.tcgplayerpro.com. Check Card Finder's site access in your browser's extension settings.",
     );
   });
 

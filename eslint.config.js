@@ -6,6 +6,7 @@ export default tseslint.config(
   {
     ignores: [
       "dist/",
+      "build/",
       "node_modules/",
       "xcode/",
       "coverage/",

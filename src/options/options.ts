@@ -77,7 +77,7 @@ function mapsUrl(address: string): string {
 }
 
 const ACCESS_DENIED =
-  "Card Finder needs access to store sites. Allow it in Safari's settings, then try again.";
+  "Card Finder needs access to store sites. Allow it in your browser's extension settings, then try again.";
 
 let settings: Settings;
 
@@ -143,7 +143,7 @@ $<HTMLFormElement>("add-store-form").addEventListener("submit", async (event) =>
     );
     return;
   }
-  // Request first: Safari only shows the prompt for a call made straight from the click.
+  // Request first: browsers only show the prompt for a call made straight from the click.
   const accessGranted = requestOrigins(tcgUrl ? STORE_ORIGINS : [originPattern(origin)]);
   if (!(await accessGranted)) {
     setStatus(status, ACCESS_DENIED, true);

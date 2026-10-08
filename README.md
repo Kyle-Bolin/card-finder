@@ -1,6 +1,6 @@
 # Card Finder
 
-A Safari extension for **Mac and iPad** that checks your local game stores' TCGplayer Pro web
+A browser extension for **Safari (Mac and iPad), Chrome and Firefox** that checks your local game stores' TCGplayer Pro web
 stores for the cards you've tagged as **unowned** in your Moxfield decks.
 
 ## What it does
@@ -11,6 +11,40 @@ have them in stock, with prices and links.
 How it works: Moxfield tag → your stores' TCGplayer Pro web stores → in-stock list.
 
 ## Install
+
+Pick your browser: [Safari](#safari-mac-and-ipad), [Chrome](#chrome-and-other-chromium-browsers) or [Firefox](#firefox).
+
+### Chrome and other Chromium browsers
+
+Works in Chrome, Edge, Brave and Arc.
+
+```sh
+npm ci
+npm run build:all
+```
+
+1. Open `chrome://extensions` (or `edge://extensions`) and turn on **Developer mode**.
+2. Click **Load unpacked** and choose the `build/chrome` folder.
+
+Chrome grants the site access at install. CI also uploads `card-finder-chrome.zip` as an artifact
+on `main`.
+
+### Firefox
+
+```sh
+npm ci
+npm run build:all
+```
+
+1. Open `about:debugging#/runtime/this-firefox` and click **Load Temporary Add-on**.
+2. Choose `build/firefox/manifest.json`.
+3. Firefox keeps site access optional: open the extension's **Permissions** (in
+   `about:addons`) and allow it on the listed sites, or use the **Grant access** button in the panel.
+
+A temporary add-on is removed when Firefox quits. A permanent install needs an add-on signed by
+Mozilla, which isn't set up yet.
+
+### Safari (Mac and iPad)
 
 Safari extensions ship inside a small app built with Xcode, so you need a Mac with Xcode.
 
@@ -104,6 +138,11 @@ npm run format       # fix formatting
 npm run typecheck
 ```
 
+`npm run build:all` writes the Safari build to `dist/` and the Chrome and Firefox builds to
+`build/chrome/` and `build/firefox/`. `npm run test:e2e -- --project=chrome-extension` loads the
+real Chrome build in Chromium (`npx playwright install chromium` once); CI also runs
+`web-ext lint` on the Firefox build.
+
 `test:e2e` runs `dist/` in Safari's engine (Playwright WebKit) with a fake extension runtime
 (`tests/e2e/harness/`), a stand-in Moxfield deck page and recorded store, location and directory
 responses (`tests/fixtures/`). Any request without a recorded response fails the test. Install the
@@ -149,5 +188,5 @@ and opens a pull request (`.github/workflows/claude-issue.yml`).
 ## Limitations
 
 - Moxfield's API is undocumented and could change without notice.
-- Checks run on demand only; Safari doesn't allow background alerts.
+- Checks run on demand only; browsers don't allow background alerts for extensions like this.
 - Only stores with a TCGplayer Pro web store are supported.

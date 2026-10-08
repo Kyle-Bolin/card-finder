@@ -202,7 +202,7 @@ export function renderNeedsPermission(container: HTMLElement, onGrant: () => voi
       el(
         "p",
         { className: "cf-meta" },
-        "Safari asks you to allow each site separately before Card Finder can check store inventories.",
+        "Your browser asks you to allow each site separately before Card Finder can check store inventories.",
       ),
       button,
     ),

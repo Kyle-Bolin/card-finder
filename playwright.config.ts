@@ -14,5 +14,7 @@ export default defineConfig({
   projects: [
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    // The real build/chrome extension in Chromium (run `npm run build:all` first).
+    { name: "chrome-extension", testDir: "tests/extension", testMatch: "**/*.spec.ts" },
   ],
 });
