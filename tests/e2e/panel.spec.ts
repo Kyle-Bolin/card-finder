@@ -28,7 +28,8 @@ test("a check lists the stores with stock and the cards not found, and is saved"
   const store = page.locator(".cf-store");
   await expect(store).toHaveCount(1);
   await expect(store).toContainText("The Relentless Dragon");
-  await expect(store).toContainText("2 of 13");
+  // Cheapest Cloudshift ($0.35) + Pearl Medallion ($1.25).
+  await expect(store.locator(".cf-count")).toHaveText("2 of 13 · $1.60");
   const cloudshift = store.locator(".cf-card", { hasText: "Cloudshift" });
   await expect(cloudshift.locator(".cf-listing")).toHaveCount(2);
   await expect(cloudshift).toContainText("Commander Masters · LP");

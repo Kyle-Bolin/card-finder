@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { StoreResult } from "../src/lib/check";
 import { todaysHours } from "../src/lib/hours";
 import { distanceMiles, withCoordinates } from "../src/lib/storeFinder";
-import { sortStores, storeDistance } from "../src/ui/results";
+import { cheapestTotal, sortStores, storeDistance } from "../src/ui/results";
 import { fakeFetch } from "./helpers";
 
 // ui/results pulls in history.ts, which imports the extension polyfill.
@@ -133,5 +133,47 @@ describe("withCoordinates", () => {
     expect(await withCoordinates(located, fetchFn)).toBe(located);
     expect(await withCoordinates(store, fetchFn)).toBe(store);
     expect(calls).toHaveLength(1);
+  });
+});
+
+describe("cheapestTotal", () => {
+  const listing = (cardName: string, price: number, quantity?: number) => ({
+    storeUrl: "https://s.test",
+    cardName,
+    productName: cardName,
+    setName: "Set",
+    condition: "NM",
+    language: "English",
+    foil: false,
+    price,
+    quantity,
+    url: "https://s.test/p",
+  });
+  const want = (name: string, quantity = 1) => ({ name, quantity, sources: [] });
+  const at = (...listings: ReturnType<typeof listing>[]): StoreResult => ({
+    store: { url: "https://s.test", name: "S" },
+    listings,
+    found: [...new Set(listings.map((l) => l.cardName))],
+  });
+
+  it("adds the cheapest copy of each card found", () => {
+    const result = at(
+      listing("Cloudshift", 0.45, 4),
+      listing("Cloudshift", 0.35, 2),
+      listing("Pearl Medallion", 1.25, 1),
+    );
+    expect(
+      cheapestTotal(result, [want("Cloudshift"), want("Pearl Medallion"), want("Sol Ring")]),
+    ).toBe(1.6);
+  });
+
+  it("buys more expensive copies once the cheapest run out", () => {
+    const result = at(listing("Plains", 0.1, 2), listing("Plains", 0.25, 10));
+    expect(cheapestTotal(result, [want("Plains", 5)])).toBe(0.95);
+  });
+
+  it("counts a listing without a quantity as one copy, and stops when stock runs out", () => {
+    const result = at(listing("Cloudshift", 2.1), listing("Cloudshift", 1.8));
+    expect(cheapestTotal(result, [want("Cloudshift", 3)])).toBe(3.9);
   });
 });
