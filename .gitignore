@@ -13,3 +13,5 @@ xcode/**/DerivedData/
 .DS_Store
 playwright-report/
 test-results/
+build/
+*.zip

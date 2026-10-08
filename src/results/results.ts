@@ -59,7 +59,8 @@ $<HTMLFormElement>("list-form").addEventListener("submit", (event) => {
           if (await requestOrigins(event.origins)) {
             $<HTMLFormElement>("list-form").requestSubmit();
           } else {
-            status.textContent = "Access wasn't granted. Allow Card Finder in Safari's settings.";
+            status.textContent =
+              "Access wasn't granted. Allow Card Finder in your browser's extension settings.";
           }
         });
         return;

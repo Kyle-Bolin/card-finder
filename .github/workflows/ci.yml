@@ -48,6 +48,54 @@ jobs:
             test-results/
           retention-days: 7
 
+  # Loads the real build/chrome extension into Chromium (not the fake runtime).
+  chrome:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build:all
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e -- --project=chrome-extension
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-report-chrome
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  # Checks the Firefox manifest and APIs, then packages the Chrome and Firefox builds.
+  firefox:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build:all
+      - run: npx --yes web-ext@8 lint --source-dir build/firefox
+      - name: Package
+        run: |
+          (cd build/chrome && zip -qr ../../card-finder-chrome.zip .)
+          (cd build/firefox && zip -qr ../../card-finder-firefox.zip .)
+      - uses: actions/upload-artifact@v7
+        if: github.ref == 'refs/heads/main'
+        with:
+          name: browser-builds
+          path: |
+            card-finder-chrome.zip
+            card-finder-firefox.zip
+
   # Builds the Safari app for macOS and iOS without signing. Skipped until xcode/ is committed.
   safari:
     needs: check

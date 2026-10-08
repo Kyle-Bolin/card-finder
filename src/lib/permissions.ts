@@ -1,7 +1,7 @@
 import browser from "webextension-polyfill";
 import type { Store } from "./types";
 
-/** Match patterns for the sites Card Finder reads; each must be granted separately in Safari. */
+/** Match patterns for the sites Card Finder reads; the browser may require each to be granted separately. */
 export const STORE_ORIGINS = ["https://*.tcgplayerpro.com/*"];
 export const FIND_STORES_ORIGINS = [
   ...STORE_ORIGINS,
@@ -40,7 +40,7 @@ export async function missingOrigins(origins: string[]): Promise<string[]> {
 
 /**
  * Ask the user for access to `origins`. Must be called from a user gesture (a click
- * handler), before any `await`, or Safari won't show the prompt.
+ * handler), before any `await`, or the browser won't show the prompt.
  */
 export async function requestOrigins(origins: string[]): Promise<boolean> {
   try {
