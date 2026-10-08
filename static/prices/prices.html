@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Store prices – Card Finder</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Store prices</h1>
+      <p class="hint">
+        Ranks the stores in your area by how their prices on a set of commonly played Commander
+        singles compare with the area median. It only runs when you open this page or press Refresh.
+      </p>
+      <div class="row">
+        <label for="sort">Sort</label>
+        <select id="sort">
+          <option value="cheapest">Cheapest</option>
+          <option value="closest">Closest</option>
+          <option value="coverage">Most coverage</option>
+        </select>
+        <button type="button" id="refresh">Refresh</button>
+        <button type="button" id="settings" class="secondary">Settings &amp; stores</button>
+      </div>
+      <label class="checkbox"
+        ><input type="checkbox" id="totals" /> Show basket totals (stores with every card)</label
+      >
+      <p id="status" class="status" role="status"></p>
+      <p id="updated" class="hint"></p>
+      <ol id="ranking" class="cards"></ol>
+    </main>
+    <script src="prices.js"></script>
+  </body>
+</html>
