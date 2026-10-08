@@ -12,10 +12,12 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p tests && tsc --noEmit -p src/crawler",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
-    "crawl": "tsx src/crawler/cli.ts"
+    "crawl": "tsx src/crawler/cli.ts",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.56.1",
     "@types/node": "^26.6.4",
     "@types/webextension-polyfill": "^0.12.6",
     "esbuild": "^0.28.2",

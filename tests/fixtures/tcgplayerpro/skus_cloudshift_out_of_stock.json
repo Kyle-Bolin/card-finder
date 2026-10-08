@@ -1,0 +1,19 @@
+[
+  {
+    "productId": 5001,
+    "skus": [
+      {
+        "skuId": 50010,
+        "conditionName": "Near Mint",
+        "languageId": 1,
+        "languageName": "English",
+        "price": 0.5,
+        "quantity": 0,
+        "isFoil": false,
+        "isFeatured": false,
+        "productId": 5001
+      }
+    ],
+    "total": 1
+  }
+]

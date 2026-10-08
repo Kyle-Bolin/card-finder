@@ -98,10 +98,17 @@ npm ci
 npm run build        # bundle into dist/
 npm run dev          # rebuild on change
 npm test             # unit tests (Vitest, no network)
+npm run test:e2e     # UI tests: built extension in Playwright WebKit (run npm run build first)
 npm run lint         # ESLint + Prettier check
 npm run format       # fix formatting
 npm run typecheck
 ```
+
+`test:e2e` runs `dist/` in Safari's engine (Playwright WebKit) with a fake extension runtime
+(`tests/e2e/harness/`), a stand-in Moxfield deck page and recorded store, location and directory
+responses (`tests/fixtures/`). Any request without a recorded response fails the test. Install the
+browser once with `npx playwright install webkit`; where WebKit can't be installed, use
+`npm run test:e2e -- --project=chromium`. CI runs WebKit and uploads the Playwright report when it fails.
 
 Code layout:
 

@@ -1,0 +1,14 @@
+{
+  "post code": "03301",
+  "country": "United States",
+  "country abbreviation": "US",
+  "places": [
+    {
+      "place name": "Concord",
+      "longitude": "-71.5239",
+      "state": "New Hampshire",
+      "state abbreviation": "NH",
+      "latitude": "43.2078"
+    }
+  ]
+}
