@@ -9,14 +9,13 @@ import {
   type CheckChanges,
 } from "../lib/history";
 import { loadLastCheck, saveLastCheck } from "../lib/lastCheck";
-import type { CatalogProduct } from "../lib/tcgplayerpro";
 import {
   CHECK_PORT,
   type BackgroundRequest,
   type CheckEvent,
   type CheckRequest,
 } from "../lib/messages";
-import { missingOrigins, STORE_ORIGINS } from "../lib/permissions";
+import { missingOrigins, originsForStores } from "../lib/permissions";
 import { shouldShowWelcomeOnInstall, WELCOME_PARAM } from "../lib/onboarding";
 import { loadSettings, saveSettings } from "../lib/settings";
 import { resolveStores } from "../lib/resolveStores";
@@ -30,11 +29,7 @@ export interface FetchTextResponse {
 }
 
 /** Catalog searches are reused for 10 minutes; SKU stock is always fetched fresh. */
-const searchCache = new TtlCache<CatalogProduct[]>(
-  sessionSearchStore(),
-  "search:",
-  SEARCH_CACHE_TTL_MS,
-);
+const searchCache = new TtlCache<unknown>(sessionSearchStore(), "search:", SEARCH_CACHE_TTL_MS);
 
 const ALLOWED_FETCH_HOSTS = new Set(["api2.moxfield.com", "api.moxfield.com"]);
 
@@ -108,7 +103,7 @@ browser.runtime.onConnect.addListener((port) => {
       send({ type: "no-stores" });
       return;
     }
-    const origins = await missingOrigins(STORE_ORIGINS);
+    const origins = await missingOrigins(originsForStores(stores));
     if (origins.length) {
       send({ type: "needs-permission", origins });
       return;

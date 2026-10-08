@@ -44,6 +44,7 @@ export function storesInRange(
     stores.push({
       url: site.url,
       name: site.name,
+      ...(site.platform ? { platform: site.platform } : {}),
       address: site.address,
       phone: site.phone,
       latitude: store.latitude,

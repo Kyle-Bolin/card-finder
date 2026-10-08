@@ -24,10 +24,13 @@ import {
   AUTO_STORE_ORIGINS,
   FIND_STORES_ORIGINS,
   missingOrigins,
+  originPattern,
+  originsForStores,
   requestOrigins,
   STORE_ORIGINS,
 } from "../lib/permissions";
 import { distanceMeters } from "../lib/directory";
+import { detectShopifyStore, normalizeHttpsOrigin } from "../lib/shopifyStore";
 import { getSite, normalizeStoreUrl } from "../lib/tcgplayerpro";
 import type { GeoPoint, Store, StoreSite, WpnStore } from "../lib/types";
 
@@ -114,7 +117,11 @@ function renderStores(): void {
 }
 
 async function addStore(site: StoreSite, location?: GeoPoint): Promise<void> {
-  const store = await withCoordinates(siteToStore(site, location));
+  await addSavedStore(siteToStore(site, location));
+}
+
+async function addSavedStore(saved: Store): Promise<void> {
+  const store = await withCoordinates(saved);
   settings.stores = upsertStore(settings.stores, store);
   await saveSettings(settings);
   await refreshStores();
@@ -125,34 +132,48 @@ async function addStore(site: StoreSite, location?: GeoPoint): Promise<void> {
 $<HTMLFormElement>("add-store-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const status = $("add-store-status");
-  // Request first: Safari only shows the prompt for a call made straight from the click.
-  const accessGranted = requestOrigins(STORE_ORIGINS);
   const input = $<HTMLInputElement>("store-url");
-  const url = normalizeStoreUrl(input.value);
-  if (!url) {
+  const tcgUrl = normalizeStoreUrl(input.value);
+  const origin = tcgUrl ?? normalizeHttpsOrigin(input.value);
+  if (!origin) {
     setStatus(
       status,
-      "That doesn't look like a TCGplayer Pro store (something.tcgplayerpro.com).",
+      "Enter a store's web address starting with https:// (or something.tcgplayerpro.com).",
       true,
     );
     return;
   }
+  // Request first: Safari only shows the prompt for a call made straight from the click.
+  const accessGranted = requestOrigins(tcgUrl ? STORE_ORIGINS : [originPattern(origin)]);
   if (!(await accessGranted)) {
     setStatus(status, ACCESS_DENIED, true);
     return;
   }
   setStatus(status, "Checking store…");
   try {
-    const site = await getSite(url);
+    if (!tcgUrl) {
+      const shopify = await detectShopifyStore(origin);
+      if (shopify) {
+        await addSavedStore(shopify);
+        input.value = "";
+        setStatus(status, `Added ${shopify.name}.`);
+        return;
+      }
+    }
+    const site = await getSite(origin).catch(() => null);
     if (!site) {
-      setStatus(status, `No TCGplayer Pro store at ${new URL(url).hostname}.`, true);
+      setStatus(
+        status,
+        `${new URL(origin).hostname} isn't a TCGplayer Pro or Shopify store Card Finder supports.`,
+        true,
+      );
       return;
     }
     await addStore(site);
     input.value = "";
     setStatus(status, `Added ${site.name}.`);
   } catch (err) {
-    setStatus(status, describeFetchError(err, url), true);
+    setStatus(status, describeFetchError(err, origin), true);
   }
 });
 
@@ -445,13 +466,14 @@ void (async () => {
 /** Offer the access prompt when site access is missing (always after "Grant access" in the panel). */
 async function showAccessBanner(): Promise<void> {
   const banner = $("access");
-  if (!(await missingOrigins(STORE_ORIGINS)).length) {
+  const origins = originsForStores((await resolveStores()).stores);
+  if (!(await missingOrigins(origins)).length) {
     banner.hidden = true;
     return;
   }
   banner.hidden = false;
   $<HTMLButtonElement>("grant-access").onclick = () => {
-    void requestOrigins(STORE_ORIGINS).then(showAccessBanner);
+    void requestOrigins(origins).then(showAccessBanner);
   };
 }
 

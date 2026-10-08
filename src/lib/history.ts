@@ -11,7 +11,8 @@ export interface HistoryEntry {
   condition: string;
   foil: boolean;
   price: number;
-  qty: number;
+  /** Missing for stores that don't report counts. */
+  qty?: number;
   firstSeen: string;
   lastSeen: string;
 }
@@ -77,7 +78,8 @@ export function diffCheck(
       if (seen) {
         // Same key, e.g. two printings in one set: show the cheapest, count all copies.
         seen.price = Math.min(seen.price, l.price);
-        seen.qty += l.quantity;
+        seen.qty =
+          seen.qty === undefined || l.quantity === undefined ? undefined : seen.qty + l.quantity;
         continue;
       }
       current.set(key, {
@@ -144,14 +146,24 @@ function parseEntry(raw: unknown): HistoryEntry | null {
     typeof foil !== "boolean" ||
     typeof price !== "number" ||
     !Number.isFinite(price) ||
-    typeof qty !== "number" ||
-    !Number.isFinite(qty) ||
+    (qty !== undefined && (typeof qty !== "number" || !Number.isFinite(qty))) ||
     typeof firstSeen !== "string" ||
     typeof lastSeen !== "string"
   ) {
     return null;
   }
-  return { storeUrl, storeName, card, set, condition, foil, price, qty, firstSeen, lastSeen };
+  return {
+    storeUrl,
+    storeName,
+    card,
+    set,
+    condition,
+    foil,
+    price,
+    qty,
+    firstSeen,
+    lastSeen,
+  };
 }
 
 /** Validate stored data; anything unusable is null, which callers treat as a first check. */

@@ -122,7 +122,13 @@ function listingRow(listing: Listing, changes?: CheckChanges): HTMLElement {
     el(
       "span",
       {},
-      el("span", { className: "cf-price" }, `${money(listing.price)} ×${listing.quantity}`),
+      el(
+        "span",
+        { className: "cf-price" },
+        listing.quantity === undefined
+          ? `${money(listing.price)} in stock`
+          : `${money(listing.price)} ×${listing.quantity}`,
+      ),
       " ",
       el("a", { href: listing.url, target: "_blank", rel: "noopener" }, "View"),
     ),

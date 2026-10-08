@@ -37,6 +37,7 @@
     "https://get.geojs.io/*",
     "https://raw.githubusercontent.com/*"
   ],
+  "optional_host_permissions": ["https://*/*"],
   "content_scripts": [
     {
       "matches": ["https://moxfield.com/*", "https://www.moxfield.com/*"],

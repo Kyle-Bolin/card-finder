@@ -38,6 +38,19 @@ const T1 = "2026-01-01T00:00:00.000Z";
 const T2 = "2026-01-03T00:00:00.000Z";
 
 describe("diffCheck", () => {
+  it("keeps listings without a quantity, and their history entries", () => {
+    const noQty = listing({ quantity: undefined });
+    const { history } = diffCheck(
+      null,
+      [{ store, listings: [noQty, noQty], found: ["Sol Ring"] }],
+      wanted,
+      "2026-10-08T00:00:00Z",
+    );
+    const [entry] = Object.values(history.entries);
+    expect(entry?.qty).toBeUndefined();
+    expect(parseDeckHistory(JSON.parse(JSON.stringify(history)))?.entries).toEqual(history.entries);
+  });
+
   it("gives no badges on a first check", () => {
     const { changes, history } = diffCheck(null, [result([listing()])], wanted, T1);
     expect(changes).toEqual({ previousAt: null, badges: {}, soldOut: [] });
