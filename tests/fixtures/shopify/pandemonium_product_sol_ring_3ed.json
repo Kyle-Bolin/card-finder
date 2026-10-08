@@ -1,0 +1,76 @@
+{
+ "id": 7956998717616,
+ "title": "Sol Ring [3ED - N/A]",
+ "handle": "sol-ring-revised-edition-1571",
+ "published_at": "2025-10-08T09:15:58-04:00",
+ "created_at": "2025-10-08T09:15:58-04:00",
+ "vendor": "Revised Edition",
+ "type": "Magic: The Gathering Singles",
+ "tags": [
+  "all",
+  "Artifact",
+  "in-stock",
+  "Magic",
+  "revised-edition",
+  "Uncommon"
+ ],
+ "price": 2974,
+ "price_min": 2974,
+ "price_max": 3346,
+ "available": true,
+ "price_varies": true,
+ "compare_at_price": null,
+ "compare_at_price_min": 0,
+ "compare_at_price_max": 0,
+ "compare_at_price_varies": false,
+ "variants": [
+  {
+   "id": 44853616083120,
+   "title": "Moderately Played / English / Normal",
+   "option1": "Moderately Played",
+   "option2": "English",
+   "option3": "Normal",
+   "price": 2974,
+   "available": true,
+   "public_title": "Moderately Played / English / Normal",
+   "sku": "333134"
+  },
+  {
+   "id": 45081034096816,
+   "title": "Lightly Played / English / Normal",
+   "option1": "Lightly Played",
+   "option2": "English",
+   "option3": "Normal",
+   "price": 3346,
+   "available": true,
+   "public_title": "Lightly Played / English / Normal",
+   "sku": "364650"
+  }
+ ],
+ "options": [
+  {
+   "name": "Condition",
+   "position": 1,
+   "values": [
+    "Moderately Played",
+    "Lightly Played"
+   ]
+  },
+  {
+   "name": "Language",
+   "position": 2,
+   "values": [
+    "English"
+   ]
+  },
+  {
+   "name": "Printing",
+   "position": 3,
+   "values": [
+    "Normal"
+   ]
+  }
+ ],
+ "url": "/products/sol-ring-revised-edition-1571",
+ "requires_selling_plan": false
+}

@@ -1,0 +1,170 @@
+{
+ "id": 6101015134399,
+ "title": "Cloudshift [Avacyn Restored]",
+ "handle": "cloudshift-avacyn-restored",
+ "published_at": "2020-11-18T18:17:57-05:00",
+ "created_at": "2020-11-18T18:17:59-05:00",
+ "vendor": "Magic: The Gathering",
+ "type": "MTG Single",
+ "tags": [
+  "Avacyn Restored",
+  "Brawl",
+  "Commander",
+  "Common",
+  "Duel",
+  "Foil",
+  "Gladiator",
+  "Historic",
+  "Instant",
+  "Legacy",
+  "Modern",
+  "Normal",
+  "Oathbreaker",
+  "Pauper",
+  "Paupercommander",
+  "Timeless",
+  "Vintage",
+  "White"
+ ],
+ "price": 110,
+ "price_min": 110,
+ "price_max": 1700,
+ "available": true,
+ "price_varies": true,
+ "compare_at_price": null,
+ "compare_at_price_min": 0,
+ "compare_at_price_max": 0,
+ "compare_at_price_varies": false,
+ "variants": [
+  {
+   "id": 37561939951807,
+   "title": "Near Mint",
+   "option1": "Near Mint",
+   "option2": null,
+   "option3": null,
+   "price": 210,
+   "available": true,
+   "public_title": "Near Mint",
+   "sku": "AVR-12-EN-NF-1"
+  },
+  {
+   "id": 37561939984575,
+   "title": "Lightly Played",
+   "option1": "Lightly Played",
+   "option2": null,
+   "option3": null,
+   "price": 180,
+   "available": true,
+   "public_title": "Lightly Played",
+   "sku": "AVR-12-EN-NF-2"
+  },
+  {
+   "id": 37561940017343,
+   "title": "Moderately Played",
+   "option1": "Moderately Played",
+   "option2": null,
+   "option3": null,
+   "price": 150,
+   "available": false,
+   "public_title": "Moderately Played",
+   "sku": "AVR-12-EN-NF-3"
+  },
+  {
+   "id": 37561940050111,
+   "title": "Heavily Played",
+   "option1": "Heavily Played",
+   "option2": null,
+   "option3": null,
+   "price": 130,
+   "available": false,
+   "public_title": "Heavily Played",
+   "sku": "AVR-12-EN-NF-4"
+  },
+  {
+   "id": 37561940082879,
+   "title": "Damaged",
+   "option1": "Damaged",
+   "option2": null,
+   "option3": null,
+   "price": 110,
+   "available": false,
+   "public_title": "Damaged",
+   "sku": "AVR-12-EN-NF-5"
+  },
+  {
+   "id": 37561940115647,
+   "title": "Near Mint Foil",
+   "option1": "Near Mint Foil",
+   "option2": null,
+   "option3": null,
+   "price": 1700,
+   "available": false,
+   "public_title": "Near Mint Foil",
+   "sku": "AVR-12-EN-FO-1"
+  },
+  {
+   "id": 37561940148415,
+   "title": "Lightly Played Foil",
+   "option1": "Lightly Played Foil",
+   "option2": null,
+   "option3": null,
+   "price": 1440,
+   "available": false,
+   "public_title": "Lightly Played Foil",
+   "sku": "AVR-12-EN-FO-2"
+  },
+  {
+   "id": 37561940181183,
+   "title": "Moderately Played Foil",
+   "option1": "Moderately Played Foil",
+   "option2": null,
+   "option3": null,
+   "price": 1190,
+   "available": false,
+   "public_title": "Moderately Played Foil",
+   "sku": "AVR-12-EN-FO-3"
+  },
+  {
+   "id": 37561940213951,
+   "title": "Heavily Played Foil",
+   "option1": "Heavily Played Foil",
+   "option2": null,
+   "option3": null,
+   "price": 1020,
+   "available": false,
+   "public_title": "Heavily Played Foil",
+   "sku": "AVR-12-EN-FO-4"
+  },
+  {
+   "id": 37561940246719,
+   "title": "Damaged Foil",
+   "option1": "Damaged Foil",
+   "option2": null,
+   "option3": null,
+   "price": 850,
+   "available": false,
+   "public_title": "Damaged Foil",
+   "sku": "AVR-12-EN-FO-5"
+  }
+ ],
+ "options": [
+  {
+   "name": "Title",
+   "position": 1,
+   "values": [
+    "Near Mint",
+    "Lightly Played",
+    "Moderately Played",
+    "Heavily Played",
+    "Damaged",
+    "Near Mint Foil",
+    "Lightly Played Foil",
+    "Moderately Played Foil",
+    "Heavily Played Foil",
+    "Damaged Foil"
+   ]
+  }
+ ],
+ "url": "/products/cloudshift-avacyn-restored",
+ "requires_selling_plan": false
+}

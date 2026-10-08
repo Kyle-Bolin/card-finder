@@ -1,0 +1,73 @@
+{
+ "resources": {
+  "results": {
+   "products": [
+    {
+     "available": true,
+     "handle": "cloudshift-avacyn-restored",
+     "id": 6101015134399,
+     "price": "1.10",
+     "price_max": "17.00",
+     "price_min": "1.10",
+     "tags": [
+      "Avacyn Restored",
+      "Brawl",
+      "Commander",
+      "Common",
+      "Duel",
+      "Foil",
+      "Gladiator",
+      "Historic",
+      "Instant",
+      "Legacy",
+      "Modern",
+      "Normal",
+      "Oathbreaker",
+      "Pauper",
+      "Paupercommander",
+      "Timeless",
+      "Vintage",
+      "White"
+     ],
+     "title": "Cloudshift [Avacyn Restored]",
+     "type": "MTG Single",
+     "url": "/products/cloudshift-avacyn-restored",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": true,
+     "handle": "cloudshift-jumpstart",
+     "id": 6103122837695,
+     "price": "1.10",
+     "price_max": "2.10",
+     "price_min": "1.10",
+     "tags": [
+      "Brawl",
+      "Commander",
+      "Common",
+      "Duel",
+      "Gladiator",
+      "Historic",
+      "Instant",
+      "Jumpstart",
+      "Legacy",
+      "Modern",
+      "Normal",
+      "Oathbreaker",
+      "Pauper",
+      "Paupercommander",
+      "Timeless",
+      "Vintage",
+      "White"
+     ],
+     "title": "Cloudshift [Jumpstart]",
+     "type": "MTG Single",
+     "url": "/products/cloudshift-jumpstart",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    }
+   ]
+  }
+ }
+}

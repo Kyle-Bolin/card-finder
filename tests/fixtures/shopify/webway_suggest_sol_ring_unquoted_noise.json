@@ -1,0 +1,215 @@
+{
+ "resources": {
+  "results": {
+   "products": [
+    {
+     "available": true,
+     "handle": "vestige-of-sol-rainbow-foil-u-mon060-rf-unlimited-rainbow-foil",
+     "id": 7013818368188,
+     "price": "8.40",
+     "price_max": "12.00",
+     "price_min": "8.40",
+     "tags": [
+      "Chest",
+      "Equipment",
+      "Legendary",
+      "Light",
+      "Monarch Unlimited",
+      "Rainbow Foil",
+      "U-MON060-RF",
+      "Unlimited"
+     ],
+     "title": "Vestige of Sol (Rainbow Foil) [U-MON060-RF] Unlimited Rainbow Foil",
+     "type": "Flesh And Blood Single",
+     "url": "/products/vestige-of-sol-rainbow-foil-u-mon060-rf-unlimited-rainbow-foil",
+     "variants": [],
+     "vendor": "Flesh And Blood"
+    },
+    {
+     "available": true,
+     "handle": "ring-of-fire-themed-warband",
+     "id": 9249683341500,
+     "price": "79.99",
+     "price_max": "79.99",
+     "price_min": "79.99",
+     "tags": [
+      "Bushido"
+     ],
+     "title": "Ring of Fire - Themed Warband",
+     "type": "Bushido",
+     "url": "/products/ring-of-fire-themed-warband",
+     "variants": [],
+     "vendor": "Fire Forged Minis"
+    },
+    {
+     "available": true,
+     "handle": "grand-crusaders-ring-038-dawn-of-ashes-alter-edition",
+     "id": 8228184162492,
+     "price": "11.90",
+     "price_max": "200.00",
+     "price_min": "11.90",
+     "tags": [],
+     "title": "Grand Crusader's Ring (038) [Dawn of Ashes: Alter Edition]",
+     "type": "Grand Archive Single",
+     "url": "/products/grand-crusaders-ring-038-dawn-of-ashes-alter-edition",
+     "variants": [],
+     "vendor": "Weebs of the Shore"
+    },
+    {
+     "available": true,
+     "handle": "conquest-dweghom-hellbringer-sorcerer",
+     "id": 7834449903804,
+     "price": "24.99",
+     "price_max": "24.99",
+     "price_min": "24.99",
+     "tags": [
+      "Conquest",
+      "Dweghom"
+     ],
+     "title": "Conquest Dweghom: Hellbringer Sorcerer",
+     "type": "Conquest",
+     "url": "/products/conquest-dweghom-hellbringer-sorcerer",
+     "variants": [],
+     "vendor": "Parabellum Games"
+    },
+    {
+     "available": false,
+     "handle": "sol-ring-magicfest-2019",
+     "id": 7012852433084,
+     "price": "3.60",
+     "price_max": "7.70",
+     "price_min": "3.60",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Foil",
+      "MagicFest 2019",
+      "Normal",
+      "Predh",
+      "Rare",
+      "Vintage"
+     ],
+     "title": "Sol Ring [MagicFest 2019]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-magicfest-2019",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": false,
+     "handle": "sol-ring-borderless-fallout",
+     "id": 8214743974076,
+     "price": "21.40",
+     "price_max": "41.50",
+     "price_min": "21.40",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Fallout",
+      "Foil",
+      "Mythic",
+      "Normal",
+      "Predh",
+      "Vintage"
+     ],
+     "title": "Sol Ring (Borderless) [Fallout]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-borderless-fallout",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": false,
+     "handle": "sol-ring-borderless-surge-foil-fallout",
+     "id": 8215374299324,
+     "price": "191.10",
+     "price_max": "272.90",
+     "price_min": "191.10",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Fallout",
+      "Foil",
+      "Mythic",
+      "Predh",
+      "Vintage"
+     ],
+     "title": "Sol Ring (Borderless) (Surge Foil) [Fallout]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-borderless-surge-foil-fallout",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": false,
+     "handle": "sol-ring-limited-edition-beta",
+     "id": 7012126949564,
+     "price": "609.00",
+     "price_max": "870.00",
+     "price_min": "609.00",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Limited Edition Beta",
+      "NonFoil",
+      "Uncommon"
+     ],
+     "title": "Sol Ring [Limited Edition Beta]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-limited-edition-beta",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": false,
+     "handle": "sol-ring-1494-galaxy-foil-secret-lair-drop-series",
+     "id": 8139205181628,
+     "price": "115.70",
+     "price_max": "165.30",
+     "price_min": "115.70",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Foil",
+      "Predh",
+      "Rare",
+      "Secret Lair Drop Series",
+      "Vintage"
+     ],
+     "title": "Sol Ring (1494) (Galaxy Foil) [Secret Lair Drop Series]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-1494-galaxy-foil-secret-lair-drop-series",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": false,
+     "handle": "sol-ring-1494-secret-lair-drop-series",
+     "id": 8139206230204,
+     "price": "55.10",
+     "price_max": "78.70",
+     "price_min": "55.10",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Normal",
+      "Predh",
+      "Rare",
+      "Secret Lair Drop Series",
+      "Vintage"
+     ],
+     "title": "Sol Ring (1494) [Secret Lair Drop Series]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-1494-secret-lair-drop-series",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    }
+   ]
+  }
+ }
+}
