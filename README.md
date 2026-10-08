@@ -53,10 +53,11 @@ options (TestFlight).
 
 1. **Tag cards.** In Moxfield, tag the cards you need with `unowned`, in any board of the deck,
    including Considering. (The tag name can be changed in settings.)
-2. **Add stores.** Open the extension's settings from the toolbar popup (**Settings & stores**).
-   Use **Find stores near me** (ZIP code or your location) and add the stores you like, or add a
-   store by URL, e.g. `dmcomics.tcgplayerpro.com`. Online-only sellers are hidden by default; tick
-   **Include online-only sellers** to see them.
+2. **Check your stores.** Card Finder picks every store within your range (25 mi by default) from
+   your approximate location. Open **Settings & stores** to enter a ZIP code instead, change the
+   range, or turn individual stores off. Stores added by URL are always checked.
+   Online-only sellers are hidden by default; tick **Include online-only sellers** to include
+   them. **Find more stores** probes for stores the weekly directory hasn't seen.
 3. **Check.** On a Moxfield deck page, tap the **Card Finder** button. Or open the toolbar popup,
    choose **Check a card list** and paste cards one per line (e.g. `1 Sol Ring`) or a Moxfield
    export.
@@ -79,8 +80,12 @@ button. Allow the sites when Safari asks.
   Results history can be cleared in settings.
 - Checks go straight from your browser to Moxfield and the stores' TCGplayer Pro sites. There is
   no Card Finder server.
-- Finding stores near you queries the Wizards store locator, and a ZIP code lookup
-  (zippopotam.us) if you enter a ZIP code.
+- To find nearby stores, Card Finder looks up your approximate (city-level) location from your
+  device's IP address. This sends your IP address to ipapi.co, or to get.geojs.io if that fails.
+  It runs only to find nearby stores (at most once a day), and a ZIP code you enter replaces it.
+  Safari shows no location prompt, because the browser's location feature isn't used.
+- "Find more stores" queries the Wizards store locator, and a ZIP code lookup (zippopotam.us)
+  runs if you enter a ZIP code.
 - The store directory is a public file, `data/storefronts.json`, built weekly by GitHub Actions
   and fetched from this repository.
 

@@ -38,9 +38,9 @@ describe("settings storage", () => {
   it("defaults filters for older settings without them", async () => {
     store.settings = { tag: "wanted", stores: [a] };
     expect(await loadSettings()).toEqual({
+      ...DEFAULT_SETTINGS,
       tag: "wanted",
       stores: [a],
-      filters: DEFAULT_SETTINGS.filters,
     });
   });
 
@@ -53,5 +53,21 @@ describe("settings storage", () => {
     };
     await saveSettings({ ...DEFAULT_SETTINGS, filters });
     expect((await loadSettings()).filters).toEqual(filters);
+  });
+});
+
+describe("settings migration", () => {
+  it("keeps saved stores as always-include and defaults the new fields", async () => {
+    store.settings = { tag: "unowned", stores: [a] };
+    const loaded = await loadSettings();
+    expect(loaded.stores).toEqual([a]);
+    expect(loaded.rangeMiles).toBe(25);
+    expect(loaded.excluded).toEqual([]);
+    expect(loaded.includeOnline).toBe(false);
+  });
+  it("treats a previously searched home as the ZIP override", async () => {
+    const home = { latitude: 1, longitude: 2, label: "X" };
+    store.settings = { tag: "unowned", stores: [], home };
+    expect((await loadSettings()).manualLocation).toEqual(home);
   });
 });

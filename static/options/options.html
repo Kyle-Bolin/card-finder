@@ -74,11 +74,45 @@
       </section>
 
       <section>
-        <h2>Your stores</h2>
-        <ul id="stores" class="cards"></ul>
-        <p id="no-stores" class="hint">
-          No stores yet. Find stores near you below, or add one by URL.
+        <h2>Location and range</h2>
+        <p class="hint">
+          Card Finder checks every store within your range. Your location comes from your IP address
+          (city level, no prompt) unless you enter a ZIP code.
         </p>
+        <p id="location" class="status" role="status"></p>
+        <form id="zip-form" class="row wrap">
+          <input id="zip" type="text" inputmode="numeric" placeholder="ZIP code" maxlength="10" />
+          <button type="submit">Change</button>
+          <button type="button" id="use-approx" class="link">Use my approximate location</button>
+        </form>
+        <div class="row wrap">
+          <label for="radius">Range</label>
+          <select id="radius">
+            <option value="10">10 mi</option>
+            <option value="25">25 mi</option>
+            <option value="50">50 mi</option>
+            <option value="100">100 mi</option>
+          </select>
+        </div>
+        <label class="checkbox">
+          <input id="include-online" type="checkbox" />
+          Include online-only sellers (no shop to visit)
+        </label>
+        <button id="refresh-directory" type="button" class="link">Refresh store list</button>
+      </section>
+
+      <section>
+        <h2>Stores in range</h2>
+        <p id="range-summary" class="hint"></p>
+        <p id="many-stores" class="hint error" hidden></p>
+        <ul id="in-range" class="cards"></ul>
+      </section>
+
+      <section>
+        <h2>Always-included stores</h2>
+        <p class="hint">Stores you add here are checked even when they are outside your range.</p>
+        <ul id="stores" class="cards"></ul>
+        <p id="no-stores" class="hint">None yet.</p>
         <form id="add-store-form" class="row">
           <input
             id="store-url"
@@ -93,27 +127,13 @@
       </section>
 
       <section>
-        <h2>Find stores near me</h2>
+        <h2>Find more stores</h2>
         <p class="hint">
-          Searches the Wizards store locator for game stores near you, then checks which ones have a
-          TCGplayer Pro web store.
+          The list above comes from a weekly-updated directory. This also asks the Wizards store
+          locator for stores the directory hasn't seen and checks whether they have a TCGplayer Pro
+          web store.
         </p>
-        <form id="find-form" class="row wrap">
-          <input id="zip" type="text" inputmode="numeric" placeholder="ZIP code" maxlength="10" />
-          <button type="button" id="use-location">Use my location</button>
-          <select id="radius" aria-label="Search radius">
-            <option value="10">10 mi</option>
-            <option value="25" selected>25 mi</option>
-            <option value="50">50 mi</option>
-            <option value="100">100 mi</option>
-          </select>
-          <button type="submit">Search</button>
-        </form>
-        <label class="checkbox">
-          <input id="include-online" type="checkbox" />
-          Include online-only sellers (no shop to visit)
-        </label>
-        <button id="refresh-directory" type="button" class="link">Refresh store list</button>
+        <button type="button" id="find-more">Find more stores</button>
         <p id="find-status" class="status" role="status"></p>
         <ul id="found" class="cards"></ul>
       </section>

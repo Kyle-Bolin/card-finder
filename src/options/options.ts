@@ -1,6 +1,5 @@
 import { clearHistory } from "../lib/history";
 import { ALL_CONDITIONS, normalizeFilters } from "../lib/filters";
-import { nearbyFromDirectory } from "../lib/directory";
 import { loadDirectory } from "../lib/directoryCache";
 import { isWelcomeQuery, welcomeSteps } from "../lib/onboarding";
 import {
@@ -11,6 +10,8 @@ import {
   zipToLocation,
   type StorefrontMatch,
 } from "../lib/storeFinder";
+import { resolveStores } from "../lib/resolveStores";
+import { MANY_STORES } from "../lib/storeSet";
 import {
   loadSettings,
   removeStore,
@@ -20,11 +21,13 @@ import {
 } from "../lib/settings";
 import { describeFetchError } from "../lib/fetchError";
 import {
+  AUTO_STORE_ORIGINS,
   FIND_STORES_ORIGINS,
   missingOrigins,
   requestOrigins,
   STORE_ORIGINS,
 } from "../lib/permissions";
+import { distanceMeters } from "../lib/directory";
 import { getSite, normalizeStoreUrl } from "../lib/tcgplayerpro";
 import type { GeoPoint, Store, StoreSite, WpnStore } from "../lib/types";
 
@@ -73,8 +76,6 @@ function mapsUrl(address: string): string {
 const ACCESS_DENIED =
   "Card Finder needs access to store sites. Allow it in Safari's settings, then try again.";
 
-const METERS_PER_MILE = 1609.344;
-
 let settings: Settings;
 
 function renderStores(): void {
@@ -106,8 +107,7 @@ function renderStores(): void {
     remove.addEventListener("click", async () => {
       settings.stores = removeStore(settings.stores, store.url);
       await saveSettings(settings);
-      renderStores();
-      renderFoundButtons();
+      await refreshStores();
     });
     list.append(el("li", {}, info, remove));
   }
@@ -117,8 +117,7 @@ async function addStore(site: StoreSite, location?: GeoPoint): Promise<void> {
   const store = await withCoordinates(siteToStore(site, location));
   settings.stores = upsertStore(settings.stores, store);
   await saveSettings(settings);
-  renderStores();
-  renderFoundButtons();
+  await refreshStores();
 }
 
 // --- Add by URL -----------------------------------------------------------
@@ -197,7 +196,130 @@ for (const id of ["max-price", "conditions", "foil", "english-only"]) {
   node.addEventListener(node.id === "max-price" ? "input" : "change", () => void saveFilters());
 }
 
-// --- Find stores near me --------------------------------------------------
+// --- Location, range and stores in range -----------------------------------
+
+let inRange: Store[] = [];
+
+function renderLocation(): void {
+  const status = $("location");
+  const home = settings.manualLocation ?? settings.approxLocation;
+  if (!home) {
+    setStatus(
+      status,
+      "We couldn't work out where you are. Enter your ZIP code to find stores.",
+      true,
+    );
+    return;
+  }
+  const kind = settings.manualLocation ? "from your ZIP" : "approximate";
+  setStatus(status, `Location: ${home.label ?? "your area"} (${kind})`);
+  $("use-approx").hidden = !settings.manualLocation;
+}
+
+function renderInRange(): void {
+  const list = $<HTMLUListElement>("in-range");
+  list.replaceChildren();
+  const saved = new Set(settings.stores.map((s) => s.url));
+  const excluded = new Set(settings.excluded);
+  const auto = inRange.filter((s) => !saved.has(s.url));
+  const checked = auto.filter((s) => !excluded.has(s.url)).length + settings.stores.length;
+  const home = settings.manualLocation ?? settings.approxLocation;
+  $("range-summary").textContent = home
+    ? `${inRange.length} store${inRange.length === 1 ? "" : "s"} within ${settings.rangeMiles} mi. ` +
+      `Checking ${checked} in total. Turn a store off to exclude it.`
+    : "";
+  const many = $("many-stores");
+  many.hidden = checked <= MANY_STORES;
+  many.textContent = `Checking ${checked} stores. Checks will take longer; narrow the range or exclude stores to speed them up.`;
+  for (const store of auto) {
+    const miles =
+      home && store.latitude !== undefined && store.longitude !== undefined
+        ? metersToMiles(
+            distanceMeters(home, { latitude: store.latitude, longitude: store.longitude }),
+          ).toFixed(1)
+        : "";
+    const address = formatAddress(store);
+    const toggle = el("input", { type: "checkbox", checked: !excluded.has(store.url) });
+    toggle.setAttribute("aria-label", `Check ${store.name}`);
+    toggle.addEventListener("change", async () => {
+      const others = settings.excluded.filter((u) => u !== store.url);
+      settings.excluded = toggle.checked ? others : [...others, store.url];
+      await saveSettings(settings);
+      renderInRange();
+    });
+    const info = el(
+      "div",
+      {},
+      el("div", { className: "name" }, store.name),
+      el(
+        "div",
+        { className: "meta" },
+        [miles && `${miles} mi`, address].filter(Boolean).join(" · "),
+      ),
+    );
+    list.append(el("li", {}, info, el("label", { className: "checkbox" }, toggle, "Check")));
+  }
+}
+
+/** Recompute everything derived from location, range, exclusions and saved stores. */
+async function refreshStores(refreshLocation = false): Promise<void> {
+  const resolved = await resolveStores({ refreshLocation });
+  settings = resolved.settings;
+  inRange = resolved.inRange;
+  $<HTMLSelectElement>("radius").value = String(settings.rangeMiles);
+  $<HTMLInputElement>("include-online").checked = settings.includeOnline;
+  renderLocation();
+  renderStores();
+  renderInRange();
+}
+
+$<HTMLFormElement>("zip-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const status = $("location");
+  const accessGranted = requestOrigins(AUTO_STORE_ORIGINS);
+  try {
+    if (!(await accessGranted)) {
+      setStatus(status, ACCESS_DENIED, true);
+      return;
+    }
+    const point = await zipToLocation($<HTMLInputElement>("zip").value);
+    settings.manualLocation = point;
+    await saveSettings(settings);
+    $<HTMLInputElement>("zip").value = "";
+    await refreshStores();
+  } catch (err) {
+    setStatus(status, describeFetchError(err, "https://api.zippopotam.us"), true);
+  }
+});
+
+$<HTMLButtonElement>("use-approx").addEventListener("click", async () => {
+  const accessGranted = requestOrigins(AUTO_STORE_ORIGINS);
+  await accessGranted;
+  delete settings.manualLocation;
+  await saveSettings(settings);
+  await refreshStores(true);
+});
+
+$<HTMLSelectElement>("radius").addEventListener("change", async () => {
+  settings.rangeMiles = Number($<HTMLSelectElement>("radius").value);
+  await saveSettings(settings);
+  await refreshStores();
+});
+
+$<HTMLInputElement>("include-online").addEventListener("change", async () => {
+  settings.includeOnline = $<HTMLInputElement>("include-online").checked;
+  await saveSettings(settings);
+  await refreshStores();
+});
+
+$<HTMLButtonElement>("refresh-directory").addEventListener("click", async () => {
+  const accessGranted = requestOrigins(AUTO_STORE_ORIGINS);
+  await accessGranted;
+  await loadDirectory({ refresh: true });
+  await refreshStores();
+});
+
+// --- Find more stores (live WPN probing) -----------------------------------
 
 let found: StorefrontMatch[] = [];
 const foundButtons = new Map<string, HTMLButtonElement>();
@@ -246,16 +368,6 @@ function renderFound(): void {
         el("a", { href: match.site.url, target: "_blank" }, new URL(match.site.url).hostname),
       ),
     );
-    if (match.confidence === "possible") {
-      const siteAddress = formatAddress(match.site);
-      info.append(
-        el(
-          "div",
-          { className: "meta" },
-          siteAddress ? `Web store lists: ${siteAddress}` : "Web store lists no address",
-        ),
-      );
-    }
     let button = foundButtons.get(match.site.url);
     const li = el("li", {}, info);
     if (!button) {
@@ -264,7 +376,6 @@ function renderFound(): void {
       foundButtons.set(match.site.url, button);
       li.append(button);
     } else {
-      // Another branch already listed with the same storefront.
       li.append(el("span", { className: "meta" }, "Same web store as above"));
     }
     list.append(li);
@@ -272,109 +383,51 @@ function renderFound(): void {
   renderFoundButtons();
 }
 
-let lastPoint: GeoPoint | undefined;
-let refreshDirectory = false;
-
-async function search(point: GeoPoint): Promise<void> {
-  lastPoint = point;
-  const refresh = refreshDirectory;
-  refreshDirectory = false;
+$<HTMLButtonElement>("find-more").addEventListener("click", async () => {
   const status = $("find-status");
-  const miles = Number($<HTMLSelectElement>("radius").value);
-  const submit = $<HTMLFormElement>("find-form").querySelectorAll("button");
-  submit.forEach((b) => (b.disabled = true));
-  settings.home = point;
-  void saveSettings(settings);
+  const button = $<HTMLButtonElement>("find-more");
+  const accessGranted = requestOrigins(FIND_STORES_ORIGINS);
+  const point = settings.manualLocation ?? settings.approxLocation;
+  if (!point) {
+    setStatus(status, "Enter a ZIP code first.", true);
+    return;
+  }
+  button.disabled = true;
   found = [];
   renderFound();
-  try {
-    setStatus(status, `Finding stores within ${miles} mi of ${point.label ?? "you"}…`);
-    // The published directory (built weekly by the crawler) answers instantly; then we
-    // only live-check WPN stores the crawler hasn't seen yet.
-    const [directory, stores] = await Promise.all([
-      loadDirectory({ refresh }),
-      nearbyWpnStores(point, miles).catch(() => [] as WpnStore[]),
-    ]);
-    if (directory) {
-      found = nearbyFromDirectory(directory, point, miles * METERS_PER_MILE, {
-        includeOnlineOnly: $<HTMLInputElement>("include-online").checked,
-      });
-      renderFound();
-    }
-    const checked = new Set(directory?.checkedWpnStoreIds ?? []);
-    const unchecked = stores.filter((s) => !checked.has(s.id));
-    if (unchecked.length) {
-      const fromDirectory = found.length;
-      setStatus(status, `${fromDirectory} found so far. Checking ${unchecked.length} more stores…`);
-      await findStorefronts(unchecked, {
-        onProgress(done, total, match) {
-          if (match) {
-            found = [...found, match].sort((a, b) => a.store.distance - b.store.distance);
-            renderFound();
-          }
-          setStatus(status, `Checked ${done} of ${total} stores… ${found.length} found`);
-        },
-      });
-    }
-    renderFound();
-    setStatus(
-      status,
-      found.length
-        ? `Found ${found.length} stores with TCGplayer Pro web stores within ${miles} mi.`
-        : `No TCGplayer Pro web stores found within ${miles} mi.`,
-    );
-  } catch (err) {
-    setStatus(status, describeFetchError(err, "https://api.tabletop.wizards.com"), true);
-  } finally {
-    submit.forEach((b) => (b.disabled = false));
-  }
-}
-
-$<HTMLButtonElement>("refresh-directory").addEventListener("click", () => {
-  refreshDirectory = true;
-  if (lastPoint) void search(lastPoint);
-  else setStatus($("find-status"), "The store list will be refreshed on your next search.");
-});
-
-$<HTMLFormElement>("find-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const status = $("find-status");
-  const accessGranted = requestOrigins(FIND_STORES_ORIGINS);
   try {
     if (!(await accessGranted)) {
       setStatus(status, ACCESS_DENIED, true);
       return;
     }
-    const point = await zipToLocation($<HTMLInputElement>("zip").value);
-    await search(point);
+    const miles = settings.rangeMiles;
+    setStatus(status, `Looking for more stores within ${miles} mi of ${point.label ?? "you"}…`);
+    const [directory, stores] = await Promise.all([
+      loadDirectory(),
+      nearbyWpnStores(point, miles).catch(() => [] as WpnStore[]),
+    ]);
+    const checked = new Set(directory?.checkedWpnStoreIds ?? []);
+    const unchecked = stores.filter((s) => !checked.has(s.id));
+    await findStorefronts(unchecked, {
+      onProgress(done, total, match) {
+        if (match) {
+          found = [...found, match].sort((a, b) => a.store.distance - b.store.distance);
+          renderFound();
+        }
+        setStatus(status, `Checked ${done} of ${total} stores… ${found.length} found`);
+      },
+    });
+    setStatus(
+      status,
+      found.length
+        ? `Found ${found.length} more stores. Add the ones you want.`
+        : `No additional TCGplayer Pro web stores found within ${miles} mi.`,
+    );
   } catch (err) {
-    setStatus(status, describeFetchError(err, "https://api.zippopotam.us"), true);
+    setStatus(status, describeFetchError(err, "https://api.tabletop.wizards.com"), true);
+  } finally {
+    button.disabled = false;
   }
-});
-
-$<HTMLButtonElement>("use-location").addEventListener("click", () => {
-  const status = $("find-status");
-  if (!navigator.geolocation) {
-    setStatus(status, "Location isn't available here. Enter a ZIP code instead.", true);
-    return;
-  }
-  setStatus(status, "Getting your location…");
-  const accessGranted = requestOrigins(FIND_STORES_ORIGINS);
-  navigator.geolocation.getCurrentPosition(
-    async (pos) => {
-      if (!(await accessGranted)) {
-        setStatus(status, ACCESS_DENIED, true);
-        return;
-      }
-      void search({
-        latitude: pos.coords.latitude,
-        longitude: pos.coords.longitude,
-        label: "your location",
-      });
-    },
-    () => setStatus(status, "Couldn't get your location. Enter a ZIP code instead.", true),
-    { timeout: 15000, maximumAge: 10 * 60 * 1000 },
-  );
 });
 
 // --- Init -----------------------------------------------------------------
@@ -382,8 +435,8 @@ $<HTMLButtonElement>("use-location").addEventListener("click", () => {
 void (async () => {
   settings = await loadSettings();
   $<HTMLInputElement>("tag").value = settings.tag;
-  renderStores();
   renderFilters();
+  await refreshStores();
   await showAccessBanner();
 })();
 

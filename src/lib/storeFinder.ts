@@ -1,8 +1,8 @@
+import { METERS_PER_MILE } from "./directory";
 import { getSite } from "./tcgplayerpro";
 import type { FetchFn, GeoPoint, Store, StoreSite, WpnStore } from "./types";
 
 const WPN_GRAPHQL = "https://api.tabletop.wizards.com/silverbeak-griffin-service/graphql";
-const METERS_PER_MILE = 1609.344;
 const WPN_PAGE_SIZE = 100;
 const MAX_WPN_PAGES = 20;
 

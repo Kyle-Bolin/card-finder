@@ -8,6 +8,13 @@ export const FIND_STORES_ORIGINS = [
   "https://api.zippopotam.us/*",
   "https://raw.githubusercontent.com/*",
 ];
+/** Location lookup by IP, the ZIP override, and the store directory. */
+export const AUTO_STORE_ORIGINS = [
+  "https://ipapi.co/*",
+  "https://get.geojs.io/*",
+  "https://api.zippopotam.us/*",
+  "https://raw.githubusercontent.com/*",
+];
 
 /** The subset of `origins` the extension doesn't have access to yet. */
 export async function missingOrigins(origins: string[]): Promise<string[]> {
