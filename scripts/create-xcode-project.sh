@@ -19,6 +19,9 @@ xcrun safari-web-extension-converter dist \
   --no-open \
   --no-prompt
 
+# App Store Connect rejects an app icon with an alpha channel, even an opaque one.
+node scripts/strip-icon-alpha.mjs "xcode/Card Finder/Shared (App)/Assets.xcassets/AppIcon.appiconset/universal-icon-1024@1x.png"
+
 echo
 echo "Created xcode/Card Finder/Card Finder.xcodeproj"
 echo "Open it, pick the 'Card Finder (macOS)' or 'Card Finder (iOS)' scheme, set your Team under"

@@ -80,8 +80,13 @@ pushes to the `xcode-project` branch), or delete `xcode/` and run
 2. Choose the **Card Finder (iOS)** scheme, select the iPad, and press **Run**.
 3. On the iPad: **Settings → Apps → Safari → Extensions → Card Finder → On**, and allow the sites.
 
-With a free Apple ID the iPad install expires after 7 days. See issue #20 for longer-lived
-options (TestFlight).
+With a free Apple ID the iPad install expires after 7 days.
+
+### TestFlight (iPad and Mac, no Xcode)
+
+Every change merged to `main` is built and uploaded to TestFlight by GitHub Actions. Install the
+**TestFlight** app, then install and update Card Finder from there. Builds are properly signed, so
+the Mac doesn't need "Allow unsigned extensions". One-time setup: [docs/deploy.md](docs/deploy.md).
 
 ## Use it
 
