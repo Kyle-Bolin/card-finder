@@ -1,0 +1,114 @@
+name: Deploy to TestFlight
+
+# Builds the iOS/iPadOS and macOS apps, signs them with the team's App Store Connect API key
+# and uploads them to TestFlight. Setup: docs/deploy.md. Until the secrets exist, runs end
+# with a "not configured" notice instead of failing.
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - "src/**"
+      - "static/**"
+      - "xcode/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    runs-on: macos-latest
+    env:
+      PROJECT: xcode/Card Finder/Card Finder.xcodeproj
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+    steps:
+      - name: Check configuration
+        id: config
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          if [ -z "$ASC_KEY_ID" ] || [ -z "$ASC_ISSUER_ID" ] || [ -z "$ASC_KEY_P8" ] || [ -z "$APPLE_TEAM_ID" ]; then
+            echo "::notice title=TestFlight not configured::Add the ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_P8 secrets and the APPLE_TEAM_ID variable (see docs/deploy.md). Skipping."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.config.outputs.ready == 'true'
+        uses: actions/checkout@v7
+
+      - if: steps.config.outputs.ready == 'true'
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - if: steps.config.outputs.ready == 'true'
+        run: npm ci
+
+      - if: steps.config.outputs.ready == 'true'
+        run: npm run build
+
+      - name: Version and build number
+        if: steps.config.outputs.ready == 'true'
+        id: version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            version="${GITHUB_REF_NAME#v}"
+          else
+            version="$(node -p 'require("./package.json").version')"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "build=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          echo "Card Finder $version ($GITHUB_RUN_NUMBER)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Write API key and export options
+        if: steps.config.outputs.ready == 'true'
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          key="$RUNNER_TEMP/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$key"
+          chmod 600 "$key"
+          echo "ASC_KEY_PATH=$key" >> "$GITHUB_ENV"
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          PLIST
+
+      - name: Archive and upload (iOS and iPadOS)
+        if: steps.config.outputs.ready == 'true'
+        run: ./scripts/testflight.sh "Card Finder (iOS)" "generic/platform=iOS" ios
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          BUILD: ${{ steps.version.outputs.build }}
+
+      - name: Archive and upload (macOS)
+        if: steps.config.outputs.ready == 'true'
+        run: ./scripts/testflight.sh "Card Finder (macOS)" "generic/platform=macOS" macos
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          BUILD: ${{ steps.version.outputs.build }}
+
+      - name: Remove API key
+        if: always()
+        run: rm -f "$RUNNER_TEMP"/AuthKey_*.p8
