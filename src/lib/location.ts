@@ -20,6 +20,15 @@ function coordinates(latitude: unknown, longitude: unknown): [number, number] | 
   return [lat, lng];
 }
 
+/**
+ * Only a lookup that names a city is city-level. Without one the providers fall back to a
+ * country centroid (for the US, 37.751, -97.822 in Kansas), which would pick stores
+ * hundreds of miles away, so it counts as a failed lookup.
+ */
+function hasCity(city: unknown): boolean {
+  return typeof city === "string" && city.trim() !== "";
+}
+
 function label(city: unknown, region: unknown, postal: unknown): string {
   const place = [city, region].filter((p) => typeof p === "string" && p).join(", ");
   return [place, typeof postal === "string" ? postal : ""].filter(Boolean).join(" ");
@@ -29,13 +38,13 @@ function label(city: unknown, region: unknown, postal: unknown): string {
 export function parseIpapi(data: unknown): GeoPoint | null {
   if (!data || typeof data !== "object") return null;
   const d = data as Record<string, unknown>;
-  if (d.error) return null;
+  if (d.error || !hasCity(d.city)) return null;
   const point = coordinates(d.latitude, d.longitude);
   if (!point) return null;
   return {
     latitude: point[0],
     longitude: point[1],
-    label: label(d.city, d.region_code, d.postal) || "your area",
+    label: label(d.city, d.region_code, d.postal),
   };
 }
 
@@ -43,13 +52,14 @@ export function parseIpapi(data: unknown): GeoPoint | null {
 export function parseGeojs(data: unknown): GeoPoint | null {
   if (!data || typeof data !== "object") return null;
   const d = data as Record<string, unknown>;
+  if (!hasCity(d.city)) return null;
   const point = coordinates(d.latitude, d.longitude);
   if (!point) return null;
   // geojs gives the full region name and no postal code.
   return {
     latitude: point[0],
     longitude: point[1],
-    label: label(d.city, d.region, undefined) || "your area",
+    label: label(d.city, d.region, undefined),
   };
 }
 
