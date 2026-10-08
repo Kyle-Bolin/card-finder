@@ -48,6 +48,17 @@ describe("IP location parsing", () => {
     expect(parseGeojs({ latitude: "", longitude: "" })).toBeNull();
     expect(parseGeojs({ latitude: "95", longitude: "0" })).toBeNull();
   });
+
+  it("rejects country-level answers with no city", () => {
+    // What geojs.io returns when it can't place an IP: the US centroid, no city.
+    expect(
+      parseGeojs({ latitude: "37.751", longitude: "-97.822", country_code: "US", city: "" }),
+    ).toBeNull();
+    expect(parseGeojs({ latitude: "37.751", longitude: "-97.822", country_code: "US" })).toBeNull();
+    expect(
+      parseIpapi({ latitude: 37.751, longitude: -97.822, country_code: "US", city: null }),
+    ).toBeNull();
+  });
 });
 
 describe("fetchApproxLocation", () => {
