@@ -1,0 +1,128 @@
+{
+  "filters": {
+    "cardType": [
+      {
+        "value": "Instant",
+        "count": 11
+      }
+    ],
+    "color": [
+      {
+        "value": "Red",
+        "count": 11
+      }
+    ],
+    "rarityName": [
+      {
+        "value": "Common",
+        "count": 5
+      },
+      {
+        "value": "Promo",
+        "count": 3
+      },
+      {
+        "value": "Uncommon",
+        "count": 3
+      }
+    ],
+    "setName": [
+      {
+        "value": "Secret Lair Drop Series",
+        "count": 3
+      },
+      {
+        "value": "Alpha Edition",
+        "count": 1
+      },
+      {
+        "value": "Commander Legends: Battle for Baldur's Gate",
+        "count": 1
+      },
+      {
+        "value": "FINAL FANTASY: Through the Ages",
+        "count": 1
+      },
+      {
+        "value": "Revised Edition",
+        "count": 1
+      },
+      {
+        "value": "Double Masters 2022",
+        "count": 1
+      },
+      {
+        "value": "Fourth Edition",
+        "count": 1
+      },
+      {
+        "value": "Beta Edition",
+        "count": 1
+      },
+      {
+        "value": "The List Reprints",
+        "count": 1
+      }
+    ],
+    "productTypeName": [
+      {
+        "value": "Cards",
+        "count": 11
+      }
+    ],
+    "productLineName": [
+      {
+        "value": "Magic: The Gathering",
+        "count": 11
+      },
+      {
+        "value": "Disney Lorcana",
+        "count": 1
+      }
+    ],
+    "availableItems": [
+      {
+        "value": "Include Out of Stock",
+        "count": 0
+      }
+    ]
+  },
+  "products": {
+    "totalItems": 1,
+    "items": [
+      {
+        "id": 5002,
+        "name": "Pearl Medallion",
+        "isPresale": false,
+        "rarityName": "Rare",
+        "imageCount": 1,
+        "lowestPrice": 0.35,
+        "setId": 7,
+        "setName": "Commander Masters",
+        "setUrlName": "commander-masters",
+        "productLineId": 1,
+        "productLineName": "Magic: The Gathering",
+        "productLineUrlName": "magic",
+        "productUrlName": "pearl-medallion",
+        "customAttributes": {
+          "formats": null,
+          "description": "Lightning Bolt does 3 damage to one target.",
+          "powerNumber": null,
+          "color": [
+            "Red"
+          ],
+          "fullType": "Instant ",
+          "releaseDate": "1993-09-05T00:00:00Z",
+          "cardType": [
+            "Instant"
+          ],
+          "convertedCost": "1",
+          "power": null,
+          "flavorText": "",
+          "toughnessNumber": null,
+          "toughness": null
+        }
+      }
+    ]
+  }
+}

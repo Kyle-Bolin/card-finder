@@ -1,0 +1,47 @@
+[
+  {
+    "productId": 5001,
+    "skus": [
+      {
+        "skuId": 50014,
+        "conditionName": "Near Mint",
+        "languageId": 1,
+        "languageName": "English",
+        "price": 0.45,
+        "quantity": 4,
+        "isFoil": false,
+        "isFeatured": false,
+        "productId": 5001
+      },
+      {
+        "skuId": 50012,
+        "conditionName": "Lightly Played",
+        "languageId": 1,
+        "languageName": "English",
+        "price": 0.35,
+        "quantity": 2,
+        "isFoil": false,
+        "isFeatured": false,
+        "productId": 5001
+      }
+    ],
+    "total": 2
+  },
+  {
+    "productId": 5002,
+    "skus": [
+      {
+        "skuId": 50021,
+        "conditionName": "Near Mint",
+        "languageId": 1,
+        "languageName": "English",
+        "price": 1.25,
+        "quantity": 1,
+        "isFoil": false,
+        "isFeatured": false,
+        "productId": 5002
+      }
+    ],
+    "total": 1
+  }
+]

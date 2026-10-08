@@ -24,6 +24,30 @@ jobs:
       - id: xcode
         run: echo "exists=$([ -d xcode ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
+  # Runs the built extension in Playwright's WebKit with a fake extension runtime and
+  # recorded network data. No live network.
+  e2e:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps webkit
+      - run: npm run test:e2e -- --project=webkit
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
   # Builds the Safari app for macOS and iOS without signing. Skipped until xcode/ is committed.
   safari:
     needs: check
