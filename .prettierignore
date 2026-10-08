@@ -5,3 +5,4 @@ tests/fixtures/
 data/
 playwright-report/
 test-results/
+build/
