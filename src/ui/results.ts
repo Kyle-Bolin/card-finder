@@ -102,6 +102,27 @@ function el<K extends keyof HTMLElementTagNameMap>(
 
 const money = (n: number) => `$${n.toFixed(2)}`;
 
+/**
+ * The cheapest way to buy every wanted card this store has: its cheapest copies first, up to
+ * the quantity wanted (a listing without a quantity counts as one copy).
+ */
+export function cheapestTotal(result: StoreResult, wanted: WantedCard[]): number {
+  let total = 0;
+  for (const card of wanted) {
+    let need = card.quantity;
+    const listings = result.listings
+      .filter((l) => l.cardName === card.name)
+      .sort((a, b) => a.price - b.price);
+    for (const listing of listings) {
+      if (need <= 0) break;
+      const take = Math.min(need, listing.quantity ?? 1);
+      total += take * listing.price;
+      need -= take;
+    }
+  }
+  return Math.round(total * 100) / 100;
+}
+
 function listingRow(listing: Listing, changes?: CheckChanges): HTMLElement {
   const details = [listing.setName, listing.condition];
   if (listing.language && listing.language !== "English") details.push(listing.language);
@@ -137,7 +158,7 @@ function listingRow(listing: Listing, changes?: CheckChanges): HTMLElement {
 
 function storeCard(
   result: StoreResult,
-  wantedCount: number,
+  wanted: WantedCard[],
   home: GeoPoint | undefined,
   now: Date | undefined,
   changes?: CheckChanges,
@@ -150,7 +171,11 @@ function storeCard(
       { className: "cf-store-name" },
       el("a", { href: result.store.url, target: "_blank", rel: "noopener" }, result.store.name),
     ),
-    el("span", { className: "cf-count" }, `${result.found.length} of ${wantedCount}`),
+    el(
+      "span",
+      { className: "cf-count", title: "Cards in stock here · cheapest way to buy them all" },
+      `${result.found.length} of ${wanted.length} · ${money(cheapestTotal(result, wanted))}`,
+    ),
   );
   const card = el("div", { className: "cf-store" }, head);
   const a = result.store.address;
@@ -262,7 +287,7 @@ export function renderResults(container: HTMLElement, state: ResultsState): void
     }
     root.append(toggle);
   }
-  withStock.forEach((r) => root.append(storeCard(r, wanted.length, home, now, changes)));
+  withStock.forEach((r) => root.append(storeCard(r, wanted, home, now, changes)));
 
   const missing = wanted.filter((w) => !found.has(w.name));
   if (done && missing.length) {
