@@ -1,0 +1,241 @@
+{
+ "resources": {
+  "results": {
+   "products": [
+    {
+     "available": true,
+     "handle": "sol-ring-0912-rainbow-foil-secret-lair-drop-series",
+     "id": 8264431108287,
+     "price": "7.20",
+     "price_max": "14.40",
+     "price_min": "7.20",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Foil",
+      "Predh",
+      "Rare",
+      "Secret Lair Drop Series",
+      "Vintage"
+     ],
+     "title": "Sol Ring (0912) (Rainbow Foil) [Secret Lair Drop Series]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-0912-rainbow-foil-secret-lair-drop-series",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-revised-edition",
+     "id": 6101548826815,
+     "price": "18.60",
+     "price_max": "37.20",
+     "price_min": "18.60",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Normal",
+      "Oldschool",
+      "Predh",
+      "Revised Edition",
+      "Uncommon",
+      "Vintage"
+     ],
+     "title": "Sol Ring [Revised Edition]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-revised-edition",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-commander-collection-black",
+     "id": 6929764155583,
+     "price": "5.10",
+     "price_max": "19.40",
+     "price_min": "5.10",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Commander Collection: Black",
+      "Foil",
+      "Normal",
+      "Predh",
+      "Rare",
+      "Vintage"
+     ],
+     "title": "Sol Ring [Commander Collection: Black]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-commander-collection-black",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-retro-foil-etched-secret-lair-drop-series",
+     "id": 7539178635455,
+     "price": "37.20",
+     "price_max": "74.30",
+     "price_min": "37.20",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Foil",
+      "Predh",
+      "Rare",
+      "Secret Lair Drop Series",
+      "Vintage"
+     ],
+     "title": "Sol Ring (Retro Foil Etched) [Secret Lair Drop Series]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-retro-foil-etched-secret-lair-drop-series",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-1988-secret-lair-drop-series",
+     "id": 8206512128191,
+     "price": "7.60",
+     "price_max": "15.10",
+     "price_min": "7.60",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Normal",
+      "Predh",
+      "Rare",
+      "Secret Lair Drop Series",
+      "Vintage"
+     ],
+     "title": "Sol Ring (1988) [Secret Lair Drop Series]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-1988-secret-lair-drop-series",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-kamigawa-neon-dynasty-commander",
+     "id": 7162435338431,
+     "price": "1.10",
+     "price_max": "2.10",
+     "price_min": "1.10",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Kamigawa: Neon Dynasty Commander",
+      "Normal",
+      "Predh",
+      "Uncommon",
+      "Vintage"
+     ],
+     "title": "Sol Ring [Kamigawa: Neon Dynasty Commander]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-kamigawa-neon-dynasty-commander",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-0358-surge-foil-final-fantasy-commander",
+     "id": 8139595448511,
+     "price": "5.20",
+     "price_max": "10.30",
+     "price_min": "5.20",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "FINAL FANTASY Commander",
+      "Foil",
+      "Predh",
+      "Uncommon",
+      "Vintage"
+     ],
+     "title": "Sol Ring (0358) (Surge Foil) [FINAL FANTASY Commander]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-0358-surge-foil-final-fantasy-commander",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-march-of-the-machine-commander",
+     "id": 7474128453823,
+     "price": "1.20",
+     "price_max": "2.40",
+     "price_min": "1.20",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "March of the Machine Commander",
+      "Normal",
+      "Predh",
+      "Uncommon",
+      "Vintage"
+     ],
+     "title": "Sol Ring [March of the Machine Commander]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-march-of-the-machine-commander",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-doctor-who",
+     "id": 7550886576319,
+     "price": "1.20",
+     "price_max": "5.60",
+     "price_min": "1.20",
+     "tags": [
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Doctor Who",
+      "Foil",
+      "Normal",
+      "Predh",
+      "Uncommon",
+      "Vintage"
+     ],
+     "title": "Sol Ring [Doctor Who]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-doctor-who",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-30th-anniversary-edition",
+     "id": 7364507205823,
+     "price": "15.70",
+     "price_max": "31.40",
+     "price_min": "15.70",
+     "tags": [
+      "30th Anniversary Edition",
+      "Artifact",
+      "Colorless",
+      "Commander",
+      "Common",
+      "Normal",
+      "Predh",
+      "Vintage"
+     ],
+     "title": "Sol Ring (131) [30th Anniversary Edition]",
+     "type": "MTG Single",
+     "url": "/products/sol-ring-30th-anniversary-edition",
+     "variants": [],
+     "vendor": "Magic: The Gathering"
+    }
+   ]
+  }
+ }
+}

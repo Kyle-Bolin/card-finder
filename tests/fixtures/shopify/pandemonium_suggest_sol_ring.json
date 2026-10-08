@@ -1,0 +1,111 @@
+{
+ "resources": {
+  "results": {
+   "products": [
+    {
+     "available": true,
+     "handle": "sol-ring-revised-edition-1571",
+     "id": 7956998717616,
+     "price": "29.74",
+     "price_max": "33.46",
+     "price_min": "29.74",
+     "tags": [
+      "all",
+      "Artifact",
+      "in-stock",
+      "Magic",
+      "revised-edition",
+      "Uncommon"
+     ],
+     "title": "Sol Ring [3ED - N/A]",
+     "type": "Magic: The Gathering Singles",
+     "url": "/products/sol-ring-revised-edition-1571",
+     "variants": [],
+     "vendor": "Revised Edition"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-1696-sld-1696",
+     "id": 8101293260976,
+     "price": "17.67",
+     "price_max": "17.67",
+     "price_min": "17.67",
+     "tags": [
+      "all",
+      "Artifact",
+      "in-stock",
+      "Rare",
+      "secret-lair-drop-series"
+     ],
+     "title": "Sol Ring (1696) [SLD - 1696]",
+     "type": "Magic: The Gathering Singles",
+     "url": "/products/sol-ring-1696-sld-1696",
+     "variants": [],
+     "vendor": "Secret Lair Drop Series"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-halo-foil-secret-lair-countdown-kit-662066",
+     "id": 8005401870512,
+     "price": "180.11",
+     "price_max": "180.11",
+     "price_min": "180.11",
+     "tags": [
+      "all",
+      "Artifact",
+      "in-stock",
+      "Magic",
+      "Rare",
+      "secret-lair-countdown-kit"
+     ],
+     "title": "Sol Ring (Halo Foil) [SLC - 46]",
+     "type": "Magic: The Gathering Singles",
+     "url": "/products/sol-ring-halo-foil-secret-lair-countdown-kit-662066",
+     "variants": [],
+     "vendor": "Secret Lair Countdown Kit"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-1734-secret-lair-drop-series-588014",
+     "id": 8088456134832,
+     "price": "15.94",
+     "price_max": "15.94",
+     "price_min": "15.94",
+     "tags": [
+      "all",
+      "Artifact",
+      "in-stock",
+      "Rare",
+      "secret-lair-drop-series"
+     ],
+     "title": "Sol Ring (1734) [SLD - 1734]",
+     "type": "Magic: The Gathering Singles",
+     "url": "/products/sol-ring-1734-secret-lair-drop-series-588014",
+     "variants": [],
+     "vendor": "Secret Lair Drop Series"
+    },
+    {
+     "available": true,
+     "handle": "sol-ring-288-pool-party-foil-sld-288",
+     "id": 8125555409072,
+     "price": "18.93",
+     "price_max": "18.93",
+     "price_min": "18.93",
+     "tags": [
+      "all",
+      "Artifact",
+      "Colorless",
+      "in-stock",
+      "Rare",
+      "secret-lair-drop-series"
+     ],
+     "title": "Sol Ring (288) (Pool Party Foil) [SLD - 288]",
+     "type": "Magic: The Gathering Singles",
+     "url": "/products/sol-ring-288-pool-party-foil-sld-288",
+     "variants": [],
+     "vendor": "Secret Lair Drop Series"
+    }
+   ]
+  }
+ }
+}
