@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const permissions = { contains: vi.fn(), request: vi.fn() };
 vi.mock("webextension-polyfill", () => ({ default: { permissions } }));
 
-const { missingOrigins, requestOrigins } = await import("../src/lib/permissions");
+const { missingOrigins, originsForStores, requestOrigins } = await import("../src/lib/permissions");
 const { describeFetchError } = await import("../src/lib/fetchError");
 
 const a = "https://*.tcgplayerpro.com/*";
@@ -49,5 +49,17 @@ describe("describeFetchError", () => {
     expect(describeFetchError(new Error("HTTP 500"), "https://x.tcgplayerpro.com")).toBe(
       "HTTP 500",
     );
+  });
+});
+
+describe("originsForStores", () => {
+  it("adds each non-TCGplayer Pro store's own origin to the TCGplayer Pro hosts", () => {
+    expect(
+      originsForStores([
+        { url: "https://dmcomics.tcgplayerpro.com", name: "DMC" },
+        { url: "https://a.test", name: "A", platform: "shopify" },
+        { url: "https://a.test", name: "A again", platform: "shopify" },
+      ]),
+    ).toEqual([a, "https://a.test/*"]);
   });
 });

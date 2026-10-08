@@ -1,8 +1,13 @@
-/** A TCGplayer Pro storefront the user has chosen to check. */
+/** The e-commerce platform behind a store; missing means "tcgplayerpro". */
+export type StorePlatform = "tcgplayerpro" | "shopify";
+
+/** A storefront the user has chosen to check. */
 export interface Store {
   /** Origin of the storefront, e.g. "https://dmcomics.tcgplayerpro.com". */
   url: string;
   name: string;
+  /** Missing in stores saved before other platforms were supported: TCGplayer Pro. */
+  platform?: StorePlatform;
   address?: StoreAddress;
   phone?: string;
   hours?: string;
@@ -21,6 +26,7 @@ export interface StoreAddress {
 export interface StoreSite {
   url: string;
   name: string;
+  platform?: StorePlatform;
   address?: StoreAddress;
   phone?: string;
   hours?: string;
@@ -74,6 +80,7 @@ export interface Listing {
   language: string;
   foil: boolean;
   price: number;
-  quantity: number;
+  /** Copies in stock; missing when the store only says "in stock" (Shopify). */
+  quantity?: number;
   url: string;
 }

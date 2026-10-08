@@ -11,6 +11,7 @@ const fixtures = join(root, "tests/fixtures");
 export const EXTENSION_ORIGIN = "https://extension.test";
 export const DECK_ID = "6bUjMtA1NUiqQYvr8uqXBg";
 export const DECK_URL = `https://moxfield.com/decks/${DECK_ID}`;
+export const TABLETOP_ORIGIN = "https://www.tabletopgamingcenter.com";
 export const OPTIONS_URL = `${EXTENSION_ORIGIN}/options/options.html`;
 
 const fixture = (path: string) => readFileSync(join(fixtures, path), "utf8");
@@ -138,6 +139,35 @@ export async function createWorld(
       const file = SKUS[store];
       return json(route, file ? fixture(file) : "[]");
     }
+    return route.fallback();
+  });
+
+  // Tabletop Gaming Center (Shopify): Cloudshift is in stock, nothing else is.
+  await context.route(`${TABLETOP_ORIGIN}/**`, (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname === "/") {
+      return route.fulfill({
+        body: fixture("shopify/tabletop_home.html"),
+        contentType: "text/html; charset=utf-8",
+      });
+    }
+    if (url.pathname === "/products.json") return json(route, '{"products":[]}');
+    if (url.pathname === "/search/suggest.json") {
+      const q = url.searchParams.get("q");
+      return json(
+        route,
+        fixture(
+          q === '"Cloudshift"'
+            ? "shopify/tabletop_suggest_cloudshift.json"
+            : "shopify/webway_suggest_sol_ring_empty.json",
+        ),
+      );
+    }
+    if (url.pathname === "/products/cloudshift-avacyn-restored.js") {
+      return json(route, fixture("shopify/tabletop_product_cloudshift_avr.json"));
+    }
+    // The store lists a second Cloudshift printing that isn't in the recorded data.
+    if (url.pathname.endsWith(".js")) return route.fulfill({ status: 404, body: "Not Found" });
     return route.fallback();
   });
 

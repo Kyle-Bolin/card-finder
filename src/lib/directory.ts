@@ -1,5 +1,5 @@
 import type { MatchConfidence, StorefrontMatch } from "./storeFinder";
-import type { FetchFn, GeoPoint, StoreAddress, WpnStore } from "./types";
+import type { FetchFn, GeoPoint, StoreAddress, StorePlatform, WpnStore } from "./types";
 
 /**
  * Published list of known TCGplayer Pro storefronts (`data/storefronts.json`),
@@ -16,6 +16,8 @@ export interface DirectoryStorefront {
   /** Storefront origin, e.g. "https://dmcomics.tcgplayerpro.com". */
   url: string;
   name: string;
+  /** Missing means "tcgplayerpro". */
+  platform?: StorePlatform;
   /** TCGplayer seller key (lowercase); identifies the store across sources. */
   sellerKey?: string;
   address?: StoreAddress;
@@ -100,7 +102,13 @@ export function nearbyFromDirectory(
       };
       matches.push({
         store,
-        site: { url: sf.url, name: sf.name, address: sf.address, phone: sf.phone },
+        site: {
+          url: sf.url,
+          name: sf.name,
+          platform: sf.platform,
+          address: sf.address,
+          phone: sf.phone,
+        },
         confidence: loc.confidence === "possible" ? "possible" : "confirmed",
       });
     }

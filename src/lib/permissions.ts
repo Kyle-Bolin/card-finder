@@ -1,4 +1,5 @@
 import browser from "webextension-polyfill";
+import type { Store } from "./types";
 
 /** Match patterns for the sites Card Finder reads; each must be granted separately in Safari. */
 export const STORE_ORIGINS = ["https://*.tcgplayerpro.com/*"];
@@ -15,6 +16,19 @@ export const AUTO_STORE_ORIGINS = [
   "https://api.zippopotam.us/*",
   "https://raw.githubusercontent.com/*",
 ];
+
+/** Match pattern for one storefront origin. */
+export function originPattern(storeUrl: string): string {
+  return `${new URL(storeUrl).origin}/*`;
+}
+
+/** What a check of `stores` needs: the TCGplayer Pro hosts, plus each other store's own origin. */
+export function originsForStores(stores: Store[]): string[] {
+  const custom = stores
+    .filter((s) => s.platform && s.platform !== "tcgplayerpro")
+    .map((s) => originPattern(s.url));
+  return [...new Set([...STORE_ORIGINS, ...custom])];
+}
 
 /** The subset of `origins` the extension doesn't have access to yet. */
 export async function missingOrigins(origins: string[]): Promise<string[]> {

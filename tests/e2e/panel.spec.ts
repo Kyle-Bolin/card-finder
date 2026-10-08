@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
-import { openDeckPage } from "./harness/world";
+import { openDeckPage, TABLETOP_ORIGIN } from "./harness/world";
 
 const openPanel = async (page: Page) => {
   await openDeckPage(page);
@@ -90,5 +90,36 @@ test.describe("without site access", () => {
     await expect
       .poll(() => page.evaluate(() => window.__fakeExtension.tabs))
       .toEqual([{ url: "https://extension.test/options/options.html?grant=1" }]);
+  });
+});
+
+test.describe("with a Shopify store saved", () => {
+  test.use({
+    world: {
+      local: {
+        settings: {
+          stores: [{ url: TABLETOP_ORIGIN, name: "Tabletop Gaming Center", platform: "shopify" }],
+        },
+      },
+    },
+  });
+
+  test("a check shows its Cloudshift as in stock, with no quantity", async ({ page }) => {
+    await openPanel(page);
+    await page.getByRole("button", { name: "Check local stores (13 cards)" }).click();
+
+    await expect(page.getByText("Checked 4 stores")).toBeVisible();
+    const store = page.locator(".cf-store", { hasText: "Tabletop Gaming Center" });
+    await expect(store).toHaveCount(1);
+    const cloudshift = store.locator(".cf-card", { hasText: "Cloudshift" });
+    await expect(cloudshift.locator(".cf-listing")).toHaveCount(2);
+    await expect(cloudshift).toContainText("Avacyn Restored · NM");
+    await expect(cloudshift).toContainText("$2.10 in stock");
+    await expect(cloudshift).toContainText("$1.80 in stock");
+    await expect(cloudshift).not.toContainText("×");
+    // TCGplayer Pro stores are checked in the same run and still show quantities.
+    await expect(page.locator(".cf-store", { hasText: "The Relentless Dragon" })).toContainText(
+      "$0.45 ×4",
+    );
   });
 });

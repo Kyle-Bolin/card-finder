@@ -1,12 +1,12 @@
 import { applyFilters } from "./filters";
-import { isSingleCard, matchesCard, parseCondition } from "./matching";
-import type { TtlCache } from "./cache";
 import { describeFetchError } from "./fetchError";
 import { limitFetch } from "./limit";
 import type { Filters } from "./settings";
 import { mapLimit } from "./storeFinder";
-import { getSkus, productUrl, searchProducts, type CatalogProduct } from "./tcgplayerpro";
-import type { FetchFn, Listing, Store, WantedCard } from "./types";
+import { shopifyProvider } from "./providers/shopify";
+import { tcgplayerProProvider } from "./providers/tcgplayerpro";
+import type { SearchCache, StoreProvider } from "./providers/types";
+import type { FetchFn, Listing, Store, StorePlatform, WantedCard } from "./types";
 
 export interface StoreResult {
   store: Store;
@@ -20,51 +20,26 @@ export interface FindOptions {
   /** Card searches in flight per store. */
   cardConcurrency?: number;
   /** Short-lived cache of catalog searches (never used for SKU stock). */
-  searchCache?: TtlCache<CatalogProduct[]>;
+  searchCache?: SearchCache;
 }
 
-/**
- * In-stock listings of the wanted cards at one store: one catalog search per card
- * (exact name matches only, a few at a time), then one batched inventory lookup.
- */
+const PROVIDERS: Record<StorePlatform, StoreProvider> = {
+  tcgplayerpro: tcgplayerProProvider,
+  shopify: shopifyProvider,
+};
+
+/** In-stock listings of the wanted cards at one store, using its platform's provider. */
 export async function findListings(
   store: Store,
   wanted: WantedCard[],
   fetchFn: FetchFn = fetch,
   { cardConcurrency = 1, searchCache }: FindOptions = {},
 ): Promise<Listing[]> {
-  const search = (card: WantedCard) => {
-    const load = () => searchProducts(store.url, card.name, fetchFn);
-    return searchCache
-      ? searchCache.getOrLoad(`${store.url}|${card.name.toLowerCase()}`, load)
-      : load();
-  };
-  const perCard = await mapLimit(wanted, cardConcurrency, async (card) =>
-    (await search(card))
-      .filter((p) => matchesCard(p.name, card.name) && isSingleCard(p.setName, p.name))
-      .map((product) => ({ card: card.name, product })),
-  );
-  const matches: { card: string; product: CatalogProduct }[] = perCard.flat();
-  if (!matches.length) return [];
-  const skus = await getSkus(store.url, [...new Set(matches.map((m) => m.product.id))], fetchFn);
-  const listings: Listing[] = [];
-  for (const { card, product } of matches) {
-    for (const sku of skus.get(product.id) ?? []) {
-      if (sku.quantity <= 0) continue;
-      listings.push({
-        storeUrl: store.url,
-        cardName: card,
-        productName: product.name,
-        setName: product.setName,
-        condition: parseCondition(sku.conditionName),
-        language: sku.languageName,
-        foil: sku.isFoil,
-        price: Number(sku.price),
-        quantity: sku.quantity,
-        url: productUrl(store.url, product),
-      });
-    }
-  }
+  const provider = PROVIDERS[store.platform ?? "tcgplayerpro"] ?? tcgplayerProProvider;
+  const listings = await provider.findListings(store, wanted, fetchFn, {
+    cardConcurrency,
+    searchCache,
+  });
   return listings.sort((a, b) => a.cardName.localeCompare(b.cardName) || a.price - b.price);
 }
 

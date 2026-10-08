@@ -1,5 +1,5 @@
 import { expect, test } from "./fixtures";
-import { OPTIONS_URL } from "./harness/world";
+import { OPTIONS_URL, TABLETOP_ORIGIN } from "./harness/world";
 
 const stores = (page: import("@playwright/test").Page) => page.locator("#in-range li");
 
@@ -81,4 +81,27 @@ test.describe("without site access", () => {
       { origins: ["https://*.tcgplayerpro.com/*"] },
     ]);
   });
+});
+
+test("adding a Shopify store by URL detects Shopify, asks for its site access and saves it", async ({
+  page,
+}) => {
+  await page.goto(OPTIONS_URL);
+  await page.locator("#store-url").fill(TABLETOP_ORIGIN);
+  await page.getByRole("button", { name: "Add store" }).click();
+  await expect(page.locator("#add-store-status")).toHaveText("Added Tabletop Gaming Center.");
+  await expect(page.locator("#stores li")).toContainText("Tabletop Gaming Center");
+
+  const requests = await page.evaluate(() => window.__fakeExtension.permissionRequests);
+  expect(requests).toContainEqual({ origins: [`${TABLETOP_ORIGIN}/*`] });
+  const settings = await page.evaluate(
+    () => window.__fakeExtension.local.settings as { stores: unknown[] },
+  );
+  expect(settings.stores).toEqual([
+    expect.objectContaining({
+      url: TABLETOP_ORIGIN,
+      name: "Tabletop Gaming Center",
+      platform: "shopify",
+    }),
+  ]);
 });
