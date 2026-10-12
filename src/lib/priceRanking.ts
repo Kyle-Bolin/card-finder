@@ -2,7 +2,7 @@ import type { KeyValueStore } from "./cache";
 import { describeFetchError } from "./fetchError";
 import { findListings } from "./check";
 import { limitFetch } from "./limit";
-import { MIN_BASKET_CARDS, PRICE_BASKET } from "./priceBasket";
+import { MIN_BASKET_CARDS, PRICE_BASKET, type BasketCard } from "./priceBasket";
 import { mapLimit, distanceMiles } from "./storeFinder";
 import type { FetchFn, GeoPoint, Listing, Store, WantedCard } from "./types";
 
@@ -70,12 +70,14 @@ export interface CardComparison {
   name: string;
   price: number;
   median: number;
+  /** How many loaded stores stock the card. With only one, the median is just its own price. */
+  stores: number;
 }
 
 export interface StoreScore {
   store: Store;
   distanceMiles: number | null;
-  /** How many basket cards the store stocks. */
+  /** How many basket cards the store stocks that at least one other loaded store stocks too. */
   coverage: number;
   basketSize: number;
   /** Geometric mean of price ÷ area median; below 1 is cheaper. Null when not enough data. */
@@ -85,7 +87,11 @@ export interface StoreScore {
   cards: CardComparison[];
 }
 
-/** Score the stores that loaded: ratio to the area median per card, then the geometric mean. */
+/**
+ * Score the stores that loaded: ratio to the area median per card, then the geometric mean.
+ * Only cards at least two loaded stores stock count toward the ratio and coverage, since a
+ * card stocked by one store is always at its own median. `cards` still lists every card.
+ */
 export function scoreStores(
   baskets: StoreBasket[],
   home: GeoPoint | undefined,
@@ -94,16 +100,22 @@ export function scoreStores(
 ): StoreScore[] {
   const loaded = baskets.filter((b) => !b.error);
   const medians = areaMedians(loaded);
+  const stocking = (name: string) => loaded.filter((b) => b.prices[name] !== undefined).length;
   return loaded.map(({ store, prices }) => {
     const cards = basket.flatMap(({ name }) => {
       const price = prices[name];
       const med = medians[name];
-      return price !== undefined && med !== undefined ? [{ name, price, median: med }] : [];
+      return price !== undefined && med !== undefined
+        ? [{ name, price, median: med, stores: stocking(name) }]
+        : [];
     });
-    const enough = cards.length >= minCards;
-    const ratio = enough
-      ? Math.exp(cards.reduce((sum, c) => sum + Math.log(c.price / c.median), 0) / cards.length)
-      : null;
+    const counted = cards.filter((c) => c.stores >= 2);
+    const ratio =
+      counted.length >= minCards
+        ? Math.exp(
+            counted.reduce((sum, c) => sum + Math.log(c.price / c.median), 0) / counted.length,
+          )
+        : null;
     const { latitude, longitude } = store;
     return {
       store,
@@ -111,7 +123,7 @@ export function scoreStores(
         home && latitude !== undefined && longitude !== undefined
           ? distanceMiles(home, { latitude, longitude })
           : null,
-      coverage: cards.length,
+      coverage: counted.length,
       basketSize: basket.length,
       ratio,
       total:
@@ -153,6 +165,8 @@ export function describeRatio(ratio: number): string {
 export interface LoadOptions {
   fetchFn?: FetchFn;
   store: KeyValueStore;
+  /** The cards to price (default: the shared basket). */
+  basket?: readonly BasketCard[];
   now?: () => number;
   /** Ignore cached prices (the Refresh button). */
   force?: boolean;
@@ -165,11 +179,22 @@ export interface LoadOptions {
 interface CacheEntry {
   at: number;
   prices: BasketPrices;
+  /** The basket the prices were fetched for; an entry built from another basket is stale. */
+  basketKey: string;
 }
 
-function validEntry(value: unknown): value is CacheEntry {
+const basketKey = (basket: readonly BasketCard[]) =>
+  JSON.stringify(basket.map((c) => c.name).sort());
+
+function validEntry(value: unknown, key: string): value is CacheEntry {
   const e = value as CacheEntry | undefined;
-  return !!e && typeof e.at === "number" && !!e.prices && typeof e.prices === "object";
+  return (
+    !!e &&
+    typeof e.at === "number" &&
+    !!e.prices &&
+    typeof e.prices === "object" &&
+    e.basketKey === key
+  );
 }
 
 /**
@@ -181,6 +206,7 @@ export async function loadBaskets(
   {
     fetchFn = fetch,
     store: cache,
+    basket = PRICE_BASKET,
     now = Date.now,
     force = false,
     concurrency = 3,
@@ -189,7 +215,8 @@ export async function loadBaskets(
   }: LoadOptions,
 ): Promise<StoreBasket[]> {
   const limited = limitFetch(fetchFn, maxInFlight);
-  const wanted: WantedCard[] = PRICE_BASKET.map((c) => ({
+  const key = basketKey(basket);
+  const wanted: WantedCard[] = basket.map((c) => ({
     name: c.name,
     quantity: 1,
     sources: [],
@@ -199,18 +226,18 @@ export async function loadBaskets(
   return mapLimit(eligible, concurrency, async (s) => {
     let result: StoreBasket;
     const cached = force ? undefined : await cache.get(CACHE_PREFIX + s.url);
-    if (validEntry(cached) && now() - cached.at < BASKET_TTL_MS) {
+    if (validEntry(cached, key) && now() - cached.at < BASKET_TTL_MS) {
       result = { store: s, at: cached.at, prices: cached.prices };
     } else {
       try {
         const listings = await findListings(s, wanted, limited, { cardConcurrency: 3 });
         const prices: BasketPrices = {};
-        for (const { name } of PRICE_BASKET) {
+        for (const { name } of basket) {
           const price = cheapestBasketPrice(listings, name);
           if (price !== null) prices[name] = price;
         }
         const at = now();
-        await cache.set(CACHE_PREFIX + s.url, { at, prices } satisfies CacheEntry);
+        await cache.set(CACHE_PREFIX + s.url, { at, prices, basketKey: key } satisfies CacheEntry);
         result = { store: s, at, prices };
       } catch (err) {
         result = { store: s, at: now(), prices: {}, error: describeFetchError(err, s.url) };

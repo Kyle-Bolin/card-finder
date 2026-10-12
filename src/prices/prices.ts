@@ -2,9 +2,11 @@ import browser from "webextension-polyfill";
 import { storageAreaStore } from "../lib/cache";
 import { formatAgo } from "../lib/history";
 import { missingOrigins, originsForStores, requestOrigins } from "../lib/permissions";
+import { renderNeedsPermission } from "../ui/results";
 import { PRICE_BASKET } from "../lib/priceBasket";
 import {
   describeRatio,
+  isRobotsBlocked,
   loadBaskets,
   scoreStores,
   sortScores,
@@ -13,6 +15,7 @@ import {
   type StoreScore,
 } from "../lib/priceRanking";
 import { resolveStores } from "../lib/resolveStores";
+import type { Store } from "../lib/types";
 
 function $<T extends HTMLElement>(id: string): T {
   const node = document.getElementById(id);
@@ -22,6 +25,7 @@ function $<T extends HTMLElement>(id: string): T {
 
 const status = $("status");
 const rankingEl = $("ranking");
+const accessEl = $("access");
 const refreshButton = $<HTMLButtonElement>("refresh");
 const sortEl = $<HTMLSelectElement>("sort");
 const totalsEl = $<HTMLInputElement>("totals");
@@ -30,6 +34,7 @@ const store = storageAreaStore(() => browser.storage?.local);
 const money = (n: number) => `$${n.toFixed(2)}`;
 
 let baskets: StoreBasket[] = [];
+let skipped: Store[] = [];
 let home: Awaited<ReturnType<typeof resolveStores>>["home"];
 
 function row(score: StoreScore, rank: number | null): HTMLLIElement {
@@ -57,7 +62,9 @@ function row(score: StoreScore, rank: number | null): HTMLLIElement {
     const list = document.createElement("ul");
     for (const c of score.cards) {
       const item = document.createElement("li");
-      item.textContent = `${c.name}: ${money(c.price)} (area median ${money(c.median)})`;
+      item.textContent = `${c.name}: ${money(c.price)} (${
+        c.stores < 2 ? "only store with it, not counted" : `area median ${money(c.median)}`
+      })`;
       list.append(item);
     }
     details.append(summary, list);
@@ -83,6 +90,18 @@ function render(): void {
     li.append(name, meta);
     rankingEl.append(li);
   }
+  for (const s of skipped) {
+    const li = document.createElement("li");
+    li.style.display = "block";
+    const name = document.createElement("div");
+    name.className = "name";
+    name.textContent = s.name;
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = "Skipped: site asks not to be checked automatically";
+    li.append(name, meta);
+    rankingEl.append(li);
+  }
   const loaded = baskets.filter((b) => !b.error);
   const oldest = Math.min(...loaded.map((b) => b.at));
   $("updated").textContent = loaded.length
@@ -96,18 +115,34 @@ async function run(force: boolean): Promise<void> {
   running = true;
   refreshButton.disabled = true;
   try {
+    accessEl.replaceChildren();
     const resolved = await resolveStores();
     home = resolved.home;
-    const { stores } = resolved;
+    skipped = resolved.stores.filter(isRobotsBlocked);
+    const stores = resolved.stores.filter((s) => !isRobotsBlocked(s));
     if (!stores.length) {
-      status.textContent =
-        "No stores to check yet. Open Settings & stores to enter a ZIP code or widen the range.";
+      baskets = [];
+      render();
+      status.textContent = resolved.stores.length
+        ? "None of the stores in range can be checked automatically."
+        : "No stores to check yet. Open Settings & stores to enter a ZIP code or widen the range.";
       return;
     }
     const origins = await missingOrigins(originsForStores(stores));
-    if (origins.length && !(await requestOrigins(origins))) {
-      status.textContent =
-        "Access wasn't granted. Allow Card Finder in your browser's extension settings.";
+    if (origins.length) {
+      baskets = [];
+      rankingEl.replaceChildren();
+      status.textContent = "";
+      // The prompt only appears for a request made straight from a click, so ask on this one.
+      renderNeedsPermission(accessEl, () => {
+        const granted = requestOrigins(origins);
+        void granted.then((ok) => {
+          if (ok) void run(force);
+          else
+            status.textContent =
+              "Access wasn't granted. Allow Card Finder in your browser's extension settings.";
+        });
+      });
       return;
     }
     status.textContent = `Checked 0 of ${stores.length} stores…`;

@@ -108,7 +108,12 @@ describe("scoring", () => {
     const thin = store("thin");
     const empty = store("empty");
     const scores = scoreStores(
-      [basket(full, all(10)), basket(thin, { A: 1, B: 1, C: 1, D: 1 }), basket(empty, {})],
+      [
+        basket(full, all(10)),
+        basket(store("full2"), all(10)),
+        basket(thin, { A: 1, B: 1, C: 1, D: 1 }),
+        basket(empty, {}),
+      ],
       undefined,
       names,
       5,
@@ -119,6 +124,35 @@ describe("scoring", () => {
     expect(by(thin)?.coverage).toBe(4);
     expect(by(empty)?.ratio).toBeNull();
     expect(by(empty)?.coverage).toBe(0);
+  });
+
+  it("ignores cards only one store stocks", () => {
+    const a = store("a");
+    const b = store("b");
+    // E and F are stocked by A alone (A's own median); they must not count for A.
+    const scores = scoreStores(
+      [
+        basket(a, { A: 5, B: 5, C: 5, D: 5, E: 1, F: 100 }),
+        basket(b, { A: 10, B: 10, C: 10, D: 10 }),
+      ],
+      undefined,
+      names,
+      4,
+    );
+    const first = scores.find((x) => x.store === a);
+    expect(first?.coverage).toBe(4);
+    expect(first?.ratio).toBeCloseTo(5 / 7.5);
+    // The detail list still shows them, flagged as unshared.
+    expect(first?.cards.filter((c) => c.stores < 2).map((c) => c.name)).toEqual(["E", "F"]);
+    // MIN_BASKET_CARDS applies to the counted cards only.
+    const sparse = scoreStores(
+      [basket(a, { A: 5, B: 5, C: 5, D: 5, E: 1, F: 100 }), basket(b, { A: 10, B: 10 })],
+      undefined,
+      names,
+      4,
+    );
+    expect(sparse.find((x) => x.store === a)?.ratio).toBeNull();
+    expect(sparse.find((x) => x.store === a)?.coverage).toBe(2);
   });
 
   it("only totals stores that have every basket card", () => {
@@ -200,6 +234,16 @@ describe("loadBaskets caching", () => {
 
     clock += 2;
     await load(cache);
+    expect(findListings).toHaveBeenCalledTimes(4);
+  });
+
+  it("refetches a cached store when the basket has changed", async () => {
+    const cache = memoryStore();
+    const one = [{ name: "Sol Ring", why: "" }];
+    await load(cache, { basket: one });
+    await load(cache, { basket: one });
+    expect(findListings).toHaveBeenCalledTimes(2);
+    await load(cache, { basket: [...one, { name: "Cultivate", why: "" }] });
     expect(findListings).toHaveBeenCalledTimes(4);
   });
 
