@@ -82,3 +82,23 @@ test("ranks stores by price and lists a low-coverage store as not enough data", 
   await expect(rows.nth(0)).toContainText("BazaarGameTrading");
   await expect(page.locator("#updated")).toContainText("Last updated");
 });
+
+test.describe("without site access", () => {
+  test.use({ world: { permissionsGranted: false } });
+
+  test("asks for access on a click, then runs the ranking", async ({ page }) => {
+    await page.goto(PRICES_URL);
+    const grant = page.getByRole("button", { name: "Grant access" });
+    await expect(grant).toBeVisible();
+    // Nothing is requested on load: the prompt needs a user gesture.
+    expect(await page.evaluate(() => window.__fakeExtension.permissionRequests)).toEqual([]);
+
+    await grant.click();
+    await expect(page.locator("#status")).toContainText("Checked 3 stores");
+    await expect(page.locator("#ranking > li")).toHaveCount(3);
+    await expect(grant).toBeHidden();
+    expect(
+      await page.evaluate(() => window.__fakeExtension.permissionRequests.length),
+    ).toBeGreaterThan(0);
+  });
+});
