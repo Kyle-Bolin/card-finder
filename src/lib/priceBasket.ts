@@ -1,7 +1,7 @@
 /**
  * The fixed list of commonly played Commander singles that every store is priced on, so
- * stores that carry different cards can still be compared. Tune the list here: cached
- * prices are keyed by card name, so a changed card is simply fetched again.
+ * stores that carry different cards can still be compared. Tune the list here: a store's
+ * cached prices are discarded when they were fetched for a different basket.
  *
  * The tiers are rough (late-2020s retail, non-foil, NM) and only need to be a mix: cheap
  * staples show how a store prices bulk, pricier cards show how it prices the rest.
