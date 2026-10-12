@@ -1,5 +1,5 @@
 /** The e-commerce platform behind a store; missing means "tcgplayerpro". */
-export type StorePlatform = "tcgplayerpro" | "shopify";
+export type StorePlatform = "tcgplayerpro" | "shopify" | "crystalcommerce";
 
 /** A storefront the user has chosen to check. */
 export interface Store {

@@ -53,7 +53,7 @@ export async function detectShopify(
 
 const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" };
 
-function decodeEntities(text: string): string {
+export function decodeEntities(text: string): string {
   return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, body: string) => {
     if (body.startsWith("#")) {
       const code =
@@ -64,18 +64,23 @@ function decodeEntities(text: string): string {
   });
 }
 
+/** A store name from page HTML: the `<title>` text before the first " | " or " – ", else `fallback`. */
+export function nameFromTitle(html: string, fallback: string): string {
+  const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1];
+  const name = decodeEntities(title ?? "")
+    .split(/\s+[|–—-]\s+/)[0]
+    ?.replace(/\s+/g, " ")
+    .trim();
+  return name || fallback;
+}
+
 /** The store's name from its home page `<title>` (text before the first " | " or " – "), else the domain. */
 export async function shopifyStoreName(origin: string, fetchFn: FetchFn = fetch): Promise<string> {
   const fallback = new URL(origin).hostname.replace(/^www\./, "");
   try {
     const res = await fetchFn(`${origin}/`, { headers: { Accept: "text/html" } });
     if (!res.ok) return fallback;
-    const title = (await res.text()).match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1];
-    const name = decodeEntities(title ?? "")
-      .split(/\s+[|–—-]\s+/)[0]
-      ?.replace(/\s+/g, " ")
-      .trim();
-    return name || fallback;
+    return nameFromTitle(await res.text(), fallback);
   } catch {
     return fallback;
   }

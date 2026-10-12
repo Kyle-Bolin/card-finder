@@ -4,6 +4,23 @@ import type { FetchFn } from "../lib/types";
 export const CRAWLER_USER_AGENT =
   "Mozilla/5.0 (compatible; card-finder/0.1; +https://github.com/Kyle-Bolin/card-finder)";
 
+/**
+ * Hosts the crawler must never request: their robots.txt disallows every crawler.
+ * Checks against them happen only from the user's browser, when they press Check.
+ */
+export const DENIED_HOSTS = ["store.battlegroundgames.com"];
+
+/** Whether the URL is on a denied host or one of its subdomains. */
+export function isDeniedHost(url: string): boolean {
+  let host: string;
+  try {
+    host = new URL(url).hostname.toLowerCase();
+  } catch {
+    return false;
+  }
+  return DENIED_HOSTS.some((denied) => host === denied || host.endsWith(`.${denied}`));
+}
+
 export interface PoliteFetchOptions {
   /** Minimum milliseconds between requests to the same rate-limit bucket. */
   intervalMs?: (bucket: string) => number;
@@ -52,6 +69,8 @@ export function politeFetch({
 
   const fetchFn = (async (input: RequestInfo | URL, init: RequestInit = {}) => {
     const url = String(input);
+    if (isDeniedHost(url))
+      throw new Error(`Not fetching ${new URL(url).hostname}: crawling is disallowed`);
     const bucket = rateBucket(url);
     const headers = new Headers(init.headers);
     headers.set("User-Agent", CRAWLER_USER_AGENT);

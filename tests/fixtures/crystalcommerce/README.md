@@ -12,3 +12,5 @@ removed, so the pages load nothing.
 - `product_goblin_bushwhacker_showcase.html`: an in-stock product page ("1 in-stock").
 - `product_path_to_exile.html`: an out-of-stock product page whose related-products list has
   in-stock rows.
+- `search_cloudshift.html`: hand-written, not a saved page. A minimal search result with two
+  in-stock Cloudshift variants, used by the e2e tests.

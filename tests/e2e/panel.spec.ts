@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
-import { openDeckPage, TABLETOP_ORIGIN } from "./harness/world";
+import { CRYSTAL_ORIGIN, openDeckPage, TABLETOP_ORIGIN } from "./harness/world";
 
 const openPanel = async (page: Page) => {
   await openDeckPage(page);
@@ -122,5 +122,34 @@ test.describe("with a Shopify store saved", () => {
     await expect(page.locator(".cf-store", { hasText: "The Relentless Dragon" })).toContainText(
       "$0.45 ×4",
     );
+  });
+});
+
+test.describe("with a Crystal Commerce store saved", () => {
+  test.use({
+    world: {
+      local: {
+        settings: {
+          stores: [
+            { url: CRYSTAL_ORIGIN, name: "Battleground Games", platform: "crystalcommerce" },
+          ],
+        },
+      },
+    },
+  });
+
+  test("a check shows its Cloudshift listings with quantities", async ({ page }) => {
+    await openPanel(page);
+    await page.getByRole("button", { name: "Check local stores (13 cards)" }).click();
+
+    await expect(page.getByText("Checked 4 stores")).toBeVisible();
+    const store = page.locator(".cf-store", { hasText: "Battleground Games" });
+    await expect(store).toHaveCount(1);
+    const cloudshift = store.locator(".cf-card", { hasText: "Cloudshift" });
+    await expect(cloudshift.locator(".cf-listing")).toHaveCount(2);
+    await expect(cloudshift).toContainText("Avacyn Restored · NM");
+    await expect(cloudshift).toContainText("$1.25 ×6");
+    await expect(cloudshift).toContainText("Avacyn Restored · LP");
+    await expect(cloudshift).toContainText("$1.05 ×2");
   });
 });

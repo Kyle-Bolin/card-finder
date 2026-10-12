@@ -3,6 +3,7 @@ import { describeFetchError } from "./fetchError";
 import { limitFetch } from "./limit";
 import type { Filters } from "./settings";
 import { mapLimit } from "./storeFinder";
+import { crystalCommerceProvider } from "./providers/crystalcommerce";
 import { shopifyProvider } from "./providers/shopify";
 import { tcgplayerProProvider } from "./providers/tcgplayerpro";
 import type { SearchCache, StoreProvider } from "./providers/types";
@@ -26,6 +27,7 @@ export interface FindOptions {
 const PROVIDERS: Record<StorePlatform, StoreProvider> = {
   tcgplayerpro: tcgplayerProProvider,
   shopify: shopifyProvider,
+  crystalcommerce: crystalCommerceProvider,
 };
 
 /** In-stock listings of the wanted cards at one store, using its platform's provider. */
