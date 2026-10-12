@@ -54,3 +54,7 @@ document.getElementById("open-settings")?.addEventListener("click", () => {
   void browser.runtime.openOptionsPage();
   window.close();
 });
+document.getElementById("store-prices")?.addEventListener("click", () => {
+  void browser.tabs.create({ url: browser.runtime.getURL("prices/prices.html") });
+  window.close();
+});
