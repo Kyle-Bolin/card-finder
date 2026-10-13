@@ -1,0 +1,73 @@
+{
+  "object": "list",
+  "not_found": [],
+  "data": [
+    {
+      "object": "card",
+      "scryfall_uri": "https://scryfall.com/card/khm/276",
+      "set_name": "KHM set",
+      "type_line": "Artifact",
+      "id": "khm276",
+      "name": "Sol Ring",
+      "set": "khm",
+      "collector_number": "276",
+      "illustration_id": "ill-finnigan",
+      "artist": "Sarah Finnigan",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/khm276.jpg"
+      }
+    },
+    {
+      "object": "card",
+      "scryfall_uri": "https://scryfall.com/card/isd/51",
+      "set_name": "ISD set",
+      "type_line": "Creature // Creature",
+      "id": "d",
+      "name": "Delver of Secrets // Insectile Aberration",
+      "set": "isd",
+      "collector_number": "51",
+      "card_faces": [
+        {
+          "name": "Delver of Secrets",
+          "artist": "Nils Hamm",
+          "illustration_id": "dl1",
+          "image_uris": {
+            "small": "https://cards.scryfall.io/small/d1.jpg"
+          }
+        },
+        {
+          "name": "Insectile Aberration",
+          "artist": "Nils Hamm & Friend",
+          "illustration_id": "dl2",
+          "image_uris": {
+            "small": "https://cards.scryfall.io/small/d2.jpg"
+          }
+        }
+      ]
+    },
+    {
+      "object": "card",
+      "scryfall_uri": "https://scryfall.com/card/khm/280",
+      "set_name": "KHM set",
+      "type_line": "Basic Land — Forest",
+      "id": "f",
+      "name": "Forest",
+      "set": "khm",
+      "collector_number": "280",
+      "illustration_id": "f1",
+      "artist": "Jonas De Ro"
+    },
+    {
+      "object": "card",
+      "scryfall_uri": "https://scryfall.com/card/7ed/67",
+      "set_name": "7ED set",
+      "type_line": "Artifact",
+      "id": "c",
+      "name": "Counterspell",
+      "set": "7ed",
+      "collector_number": "67",
+      "illustration_id": "c1",
+      "artist": "Hannibal King"
+    }
+  ]
+}

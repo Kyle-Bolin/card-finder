@@ -43,6 +43,7 @@ async function build(target) {
       "popup/popup": "src/popup/popup.ts",
       "results/results": "src/results/results.ts",
       "prices/prices": "src/prices/prices.ts",
+      "artists/artists": "src/artists/artists.ts",
     },
     absWorkingDir: root,
     outdir: out,

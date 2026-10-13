@@ -1,0 +1,37 @@
+{
+  "object": "list",
+  "has_more": true,
+  "next_page": "https://api.scryfall.com/cards/search?q=page2",
+  "data": [
+    {
+      "object": "card",
+      "scryfall_uri": "https://scryfall.com/card/c21/263",
+      "set_name": "C21 set",
+      "type_line": "Artifact",
+      "id": "c21263",
+      "name": "Sol Ring",
+      "set": "c21",
+      "collector_number": "263",
+      "illustration_id": "ill-1",
+      "artist": "Mark Tedin",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/c21263.jpg"
+      }
+    },
+    {
+      "object": "card",
+      "scryfall_uri": "https://scryfall.com/card/khm/276",
+      "set_name": "KHM set",
+      "type_line": "Artifact",
+      "id": "khm276",
+      "name": "Sol Ring",
+      "set": "khm",
+      "collector_number": "276",
+      "illustration_id": "ill-finnigan",
+      "artist": "Sarah Finnigan",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/khm276.jpg"
+      }
+    }
+  ]
+}

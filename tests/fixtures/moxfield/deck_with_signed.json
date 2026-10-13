@@ -1,0 +1,100 @@
+{
+  "id": "x",
+  "name": "Signed Test",
+  "boards": {
+    "commanders": {
+      "cards": {
+        "a": {
+          "quantity": 1,
+          "boardType": "mainboard",
+          "card": {
+            "id": "Sol Ring",
+            "name": "Sol Ring",
+            "set": "khm",
+            "cn": "276"
+          }
+        }
+      }
+    },
+    "mainboard": {
+      "cards": {
+        "b": {
+          "quantity": 1,
+          "boardType": "mainboard",
+          "card": {
+            "id": "Arcane Signet",
+            "name": "Arcane Signet",
+            "set": "cmd",
+            "cn": "1"
+          }
+        },
+        "c": {
+          "quantity": 5,
+          "boardType": "mainboard",
+          "card": {
+            "id": "Forest",
+            "name": "Forest",
+            "set": "khm",
+            "cn": "280"
+          }
+        },
+        "d": {
+          "quantity": 1,
+          "boardType": "mainboard",
+          "card": {
+            "id": "Delver of Secrets // Insectile Aberration",
+            "name": "Delver of Secrets // Insectile Aberration",
+            "set": "isd",
+            "cn": "51"
+          }
+        },
+        "f": {
+          "quantity": 1,
+          "boardType": "mainboard",
+          "card": {
+            "id": "Counterspell",
+            "name": "Counterspell",
+            "set": "",
+            "cn": ""
+          }
+        },
+        "g": {
+          "quantity": 1,
+          "boardType": "mainboard",
+          "card": {
+            "id": "Lightning Bolt",
+            "name": "Lightning Bolt",
+            "set": "lea",
+            "cn": "161"
+          }
+        }
+      }
+    },
+    "sideboard": {
+      "cards": {
+        "h": {
+          "quantity": 1,
+          "boardType": "mainboard",
+          "card": {
+            "id": "Sideboard Card",
+            "name": "Sideboard Card",
+            "set": "khm",
+            "cn": "1"
+          }
+        }
+      }
+    }
+  },
+  "authorTags": {
+    "Arcane Signet": [
+      "Signed"
+    ],
+    "Lightning Bolt": [
+      "SIGNED",
+      "Add"
+    ],
+    "Sideboard Card": [
+      "signed"
+    ]
+  }
+}

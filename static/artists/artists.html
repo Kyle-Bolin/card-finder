@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Artists – Card Finder</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1 id="title">Artists</h1>
+      <p class="hint">
+        Who illustrated the printings in this deck, and the other artwork each card has. Data comes
+        from Scryfall and is kept for a week.
+      </p>
+      <label class="checkbox"
+        ><input type="checkbox" id="basics" /> Include basic lands' alternative art</label
+      >
+      <p id="status" class="status" role="status"></p>
+      <p id="signed" class="hint"></p>
+      <h2>Artists in this deck</h2>
+      <ol id="artists" class="cards"></ol>
+      <h2>Cards</h2>
+      <ul id="cards" class="cards"></ul>
+    </main>
+    <script src="artists.js"></script>
+  </body>
+</html>

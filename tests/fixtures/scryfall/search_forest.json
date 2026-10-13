@@ -1,0 +1,18 @@
+{
+  "object": "list",
+  "has_more": false,
+  "data": [
+    {
+      "object": "card",
+      "scryfall_uri": "https://scryfall.com/card/lea/297",
+      "set_name": "LEA set",
+      "type_line": "Basic Land — Forest",
+      "id": "f2",
+      "name": "Forest",
+      "set": "lea",
+      "collector_number": "297",
+      "illustration_id": "f2",
+      "artist": "Christopher Rush"
+    }
+  ]
+}
