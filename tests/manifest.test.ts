@@ -25,6 +25,10 @@ describe("manifestFor", () => {
     expect(m.browser_specific_settings?.gecko.strict_min_version).toBeTruthy();
   });
 
+  it("allows the Scryfall API for the artists page", () => {
+    expect(base.host_permissions).toContain("https://api.scryfall.com/*");
+  });
+
   it("does not modify the base manifest", () => {
     for (const target of TARGETS as string[]) manifestFor(base, target);
     expect(base).not.toHaveProperty("browser_specific_settings");

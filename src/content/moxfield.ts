@@ -2,7 +2,8 @@ import browser from "webextension-polyfill";
 import type { FetchTextResponse } from "../background/background";
 import type { StoreResult } from "../lib/check";
 import { formatAgo, loadDeckHistory } from "../lib/history";
-import { deckApiUrl, deckList, extractWanted, parseDeckId } from "../lib/moxfield";
+import { deckApiUrl, deckList, extractWanted, parseDeckId, playedCards } from "../lib/moxfield";
+import { ARTISTS_KEY_PREFIX, type ArtistsDeck } from "../lib/artistsDeck";
 import { edhPowerLevelUrl } from "../lib/powerLevel";
 import { summarizeDeck } from "../lib/moxfieldDiagnostic";
 import { runCheck, type BackgroundRequest } from "../lib/messages";
@@ -157,6 +158,27 @@ class Panel {
     return button;
   }
 
+  /** Hands the played deck to the artists page through extension storage and opens it. */
+  private artists(deck: unknown): HTMLElement {
+    const button = el("button", {
+      textContent: "Artists ↗",
+      title: "See who illustrated this deck and the alternate art for each card",
+    });
+    button.addEventListener("click", () => {
+      const deckId = this.deckId;
+      if (!deckId) return;
+      const name = (deck as { name?: unknown }).name;
+      const value: ArtistsDeck = {
+        name: typeof name === "string" ? name : "Deck",
+        cards: playedCards(deck),
+      };
+      void browser.storage.local
+        .set({ [ARTISTS_KEY_PREFIX + deckId]: value })
+        .then(() => sendBackground({ type: "openArtists", deckId }));
+    });
+    return button;
+  }
+
   private async loadDeck(): Promise<void> {
     if (!this.deckId) return;
     this.body.replaceChildren(el("p", { className: "muted" }, "Reading this deck…"));
@@ -188,7 +210,7 @@ class Panel {
           { className: "muted" },
           "Tag the cards you don't own in Moxfield, or change the tag in settings.",
         ),
-        this.links(this.powerLevel(deck)),
+        this.links(this.powerLevel(deck), this.artists(deck)),
       );
       return;
     }
@@ -208,7 +230,7 @@ class Panel {
       children.push(el("p", {}, "Add your local stores before checking."), add);
       button.className = "secondary";
     }
-    children.push(button, this.links(this.powerLevel(deck)));
+    children.push(button, this.links(this.powerLevel(deck), this.artists(deck)));
     this.body.replaceChildren(...children);
     const deckId = this.deckId;
     void loadDeckHistory(`deck:${deckId}`).then((history) => {

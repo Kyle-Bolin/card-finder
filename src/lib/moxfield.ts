@@ -15,11 +15,17 @@ type Json = unknown;
 const isObject = (v: Json): v is Record<string, Json> =>
   typeof v === "object" && v !== null && !Array.isArray(v);
 
+interface RawDeckCard {
+  name: string;
+  board: string;
+  quantity: number;
+  set?: string;
+  cn?: string;
+}
+
 /** Every card in the deck with its board and quantity, across the v3 (`boards`) and v2 layouts. */
-function deckCards(
-  deck: Record<string, Json>,
-): { name: string; board: string; quantity: number }[] {
-  const cards: { name: string; board: string; quantity: number }[] = [];
+function deckCards(deck: Record<string, Json>): RawDeckCard[] {
+  const cards: RawDeckCard[] = [];
   const add = (board: string, entries: Json) => {
     if (!isObject(entries)) return;
     for (const [key, entry] of Object.entries(entries)) {
@@ -30,6 +36,10 @@ function deckCards(
         name,
         board,
         quantity: typeof entry.quantity === "number" ? entry.quantity : 1,
+        ...(isObject(card) && typeof card.set === "string" && card.set ? { set: card.set } : {}),
+        ...(isObject(card) && card.cn !== undefined && card.cn !== null && card.cn !== ""
+          ? { cn: String(card.cn) }
+          : {}),
       });
     }
   };
@@ -59,11 +69,10 @@ const BOARD_LABELS: Record<string, string> = { maybeboard: "considering" };
  * Cards carrying `tag` (case-insensitive) in any board of a Moxfield deck,
  * from the deck's `authorTags` ({ "Card Name": ["tag", …] }).
  */
-export function extractWanted(deck: Json, tag: string): WantedCard[] {
-  if (!isObject(deck)) return [];
+function taggedNames(deck: Record<string, Json>, tag: string): Set<string> {
   const wantedTag = tag.trim().toLowerCase();
   const tags = isObject(deck.authorTags) ? deck.authorTags : {};
-  const tagged = new Set(
+  return new Set(
     Object.entries(tags)
       .filter(
         ([, list]) =>
@@ -72,6 +81,11 @@ export function extractWanted(deck: Json, tag: string): WantedCard[] {
       )
       .map(([name]) => name),
   );
+}
+
+export function extractWanted(deck: Json, tag: string): WantedCard[] {
+  if (!isObject(deck)) return [];
+  const tagged = taggedNames(deck, tag);
   const deckName = typeof deck.name === "string" ? deck.name : "Deck";
   const wanted = new Map<string, WantedCard>();
   for (const { name, board, quantity } of deckCards(deck)) {
@@ -99,4 +113,39 @@ export function deckList(deck: Json): string[] {
   cards.sort((a, b) => PLAYED_BOARDS.indexOf(a.board) - PLAYED_BOARDS.indexOf(b.board));
   for (const { name, quantity } of cards) counts.set(name, (counts.get(name) ?? 0) + quantity);
   return [...counts].map(([name, quantity]) => `${quantity} ${name}`);
+}
+
+/** A card of the played deck, with the printing Moxfield lists for it. */
+export interface PlayedCard {
+  name: string;
+  quantity: number;
+  /** Set code and collector number of the deck's printing, when Moxfield has them. */
+  set?: string;
+  cn?: string;
+  /** Carries the signed tag, so it is left out of the artists page. */
+  signed: boolean;
+}
+
+/** The played deck, one entry per card name and printing, commanders first. */
+export function playedCards(deck: Json, signedTag = "signed"): PlayedCard[] {
+  if (!isObject(deck)) return [];
+  const signed = taggedNames(deck, signedTag);
+  const cards = deckCards(deck).filter((c) => PLAYED_BOARDS.includes(c.board));
+  cards.sort((a, b) => PLAYED_BOARDS.indexOf(a.board) - PLAYED_BOARDS.indexOf(b.board));
+  const merged = new Map<string, PlayedCard>();
+  for (const { name, quantity, set, cn } of cards) {
+    const key = `${name}\u0000${set ?? ""}\u0000${cn ?? ""}`;
+    const existing = merged.get(key);
+    if (existing) existing.quantity += quantity;
+    else {
+      merged.set(key, {
+        name,
+        quantity,
+        ...(set ? { set } : {}),
+        ...(cn ? { cn } : {}),
+        signed: signed.has(name),
+      });
+    }
+  }
+  return [...merged.values()];
 }

@@ -1,0 +1,36 @@
+{
+  "object": "list",
+  "has_more": false,
+  "data": [
+    {
+      "object": "card",
+      "scryfall_uri": "https://scryfall.com/card/lea/270",
+      "set_name": "LEA set",
+      "type_line": "Artifact",
+      "id": "lea270",
+      "name": "Sol Ring",
+      "set": "lea",
+      "collector_number": "270",
+      "illustration_id": "ill-1",
+      "artist": "Mark Tedin",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/lea270.jpg"
+      }
+    },
+    {
+      "object": "card",
+      "scryfall_uri": "https://scryfall.com/card/cmm/400",
+      "set_name": "CMM set",
+      "type_line": "Artifact",
+      "id": "cmm400",
+      "name": "Sol Ring",
+      "set": "cmm",
+      "collector_number": "400",
+      "illustration_id": "ill-3",
+      "artist": "Dan Murayama Scott",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/cmm400.jpg"
+      }
+    }
+  ]
+}

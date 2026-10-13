@@ -32,6 +32,7 @@
     "https://api.moxfield.com/*",
     "https://*.tcgplayerpro.com/*",
     "https://api.tabletop.wizards.com/*",
+    "https://api.scryfall.com/*",
     "https://api.zippopotam.us/*",
     "https://ipapi.co/*",
     "https://get.geojs.io/*",

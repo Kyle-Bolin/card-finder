@@ -71,6 +71,12 @@ browser.runtime.onMessage.addListener(async (message: unknown) => {
       await browser.tabs.create({ url: browser.runtime.getURL(`results/results.html${query}`) });
       return undefined;
     }
+    case "openArtists":
+      if (typeof request.deckId === "string") {
+        const query = `?deck=${encodeURIComponent(request.deckId)}`;
+        await browser.tabs.create({ url: browser.runtime.getURL(`artists/artists.html${query}`) });
+      }
+      return undefined;
     default:
       return undefined;
   }
