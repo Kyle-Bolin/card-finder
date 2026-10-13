@@ -13,7 +13,7 @@ import {
   shopPageLinks,
   websiteOrigin,
 } from "../src/crawler/homepage";
-import { politeFetch, rateBucket } from "../src/crawler/http";
+import { isDeniedHost, politeFetch, rateBucket } from "../src/crawler/http";
 import { proSellersForProduct } from "../src/crawler/marketplace";
 import { distanceMeters, nearbyFromDirectory, type Directory } from "../src/lib/directory";
 import type { FetchFn, WpnStore } from "../src/lib/types";
@@ -101,6 +101,37 @@ describe("politeFetch", () => {
     expect(sleeps).toContain(1000);
     expect(seenUa[0]).toMatch(/^Mozilla\/5\.0 \(compatible; card-finder\//);
     expect(seenUa[0]).not.toMatch(/crawler|bot/i);
+  });
+});
+
+describe("host deny-list", () => {
+  it("never requests Crystal Commerce stores that disallow crawlers", async () => {
+    let called = 0;
+    const http = politeFetch({
+      baseFetch: (async () => {
+        called++;
+        return new Response("ok");
+      }) as typeof fetch,
+    });
+    for (const url of [
+      "https://store.battlegroundgames.com/robots.txt",
+      "https://store.battlegroundgames.com/products/search?q=x",
+      "https://STORE.battlegroundgames.com/",
+      "https://www.store.battlegroundgames.com/",
+    ]) {
+      await expect(http.fetch(url)).rejects.toThrow(/disallowed/);
+    }
+    expect(called).toBe(0);
+    expect(http.counts.size).toBe(0);
+    expect((await http.fetch("https://battlegroundgames.com/")).ok).toBe(true);
+    expect(called).toBe(1);
+  });
+
+  it("matches only the denied host and its subdomains", () => {
+    expect(isDeniedHost("https://store.battlegroundgames.com/")).toBe(true);
+    expect(isDeniedHost("https://notstore.battlegroundgames.com/")).toBe(false);
+    expect(isDeniedHost("https://example.com/store.battlegroundgames.com")).toBe(false);
+    expect(isDeniedHost("not a url")).toBe(false);
   });
 });
 

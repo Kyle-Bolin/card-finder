@@ -12,6 +12,7 @@ export const EXTENSION_ORIGIN = "https://extension.test";
 export const DECK_ID = "6bUjMtA1NUiqQYvr8uqXBg";
 export const DECK_URL = `https://moxfield.com/decks/${DECK_ID}`;
 export const TABLETOP_ORIGIN = "https://www.tabletopgamingcenter.com";
+export const CRYSTAL_ORIGIN = "https://store.battlegroundgames.com";
 export const OPTIONS_URL = `${EXTENSION_ORIGIN}/options/options.html`;
 
 const fixture = (path: string) => readFileSync(join(fixtures, path), "utf8");
@@ -169,6 +170,26 @@ export async function createWorld(
     // The store lists a second Cloudshift printing that isn't in the recorded data.
     if (url.pathname.endsWith(".js")) return route.fulfill({ status: 404, body: "Not Found" });
     return route.fallback();
+  });
+
+  // Battleground Games (Crystal Commerce): only Cloudshift is in stock.
+  await context.route(`${CRYSTAL_ORIGIN}/**`, (route) => {
+    const url = new URL(route.request().url());
+    const html = (file: string) =>
+      route.fulfill({
+        body: readFileSync(join(fixtures, "crystalcommerce", file), "utf8"),
+        contentType: "text/html; charset=utf-8",
+      });
+    if (url.pathname === "/") return html("search_goblin_bushwack.html");
+    if (url.pathname === "/products/search") {
+      return html(
+        url.searchParams.get("q")?.toLowerCase() === "cloudshift"
+          ? "search_cloudshift.html"
+          : "search_path_to_exile.html",
+      );
+    }
+    // Not a Shopify store.
+    return route.fulfill({ status: 404, body: "Not Found" });
   });
 
   await context.route(

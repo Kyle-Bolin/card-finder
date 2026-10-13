@@ -1,5 +1,5 @@
 import { expect, test } from "./fixtures";
-import { OPTIONS_URL, TABLETOP_ORIGIN } from "./harness/world";
+import { CRYSTAL_ORIGIN, OPTIONS_URL, TABLETOP_ORIGIN } from "./harness/world";
 
 const stores = (page: import("@playwright/test").Page) => page.locator("#in-range li");
 
@@ -103,5 +103,23 @@ test("adding a Shopify store by URL detects Shopify, asks for its site access an
       name: "Tabletop Gaming Center",
       platform: "shopify",
     }),
+  ]);
+});
+
+test("adding a Crystal Commerce store by URL detects the platform and saves it", async ({
+  page,
+}) => {
+  await page.goto(OPTIONS_URL);
+  await page.locator("#store-url").fill(CRYSTAL_ORIGIN);
+  await page.getByRole("button", { name: "Add store" }).click();
+  await expect(page.locator("#add-store-status")).toHaveText(/^Added .+\.$/);
+
+  const requests = await page.evaluate(() => window.__fakeExtension.permissionRequests);
+  expect(requests).toContainEqual({ origins: [`${CRYSTAL_ORIGIN}/*`] });
+  const settings = await page.evaluate(
+    () => window.__fakeExtension.local.settings as { stores: unknown[] },
+  );
+  expect(settings.stores).toEqual([
+    expect.objectContaining({ url: CRYSTAL_ORIGIN, platform: "crystalcommerce" }),
   ]);
 });

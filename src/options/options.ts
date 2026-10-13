@@ -30,6 +30,7 @@ import {
   STORE_ORIGINS,
 } from "../lib/permissions";
 import { distanceMeters } from "../lib/directory";
+import { detectCrystalCommerceStore } from "../lib/crystalCommerceStore";
 import { detectShopifyStore, normalizeHttpsOrigin } from "../lib/shopifyStore";
 import { getSite, normalizeStoreUrl } from "../lib/tcgplayerpro";
 import type { GeoPoint, Store, StoreSite, WpnStore } from "../lib/types";
@@ -159,12 +160,19 @@ $<HTMLFormElement>("add-store-form").addEventListener("submit", async (event) =>
         setStatus(status, `Added ${shopify.name}.`);
         return;
       }
+      const crystal = await detectCrystalCommerceStore(origin);
+      if (crystal) {
+        await addSavedStore(crystal);
+        input.value = "";
+        setStatus(status, `Added ${crystal.name}.`);
+        return;
+      }
     }
     const site = await getSite(origin).catch(() => null);
     if (!site) {
       setStatus(
         status,
-        `${new URL(origin).hostname} isn't a TCGplayer Pro or Shopify store Card Finder supports.`,
+        `${new URL(origin).hostname} isn't a TCGplayer Pro, Shopify or Crystal Commerce store Card Finder supports.`,
         true,
       );
       return;
