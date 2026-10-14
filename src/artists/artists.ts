@@ -11,6 +11,15 @@ import {
   type CardArt,
   type DeckArt,
 } from "../lib/scryfall";
+import {
+  formatEventDates,
+  matchEvents,
+  nextEventByArtist,
+  todayIso,
+  type ArtistEvents,
+  type EventMatch,
+} from "../lib/artistEvents";
+import { loadArtistEvents } from "../lib/artistEventsCache";
 import { ARTISTS_KEY_PREFIX, type ArtistsDeck } from "../lib/artistsDeck";
 
 function $<T extends HTMLElement>(id: string): T {
@@ -98,7 +107,63 @@ function cardRow(row: CardArt): HTMLLIElement {
   return li;
 }
 
+let eventsData: ArtistEvents | null | undefined;
+let matches: EventMatch[] = [];
+
+function renderSignings(): void {
+  const box = $("signings");
+  if (eventsData === undefined) {
+    box.replaceChildren(el("p", { className: "hint" }, "Loading events…"));
+  } else if (eventsData === null) {
+    box.replaceChildren(el("p", { className: "hint" }, "Couldn't load upcoming events."));
+  } else if (!matches.length) {
+    box.replaceChildren(
+      el(
+        "p",
+        { className: "hint" },
+        "None of this deck's artists are listed as guests at upcoming events we track. Sources: ",
+        ...eventsData.sources.flatMap((s, i) => [
+          i ? ", " : "",
+          el("a", { href: s.url, target: "_blank", rel: "noopener", textContent: s.name }),
+        ]),
+        ".",
+      ),
+    );
+  } else {
+    const list = el("ul", { className: "cards" });
+    for (const { event, artists } of matches) {
+      const li = el("li");
+      li.style.display = "block";
+      const where = [formatEventDates(event.start, event.end), event.city].filter(Boolean);
+      li.append(
+        el(
+          "div",
+          { className: "name" },
+          el("a", { href: event.url, target: "_blank", rel: "noopener", textContent: event.name }),
+        ),
+        el("div", { className: "meta" }, where.join(" · ")),
+      );
+      const people = el("ul");
+      for (const { artist, cards } of artists) {
+        const item = el("li");
+        item.style.display = "block";
+        item.append(`${artist}: ${cards.join(", ")}`);
+        people.append(item);
+      }
+      li.append(people);
+      list.append(li);
+    }
+    box.replaceChildren(list);
+  }
+}
+
+let lastState: DeckArt | undefined;
+
 function render(state: DeckArt): void {
+  lastState = state;
+  matches = eventsData ? matchEvents(eventsData.events, state.rows, todayIso()) : [];
+  renderSignings();
+  const nextEvent = nextEventByArtist(matches);
   $("signed").textContent = state.signedSkipped
     ? `${state.signedSkipped} signed card${state.signedSkipped === 1 ? "" : "s"} skipped.`
     : "";
@@ -115,6 +180,18 @@ function render(state: DeckArt): void {
         }),
         ` · ${count} card${count === 1 ? "" : "s"}`,
       );
+      const event = nextEvent.get(artist);
+      if (event) {
+        li.append(
+          el("span", { className: "meta" }, " · at "),
+          el("a", {
+            href: event.url,
+            target: "_blank",
+            rel: "noopener",
+            textContent: `${event.name}, ${formatEventDates(event.start, event.end)}`,
+          }),
+        );
+      }
       return li;
     }),
   );
@@ -153,6 +230,12 @@ async function main(): Promise<void> {
   $("title").textContent = `Artists in ${deck.name}`;
   cards = deck.cards;
   basicsEl.addEventListener("change", () => void run());
+  renderSignings();
+  void loadArtistEvents().then((data) => {
+    eventsData = data;
+    if (lastState) render(lastState);
+    else renderSignings();
+  });
   await run();
 }
 
