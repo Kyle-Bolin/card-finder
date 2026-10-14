@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Interactions – Card Finder</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1 id="title">Interactions</h1>
+      <p class="hint">
+        Card combinations in this deck whose math is hard to do at the table. The catalog is
+        hand-curated and works entirely from the card names in the deck.
+      </p>
+      <p id="status" class="status" role="status"></p>
+      <div id="sections"></div>
+      <div id="catalog" hidden>
+        <h2>Interactions this page looks for</h2>
+        <ul id="known" class="cards"></ul>
+      </div>
+    </main>
+    <script src="interactions.js"></script>
+  </body>
+</html>
