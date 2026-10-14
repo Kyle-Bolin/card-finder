@@ -1,0 +1,1 @@
+Hand-written SCG CON pages following the structure described in issue #72 (home page linking `/event/<slug>/`, Yoast JSON-LD dates, guest names in `<img alt>` under Special Guests). Replace with recordings of the live pages when convenient.
