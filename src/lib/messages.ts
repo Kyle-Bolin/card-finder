@@ -31,7 +31,8 @@ export type BackgroundRequest =
   /** `grant` opens the settings page ready to ask for site access. */
   | { type: "openOptions"; grant?: boolean }
   | { type: "openResults"; query?: string }
-  | { type: "openArtists"; deckId: string };
+  | { type: "openArtists"; deckId: string }
+  | { type: "openInteractions"; deckId: string };
 
 /**
  * Check the user's stores for `wanted` in the background, calling `onEvent` as
