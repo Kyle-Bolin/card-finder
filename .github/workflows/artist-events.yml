@@ -1,0 +1,37 @@
+name: Update artist events
+
+on:
+  schedule:
+    - cron: "43 7 * * *" # daily 07:43 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: artist-events
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run -s artist-events
+      - name: Commit updated events
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/artist-events.json
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Update artist events"
+            git push
+          fi
