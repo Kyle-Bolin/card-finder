@@ -4,6 +4,7 @@ import type { StoreResult } from "../lib/check";
 import { formatAgo, loadDeckHistory } from "../lib/history";
 import { deckApiUrl, deckList, extractWanted, parseDeckId, playedCards } from "../lib/moxfield";
 import { ARTISTS_KEY_PREFIX, type ArtistsDeck } from "../lib/artistsDeck";
+import { INTERACTIONS_KEY_PREFIX, type InteractionsDeck } from "../lib/interactionsDeck";
 import { edhPowerLevelUrl } from "../lib/powerLevel";
 import { summarizeDeck } from "../lib/moxfieldDiagnostic";
 import { runCheck, type BackgroundRequest } from "../lib/messages";
@@ -179,6 +180,27 @@ class Panel {
     return button;
   }
 
+  /** Hands the played deck's card names to the interactions page and opens it. */
+  private interactions(deck: unknown): HTMLElement {
+    const button = el("button", {
+      textContent: "Interactions ↗",
+      title: "Find combos in this deck and work out their math",
+    });
+    button.addEventListener("click", () => {
+      const deckId = this.deckId;
+      if (!deckId) return;
+      const name = (deck as { name?: unknown }).name;
+      const value: InteractionsDeck = {
+        name: typeof name === "string" ? name : "Deck",
+        cards: playedCards(deck).map((c) => c.name),
+      };
+      void browser.storage.local
+        .set({ [INTERACTIONS_KEY_PREFIX + deckId]: value })
+        .then(() => sendBackground({ type: "openInteractions", deckId }));
+    });
+    return button;
+  }
+
   private async loadDeck(): Promise<void> {
     if (!this.deckId) return;
     this.body.replaceChildren(el("p", { className: "muted" }, "Reading this deck…"));
@@ -210,7 +232,7 @@ class Panel {
           { className: "muted" },
           "Tag the cards you don't own in Moxfield, or change the tag in settings.",
         ),
-        this.links(this.powerLevel(deck), this.artists(deck)),
+        this.links(this.powerLevel(deck), this.artists(deck), this.interactions(deck)),
       );
       return;
     }
@@ -230,7 +252,10 @@ class Panel {
       children.push(el("p", {}, "Add your local stores before checking."), add);
       button.className = "secondary";
     }
-    children.push(button, this.links(this.powerLevel(deck), this.artists(deck)));
+    children.push(
+      button,
+      this.links(this.powerLevel(deck), this.artists(deck), this.interactions(deck)),
+    );
     this.body.replaceChildren(...children);
     const deckId = this.deckId;
     void loadDeckHistory(`deck:${deckId}`).then((history) => {

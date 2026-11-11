@@ -44,6 +44,7 @@ async function build(target) {
       "results/results": "src/results/results.ts",
       "prices/prices": "src/prices/prices.ts",
       "artists/artists": "src/artists/artists.ts",
+      "interactions/interactions": "src/interactions/interactions.ts",
     },
     absWorkingDir: root,
     outdir: out,
