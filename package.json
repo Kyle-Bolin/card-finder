@@ -14,6 +14,7 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "crawl": "tsx src/crawler/cli.ts",
+    "artist-events": "tsx src/crawler/artistEvents.ts",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
